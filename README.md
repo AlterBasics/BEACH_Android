@@ -1,5 +1,5 @@
 # Beach-Android
-<b>Beach</b> is a messaging application built using Stringflow(http://stringflow.com) Android SDK.
+<b>Beach</b> is a messaging application built using <a href="http://stringflow.com">Stringflow</a> Android SDK.
 
 License
 -------
