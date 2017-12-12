@@ -1,0 +1,72 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlContactRow"
+    android:layout_width="match_parent"
+    android:layout_height="60dp">
+
+    <RelativeLayout
+        android:id="@+id/imageRelLayout"
+        android:layout_width="@dimen/dimen_size_40"
+        android:layout_height="@dimen/dimen_size_40"
+        android:layout_centerVertical="true">
+
+        <ImageView
+            android:id="@+id/ivContactImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@mipmap/user_placeholder" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/llContent"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginRight="@dimen/dimen_size_10"
+        android:gravity="center_vertical"
+        android:layout_toRightOf="@+id/imageRelLayout"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvContactName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/dimen_size_10"
+            android:text="Mr. XYZ"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textview_size_14" />
+
+        <TextView
+            android:id="@+id/tvAffiliation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/dimen_size_10"
+            android:paddingTop="@dimen/dimen_size_3"
+            android:text="@string/affiliation"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivRemoveParticipants"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:padding="16dp"
+        android:src="@mipmap/ic_minus"
+        android:visibility="gone"/>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/imageRelLayout"
+        android:layout_marginLeft="@dimen/dimen_size_50"
+        android:layout_marginTop="@dimen/dimen_size_2"
+        android:layout_marginBottom="@dimen/dimen_size_2"
+        android:background="@color/grey_light"/>
+</RelativeLayout>
