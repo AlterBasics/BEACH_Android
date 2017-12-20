@@ -28,6 +28,7 @@
         <activity android:name="abs.sf.beach.activity.PollActivity" />
         <activity android:name="abs.sf.beach.activity.PollRecipientActivity" />
         <activity android:name="abs.sf.beach.activity.PollResponseActivity" />
+        <activity android:name="abs.sf.beach.activity.CreateGroupActivity" />
 
         <service android:name="abs.sf.beach.notification.FCMIdService">
             <intent-filter>
