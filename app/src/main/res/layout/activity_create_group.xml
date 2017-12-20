@@ -30,11 +30,23 @@
 
     </RelativeLayout>
 
+    <EditText
+        android:id="@+id/etGroupName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:layout_below="@+id/rlGroup"
+        android:background="@drawable/rectangle_gray"
+        android:singleLine="true"
+        android:maxLines="1"
+        android:text="Enter group name" />
+
     <Button
         android:id="@+id/btnCreateGroup"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
-        android:layout_below="@+id/rlGroup"
+        android:layout_below="@+id/etGroupName"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dimen_size_15"
         android:background="@drawable/blue_corner"
