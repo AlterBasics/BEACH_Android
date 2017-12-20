@@ -2,6 +2,7 @@ package abs.sf.beach.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -22,6 +23,9 @@ import abs.sf.client.android.managers.AndroidUserManager;
 import abs.sf.client.android.messaging.PollContent;
 
 import static abs.sf.beach.android.R.id.llOptions;
+import static abs.sf.beach.android.R.id.rdOptionOne;
+import static abs.sf.beach.android.R.id.rgOptions;
+import static com.google.android.gms.common.zze.rg;
 
 public class PollResponseActivity extends StringflowActivity {
     private long pollId;
@@ -94,10 +98,23 @@ public class PollResponseActivity extends StringflowActivity {
             @Override
             public void onClick(View view) {
                 if (content.getPollType().equals(PollType.MCQ)){
-                    if(!cbOptionOne.isChecked() || !cbOptionTwo.isChecked() || !cbOptionThree.isChecked() || !cbOptionFour.isChecked()){
+                    if(!cbOptionOne.isChecked() && !cbOptionTwo.isChecked() && !cbOptionThree.isChecked() && !cbOptionFour.isChecked()){
                         AndroidUtils.showToast(PollResponseActivity.this,"Please select at least one option");
                     }else{
-                        //AndroidUserManager.getInstance().storePollResponse(pollId,
+                        StringBuilder sb = new StringBuilder();
+                        if(cbOptionOne.isChecked()){
+                            sb.append(tvOptionOne.getText()+",");
+                        }
+                        if(cbOptionTwo.isChecked()){
+                            sb.append(tvOptionTwo.getText()+",");
+                        }
+                        if(cbOptionThree.isChecked()){
+                            sb.append(tvOptionThree.getText()+",");
+                        }
+                        if(cbOptionFour.isChecked()){
+                            sb.append(tvOptionFour.getText());
+                        }
+                        savePollResponse(sb.toString());
                     }
                 }
                 else if (content.getPollType().equals(PollType.DESCRIPTIVE)) {
@@ -105,18 +122,40 @@ public class PollResponseActivity extends StringflowActivity {
                     if(StringUtils.isNullOrEmpty(response)){
                         AndroidUtils.showToast(PollResponseActivity.this,"Please enter your response");
                     }else{
-                        AndroidUserManager.getInstance().storePollResponse(pollId,response);
+                        savePollResponse(response);
                     }
                 }
-                else if(rgOptions.getCheckedRadioButtonId() != R.id.rdOptionOne
-                        || rgOptions.getCheckedRadioButtonId() != R.id.rdOptionTwo
-                        || rgOptions.getCheckedRadioButtonId() != R.id.rdOptionThree
-                        || rgOptions.getCheckedRadioButtonId() != R.id.rdOptionFour){
-                    AndroidUtils.showToast(PollResponseActivity.this,"Please select at least one option");
+                else if(content.getPollType().equals(PollType.SCQ)){
+                    if(rgOptions.getCheckedRadioButtonId() == -1){
+                        AndroidUtils.showToast(PollResponseActivity.this,"Please select at least one option");
+                    }else{
+                        String response;
+                        if(rgOptions.getCheckedRadioButtonId() == R.id.rdOptionOne){
+                            response = tvOptionOne.getText().toString();
+                        }else if(rgOptions.getCheckedRadioButtonId() == R.id.rdOptionTwo){
+                            response = tvOptionTwo.getText().toString();
+                        }else if(rgOptions.getCheckedRadioButtonId() == R.id.rdOptionThree){
+                            response = tvOptionThree.getText().toString();
+                        }else{
+                            response = tvOptionFour.getText().toString();
+                        }
+                        savePollResponse(response);
+                    }
                 }
-
             }
         });
+    }
+
+    /**
+     * This method is for temporary basis. Once server timeout exception will resolved.
+     * This will be removed and sdk methods will come in use.
+     * @param pollResponse
+     */
+    private void savePollResponse(String pollResponse){
+        AndroidUserManager.getInstance().storePollResponse(pollId, pollResponse);
+        DbManager.getInstance().updatePollStatus(pollId, PollContent.PollStatus.RESPONDED);
+        DbManager.getInstance().storePollResponse(pollId, pollResponse, AndroidUserManager.getInstance().getUserJID());
+        PollResponseActivity.this.finish();
     }
 
     private void setPollData(){
@@ -130,9 +169,12 @@ public class PollResponseActivity extends StringflowActivity {
 
             if(content.getStatus().equals(PollContent.PollStatus.RESPONDED)){
                 tvYourResponse.setText(content.getYourResponse());
+                tvYourResponse.setVisibility(View.VISIBLE);
+                llOptions.setVisibility(View.GONE);
                 llCheckbox.setVisibility(View.GONE);
                 llRadioButton.setVisibility(View.GONE);
                 etDescriptive.setVisibility(View.GONE);
+                btnRespond.setVisibility(View.GONE);
                 return;
             }
 
