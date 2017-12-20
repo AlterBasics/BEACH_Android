@@ -8,6 +8,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -20,6 +21,8 @@ import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidUserManager;
 import abs.sf.client.android.messaging.PollContent;
 
+import static abs.sf.beach.android.R.id.llOptions;
+
 public class PollResponseActivity extends StringflowActivity {
     private long pollId;
     private ImageView ivBack, ivNext;
@@ -27,9 +30,10 @@ public class PollResponseActivity extends StringflowActivity {
     private PollContent content;
     private TextView tvExpiryTime, tvPollQuestion, tvOptionOne, tvOptionTwo, tvOptionThree, tvOptionFour, tvYourResponse;
     private Button btnRespond;
-    private LinearLayout llCheckbox, llRadioButton;
+    private LinearLayout llOptions, llCheckbox, llRadioButton;
     private RadioGroup rgOptions;
     private CheckBox cbOptionOne, cbOptionTwo, cbOptionThree, cbOptionFour;
+    private RadioButton rdOptionOne, rdOptionTwo, rdOptionThree, rdOptionFour;
     private EditText etDescriptive;
 
     @Override
@@ -58,9 +62,14 @@ public class PollResponseActivity extends StringflowActivity {
         tvOptionThree = (TextView) findViewById(R.id.tvOptionThree);
         tvOptionFour = (TextView) findViewById(R.id.tvOptionFour);
         btnRespond = (Button) findViewById(R.id.btnRespond);
+        llOptions= (LinearLayout) findViewById(R.id.llOptions);
         llCheckbox = (LinearLayout) findViewById(R.id.llCheckbox);
         llRadioButton = (LinearLayout) findViewById(R.id.llRadioButton);
         rgOptions = (RadioGroup) findViewById(R.id.rgOptions);
+        rdOptionOne = (RadioButton) findViewById(R.id.rdOptionOne);
+        rdOptionTwo = (RadioButton) findViewById(R.id.rdOptionTwo);
+        rdOptionThree = (RadioButton) findViewById(R.id.rdOptionThree);
+        rdOptionFour = (RadioButton) findViewById(R.id.rdOptionFour);
         cbOptionOne = (CheckBox) findViewById(R.id.cbOptionOne);
         cbOptionTwo = (CheckBox) findViewById(R.id.cbOptionTwo);
         cbOptionThree = (CheckBox) findViewById(R.id.cbOptionThree);
@@ -131,11 +140,50 @@ public class PollResponseActivity extends StringflowActivity {
                 llCheckbox.setVisibility(View.VISIBLE);
                 llRadioButton.setVisibility(View.GONE);
                 etDescriptive.setVisibility(View.GONE);
+                if(StringUtils.isNullOrEmpty(content.getOption1())){
+                    tvOptionOne.setVisibility(View.GONE);
+                    cbOptionOne.setVisibility(View.GONE);
+                }
+                if(StringUtils.isNullOrEmpty(content.getOption2())){
+                    tvOptionTwo.setVisibility(View.GONE);
+                    cbOptionTwo.setVisibility(View.GONE);
+                }
+                if(StringUtils.isNullOrEmpty(content.getOption3())){
+                    tvOptionThree.setVisibility(View.GONE);
+                    cbOptionThree.setVisibility(View.GONE);
+                }
+                if(StringUtils.isNullOrEmpty(content.getOption4())){
+                    tvOptionFour.setVisibility(View.GONE);
+                    cbOptionFour.setVisibility(View.GONE);
+                }
+            }
+
+            if (content.getPollType().equals(PollType.SCQ)) {
+                llCheckbox.setVisibility(View.GONE);
+                llRadioButton.setVisibility(View.VISIBLE);
+                etDescriptive.setVisibility(View.GONE);
+                if(StringUtils.isNullOrEmpty(content.getOption1())){
+                    tvOptionOne.setVisibility(View.GONE);
+                    rdOptionOne.setVisibility(View.GONE);
+                }
+                if(StringUtils.isNullOrEmpty(content.getOption2())){
+                    tvOptionTwo.setVisibility(View.GONE);
+                    rdOptionTwo.setVisibility(View.GONE);
+                }
+                if(StringUtils.isNullOrEmpty(content.getOption3())){
+                    tvOptionThree.setVisibility(View.GONE);
+                    rdOptionThree.setVisibility(View.GONE);
+                }
+                if(StringUtils.isNullOrEmpty(content.getOption4())){
+                    tvOptionFour.setVisibility(View.GONE);
+                    rdOptionFour.setVisibility(View.GONE);
+                }
             }
 
             if (content.getPollType().equals(PollType.DESCRIPTIVE)) {
                 llCheckbox.setVisibility(View.GONE);
                 llRadioButton.setVisibility(View.GONE);
+                llOptions.setVisibility(View.GONE);
                 etDescriptive.setVisibility(View.VISIBLE);
             }
         }
