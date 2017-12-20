@@ -1,0 +1,58 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlContactRow"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/llMain"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/dimen_size_30"
+        android:background="#F6F6F6">
+
+        <ImageView
+            android:id="@+id/ivContactImage"
+            android:layout_width="@dimen/dimen_size_40"
+            android:layout_height="@dimen/dimen_size_40"
+            android:background="@mipmap/user_placeholder"
+            android:layout_gravity="center_vertical"/>
+
+        <LinearLayout
+            android:id="@+id/llContent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvContactName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/dimen_size_10"
+                android:text="Mr. XYZ"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textview_size_14" />
+
+            <TextView
+                android:id="@+id/tvAffiliation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/dimen_size_10"
+                android:paddingTop="@dimen/dimen_size_3"
+                android:text="@string/affiliation"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_1"
+        android:layout_below="@+id/llMain"
+        android:background="@color/light_gray"/>
+</RelativeLayout>

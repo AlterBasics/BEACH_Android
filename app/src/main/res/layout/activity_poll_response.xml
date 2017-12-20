@@ -1,0 +1,234 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/headerLayout"
+        layout="@layout/header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_50" />
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="2dp"
+        card_view:cardUseCompatPadding="true">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/dimen_size_5">
+
+            <TextView
+                android:id="@+id/tvExpiryLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="@dimen/dimen_size_3"
+                android:text="@string/poll_expiry"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dimen_size_12"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvExpiryTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="@dimen/dimen_size_3"
+                android:text="00:00:00"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dimen_size_12"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvPollQuestion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/tvExpiryLabel"
+                android:layout_marginBottom="@dimen/dimen_size_3"
+                android:text="Question"
+                android:textColor="@color/black1"
+                android:textSize="@dimen/dimen_size_14"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/llResponse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvPollQuestion"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/llOptions"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.85"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvOptionOne"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/dimen_size_30"
+                        android:gravity="center_vertical"
+                        android:layout_marginRight="@dimen/dimen_size_5"
+                        android:hint="@string/option1"
+                        android:textSize="@dimen/dimen_size_12" />
+
+                    <TextView
+                        android:id="@+id/tvOptionTwo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/dimen_size_30"
+                        android:gravity="center_vertical"
+                        android:layout_marginRight="@dimen/dimen_size_5"
+                        android:hint="@string/option2"
+                        android:textSize="@dimen/dimen_size_12" />
+
+                    <TextView
+                        android:id="@+id/tvOptionThree"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/dimen_size_30"
+                        android:gravity="center_vertical"
+                        android:layout_marginRight="@dimen/dimen_size_5"
+                        android:hint="@string/option3"
+                        android:textSize="@dimen/dimen_size_12" />
+
+                    <TextView
+                        android:id="@+id/tvOptionFour"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/dimen_size_30"
+                        android:gravity="center_vertical"
+                        android:layout_marginRight="@dimen/dimen_size_5"
+                        android:hint="@string/option4"
+                        android:textSize="@dimen/dimen_size_12" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llCheckbox"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.07"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <CheckBox
+                        android:id="@+id/cbOptionOne"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+
+                    <CheckBox
+                        android:id="@+id/cbOptionTwo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+
+                    <CheckBox
+                        android:id="@+id/cbOptionThree"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+
+                    <CheckBox
+                        android:id="@+id/cbOptionFour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llRadioButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.07"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <RadioGroup
+                        android:id="@+id/rgOptions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:id="@+id/rdOptionOne"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+                        <RadioButton
+                            android:id="@+id/rdOptionTwo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+                        <RadioButton
+                            android:id="@+id/rdOptionThree"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+                        <RadioButton
+                            android:id="@+id/rdOptionFour"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+                    </RadioGroup>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/etDescriptive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/llResponse"
+                android:hint="Type your response"
+                android:paddingLeft="@dimen/dimen_size_5"
+                android:textSize="@dimen/dimen_size_12"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvYourResponse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etDescriptive"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:text="Your response"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/btnRespond"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_below="@+id/tvYourResponse"
+                android:layout_marginBottom="@dimen/dimen_size_2"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:background="@drawable/blue_corner"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/save"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dimen_size_10" />
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

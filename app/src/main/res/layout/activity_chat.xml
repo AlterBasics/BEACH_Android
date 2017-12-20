@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+    <include
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_50"
+        layout="@layout/header"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/sendLayout"
+        android:layout_below="@+id/headerLayout"
+        android:paddingBottom="@dimen/dimen_size_5"
+        android:clipToPadding="false"
+        app:stackFromEnd="true"
+        app:reverseLayout="false"/>
+
+        <EditText
+            android:id="@+id/etMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="5"
+            android:hint="Type a message"
+            android:layout_margin="@dimen/dimen_size_3"
+            android:paddingLeft="@dimen/dimen_size_2"
+            android:paddingRight="@dimen/dimen_size_2"
+            android:paddingBottom="@dimen/dimen_size_10"
+            android:paddingTop="@dimen/dimen_size_10"
+            android:textSize="@dimen/textview_size_16"
+            android:inputType="textMultiLine"
+            android:scrollbars="vertical"
+            android:scrollbarSize="@dimen/dimen_size_1"
+            android:background="@drawable/rect_send_layout"
+            android:layout_toLeftOf="@+id/sendLayout"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/dimen_size_5"
+            />
+
+        <LinearLayout
+            android:id="@+id/sendLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"> <!-- android:background="@drawable/chatedt_corner" -->
+
+            <Button
+                android:id="@+id/btnCreatePoll"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginLeft="@dimen/dimen_size_5"
+                android:layout_marginRight="@dimen/dimen_size_5"
+                android:background="@mipmap/add"/>
+
+            <Button
+                android:id="@+id/btnSend"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@mipmap/send"
+                android:layout_marginRight="@dimen/dimen_size_3" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
