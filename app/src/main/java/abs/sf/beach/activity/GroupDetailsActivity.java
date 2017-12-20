@@ -91,7 +91,6 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         ivContactImage = (ImageView) findViewById(R.id.ivContactImage);
         roomJID = (JID) getIntent().getSerializableExtra("jid");
         tvGroupName.setText(getIntent().getStringExtra("name"));
-        tvGroupType.setText("Public");
         tvHeader.setVisibility(View.GONE);
         isGroupMember = getIntent().getBooleanExtra("isGroupMember", false);
         isFragmentOpen = false;
@@ -107,6 +106,7 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
 
     private void setChatAdapter() {
         chatRoom = DbManager.getInstance().getChatRoomDetails(roomJID.getBareJID());
+        tvGroupType.setText(chatRoom.getAccessMode().val());
         Set<ChatRoom.ChatRoomMember> members = chatRoom.getMembers();
         tvParticipants.setText(members.size() + " Participants");
         memberList = new ArrayList<>(members);
