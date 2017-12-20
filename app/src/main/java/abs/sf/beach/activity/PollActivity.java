@@ -14,6 +14,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -41,6 +42,7 @@ public class PollActivity extends StringflowActivity implements PollActionPerfor
     private EditText etPollQues, etOptionOne, etOptionTwo, etOptionThree, etOptionFour;
     private TextView tvResponseType, tvTextBoxMulChoice, tvTextBoxRBtn, tvTextBoxNumeric, tvTextBox, tvRecipientMsg;
     private LinearLayout llResponseType, llMultipleChoice;
+    private RelativeLayout rlPollExpiry;
     private Button btnAddMoreChoice, btnPollExpiryTime, btnViewSaved, btnSend, btnSave;
     private int opt;
 
@@ -81,14 +83,13 @@ public class PollActivity extends StringflowActivity implements PollActionPerfor
         etOptionFour = (EditText) findViewById(R.id.etOptionFour);
         btnViewSaved = (Button) findViewById(R.id.btnViewSaved);
         btnAddMoreChoice = (Button) findViewById(R.id.btnAddMoreChoice);
+        rlPollExpiry = (RelativeLayout) findViewById(R.id.rlPollExpiry);
         btnPollExpiryTime = (Button) findViewById(R.id.btnPollExpiryTime);
         btnSend = (Button) findViewById(R.id.btnSend);
         btnSave = (Button) findViewById(R.id.btnSave);
         tvRecipientMsg = (TextView) findViewById(R.id.tvRecipientMsg);
         opt = 0;
         isFragmentOpen = false;
-        long millis =  System.currentTimeMillis() + 7*24*60*60*1000;
-        btnPollExpiryTime.setText(DateUtils.getDisplayTime(millis));
         ActionBar actionBar = getSupportActionBar();
         if(actionBar!=null){
             actionBar.hide();
@@ -162,7 +163,7 @@ public class PollActivity extends StringflowActivity implements PollActionPerfor
                 llResponseType.setVisibility(View.GONE);
             }
         });
-        btnPollExpiryTime.setOnClickListener(new View.OnClickListener() {
+        rlPollExpiry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openDatePicker();
@@ -195,7 +196,18 @@ public class PollActivity extends StringflowActivity implements PollActionPerfor
             return;
         }
 
+        if(StringUtils.isNullOrEmpty(btnPollExpiryTime.getText().toString())){
+            AndroidUtils.showToast(PollActivity.this, "Please set poll expiry date time.");
+            return;
+        }
+
         String resType = tvResponseType.getText().toString();
+
+        if(StringUtils.safeEquals(resType,getString(R.string.choose_resp))){
+            AndroidUtils.showToast(PollActivity.this, "Please choose any response.");
+            return;
+        }
+
         PollType pollType = null;
         long millis;
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
@@ -205,10 +217,25 @@ public class PollActivity extends StringflowActivity implements PollActionPerfor
         }catch (Exception e){
             millis = DateUtils.currentTimeInMiles() + 7*24*60*60*1000;
         }
+
         if(resType.equalsIgnoreCase("Multiple Choice")){
+            if(StringUtils.isNullOrEmpty(etOptionOne.getText().toString())
+                    && StringUtils.isNullOrEmpty(etOptionTwo.getText().toString())
+                    && StringUtils.isNullOrEmpty(etOptionThree.getText().toString())
+                    && StringUtils.isNullOrEmpty(etOptionFour.getText().toString())){
+                AndroidUtils.showToast(PollActivity.this,"Please enter at least one option");
+                return;
+            }
             pollType = PollType.MCQ;
         }
         if(resType.equalsIgnoreCase("Single Choice")){
+            if(StringUtils.isNullOrEmpty(etOptionOne.getText().toString())
+                    && StringUtils.isNullOrEmpty(etOptionTwo.getText().toString())
+                    && StringUtils.isNullOrEmpty(etOptionThree.getText().toString())
+                    && StringUtils.isNullOrEmpty(etOptionFour.getText().toString())){
+                AndroidUtils.showToast(PollActivity.this,"Please enter one option");
+                return;
+            }
             pollType = PollType.SCQ;
         }
         if(resType.equalsIgnoreCase("Textbox")){
@@ -289,8 +316,7 @@ public class PollActivity extends StringflowActivity implements PollActionPerfor
         etOptionTwo.setText("");
         etOptionThree.setText("");
         etOptionFour.setText("");
-        long millis =  System.currentTimeMillis() + 7*24*60*60*1000;
-        btnPollExpiryTime.setText(DateUtils.getDisplayTime(millis));
+        btnPollExpiryTime.setText("");
         etPollQues.setFocusable(true);
     }
 

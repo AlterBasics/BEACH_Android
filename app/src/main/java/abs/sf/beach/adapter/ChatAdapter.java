@@ -161,8 +161,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 }else{
                     holder.ivStatus.setImageResource(R.mipmap.tick_undelivered);
                 }
-                if(content.getPollType().equals(PollContent.PollStatus.RESPONDED)){
-                    holder.btnToRespond.setText("You responsed");
+                if(content.getStatus().name().equalsIgnoreCase(PollContent.PollStatus.RESPONDED.name())){
+                    holder.btnFromRespond.setText("You responded");
                 }
                 break;
 
@@ -178,8 +178,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 } else {
                     holder.toName.setVisibility(View.GONE);
                 }
-                if(content.getPollType().equals(PollContent.PollStatus.RESPONDED)){
-                    holder.btnToRespond.setText("Responsed ");
+                if(content.getStatus().name().equalsIgnoreCase(PollContent.PollStatus.RESPONDED.name())){
+                    holder.btnToRespond.setText("You responded");
                 }
                 break;
         }
