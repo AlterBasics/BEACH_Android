@@ -1,6 +1,8 @@
 # Beach-Android
 <b>Beach</b> is a messaging application built using <a href="http://stringflow.com">Stringflow</a> Android SDK. It demonstrates how to build Android applications especially messaging apps using Stringflow server and it's SDK.
 
+<a href="http://stringflow.com">Stringflow</a> is next-generation XMPP server with a proprietry content model to handle media transfer. Stringflow is probably the most scalable XMPP server in java based XMPP implementations. For more information visit http://stringflow.com 
+
 License
 -------
     Copyright (c) 2017 AlterBasics.
