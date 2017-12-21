@@ -162,18 +162,4 @@ public class LoginActivity extends StringflowActivity {
         SDKLoader.loadSDK(ApplicationProps.SERVER, 5222, this);
     }
 
-    /**
-     * Load SDK asynchronously. Loading SDK generally does not require anything on
-     * network therefore can be executed synchronously also. Returned {@link Future}
-     * can be used to find out the status of the loader task execution.
-     */
-    private Future<Boolean> loadSDKAsync() {
-        return TaskExecutor.submit(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                SDKLoader.loadSDK(ApplicationProps.SERVER, 5222, LoginActivity.this);
-                return true;
-            }
-        });
-    }
 }
