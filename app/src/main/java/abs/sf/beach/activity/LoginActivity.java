@@ -71,7 +71,6 @@ public class LoginActivity extends StringflowActivity {
                             SharedPrefs.getInstance().setPassword(pwd);
                             SharedPrefs.getInstance().setLoginStatus(true);
 
-                            initApplication();
                             startActivity(new Intent(LoginActivity.this, ChatBaseActivity.class));
                             finish();
                         }
@@ -176,11 +175,5 @@ public class LoginActivity extends StringflowActivity {
                 return true;
             }
         });
-    }
-
-    private void initApplication() {
-        Platform.getInstance().getUserManager().updateDeviceToken(SharedPrefs.getInstance().getFCMToken(), PushNotificationService.FCM);
-        Platform.getInstance().getUserManager().getFullRoster();
-        AndroidUserManager.getInstance().sendGetChatRoomsRequest();
     }
 }
