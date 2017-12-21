@@ -71,7 +71,6 @@ public class LoginActivity extends StringflowActivity {
                             SharedPrefs.getInstance().setPassword(pwd);
                             SharedPrefs.getInstance().setLoginStatus(true);
 
-                            initApplication();
                             startActivity(new Intent(LoginActivity.this, ChatBaseActivity.class));
                             finish();
                         }
@@ -163,24 +162,4 @@ public class LoginActivity extends StringflowActivity {
         SDKLoader.loadSDK(ApplicationProps.SERVER, 5222, this);
     }
 
-    /**
-     * Load SDK asynchronously. Loading SDK generally does not require anything on
-     * network therefore can be executed synchronously also. Returned {@link Future}
-     * can be used to find out the status of the loader task execution.
-     */
-    private Future<Boolean> loadSDKAsync() {
-        return TaskExecutor.submit(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                SDKLoader.loadSDK(ApplicationProps.SERVER, 5222, LoginActivity.this);
-                return true;
-            }
-        });
-    }
-
-    private void initApplication() {
-        Platform.getInstance().getUserManager().updateDeviceToken(SharedPrefs.getInstance().getFCMToken(), PushNotificationService.FCM);
-        Platform.getInstance().getUserManager().getFullRoster();
-        AndroidUserManager.getInstance().sendGetChatRoomsRequest();
-    }
 }

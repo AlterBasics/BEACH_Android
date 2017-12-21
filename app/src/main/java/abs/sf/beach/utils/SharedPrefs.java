@@ -78,9 +78,7 @@ public final class SharedPrefs {
      * Removes all the preferences from the object it is editing except FCM token
      */
     public void clearPartially() {
-        String token = getFCMToken();
         this.clear();
-        setFCMToken(token);
     }
 
     public void setUsername(String val) {
@@ -101,14 +99,6 @@ public final class SharedPrefs {
         return systemPrefs.getString(ApplicationProps.PASSWORD, StringUtils.EMPTY);
     }
 
-    public void setFCMToken(String val) {
-        this.editor.putString(ApplicationProps.REGID, val);
-        this.editor.commit();
-    }
-
-    public String getFCMToken() {
-        return systemPrefs.getString(ApplicationProps.REGID, StringUtils.EMPTY);
-    }
 
     public void setLoginStatus(boolean status) {
         this.editor.putBoolean(ApplicationProps.LOGIN_STATUS, status);
