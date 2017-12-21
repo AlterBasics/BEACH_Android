@@ -1,9 +1,11 @@
 package abs.sf.beach.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +38,7 @@ import abs.sf.client.android.messaging.Conversation;
 public class ConversationFragment extends Fragment implements PacketCollector {
     private RecyclerView recyclerViewConversation;
     private List<Conversation> conversations;
+    private ConversationAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -79,17 +82,19 @@ public class ConversationFragment extends Fragment implements PacketCollector {
 
     private void setConversationAdapter() {
         if (!CollectionUtils.isNullOrEmpty(this.conversations)) {
-            recyclerViewConversation.setLayoutManager(new LinearLayoutManager(getActivity()));
+            if(recyclerViewConversation!=null){
+                recyclerViewConversation.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-            Collections.sort(this.conversations, new Comparator<Conversation>() {
-                @Override
-                public int compare(Conversation conversation, Conversation t1) {
-                    return conversation.getLastUpdateTime() >= t1.getLastUpdateTime() ? -1 : 1;
-                }
-            });
+                Collections.sort(this.conversations, new Comparator<Conversation>() {
+                    @Override
+                    public int compare(Conversation conversation, Conversation t1) {
+                        return conversation.getLastUpdateTime() >= t1.getLastUpdateTime() ? -1 : 1;
+                    }
+                });
 
-            ConversationAdapter adapter = new ConversationAdapter(getActivity(), conversations);
-            recyclerViewConversation.setAdapter(adapter);
+                adapter = new ConversationAdapter(getActivity(), conversations);
+                recyclerViewConversation.setAdapter(adapter);
+            }
         }
     }
 
@@ -100,7 +105,7 @@ public class ConversationFragment extends Fragment implements PacketCollector {
         if (packet instanceof Message) {
             Message msg = (Message) packet;
 
-            ChatLine chatLine = new ChatLine(msg.getId(), msg.getFrom().getBareJID(), ChatLine.Direction.RECEIVE, ChatLine.ContentType.TEXT);
+            final ChatLine chatLine = new ChatLine(msg.getId(), msg.getFrom().getBareJID(), ChatLine.Direction.RECEIVE, ChatLine.ContentType.TEXT);
             chatLine.setDeliveryStatus(-1);
             chatLine.setPeerResource(msg.getFrom().getResource());
             chatLine.setPeerName(msg.getFrom().getNode());
@@ -128,12 +133,14 @@ public class ConversationFragment extends Fragment implements PacketCollector {
             NotificationUtils.show(chatLine.getText(), chatLine, getActivity());
 
             this.conversations = DbManager.getInstance().fetchConversations();
+
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    setConversationAdapter();
+                    adapter.notifyDataSetChanged();
                 }
             });
+
 
             System.out.println("Conersation fragment get out from collect for packet : " + packet);
         }
@@ -146,4 +153,12 @@ public class ConversationFragment extends Fragment implements PacketCollector {
         }
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            this.conversations = DbManager.getInstance().fetchConversations();
+            setConversationAdapter();
+        }
+    }
 }

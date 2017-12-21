@@ -9,7 +9,7 @@
         android:layout_height="@dimen/dimen_size_40"
         android:layout_centerVertical="true">
 
-        <com.stratawiz.rapport.app.components.CircleImageView
+        <ImageView
             android:id="@+id/ivContactImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
