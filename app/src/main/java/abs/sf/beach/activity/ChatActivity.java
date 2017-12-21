@@ -91,8 +91,9 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
                 StringUtils.safeEquals(from, "NotificationUtils", false)){
             jid = (JID) getIntent().getSerializableExtra("jid");
             tvHeader.setText(jid.getNode());
-            setChatAdapter();
         }
+
+        setChatAdapter();
     }
 
     @Override
