@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +33,7 @@ import abs.ixi.client.xmpp.packet.MessageContent;
 import abs.ixi.client.xmpp.packet.Packet;
 import abs.sf.beach.adapter.ChatAdapter;
 import abs.sf.beach.android.R;
+import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.beach.utils.NotificationUtils;
 import abs.sf.beach.utils.VerticalSpaceDecorator;
 import abs.sf.client.android.db.DbManager;
@@ -93,13 +95,6 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
             tvHeader.setText(jid.getNode());
             setChatAdapter();
         }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Platform.getInstance().getChatManager().removePacketCollector(Message.class, this);
-        Platform.getInstance().getChatManager().removePacketCollector(AckPacket.class, this);
     }
 
     @Override
@@ -221,7 +216,6 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
     public void collect(Packet packet) {
         if (packet instanceof Message) {
             Message msg = (Message) packet;
-
             final ChatLine chatLine = new ChatLine(msg.getId(), msg.getFrom().getBareJID(), ChatLine.Direction.RECEIVE, ChatLine.ContentType.TEXT);
             chatLine.setDeliveryStatus(-1);
 
@@ -250,7 +244,6 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
                 chatLine.setContentType(ChatLine.ContentType.TEXT);
                 chatLine.setText(msg.getContent().toString());
             }
-
             if (StringUtils.safeEquals(msg.getFrom().getBareJID(), this.jid.getBareJID(), false) && msg.getContent() != null) {
                 chatMap.put(chatLine.getMessageId(), chatLine);
                 chatLines.add(chatLine);
@@ -261,9 +254,15 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
                         adapter.notifyDataSetChanged();
                     }
                 });
-
             } else {
-                NotificationUtils.show(chatLine.getText(), chatLine, this);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.scrollToPosition(chatLines.size()-1);
+                        adapter.notifyDataSetChanged();
+                        NotificationUtils.show(chatLine.getText(), chatLine, ChatActivity.this);
+                    }
+                });
             }
 
         } else if(packet instanceof AckPacket) {
@@ -285,7 +284,6 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
                     }
                 });
             }
-
         }
     }
 
@@ -304,5 +302,12 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
 
         DbManager.getInstance().updateUnreadCount(jid.getBareJID());
         this.finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Platform.getInstance().getChatManager().removePacketCollector(Message.class, this);
+        Platform.getInstance().getChatManager().removePacketCollector(AckPacket.class, this);
     }
 }
