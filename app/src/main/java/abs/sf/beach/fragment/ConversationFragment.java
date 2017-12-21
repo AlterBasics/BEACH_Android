@@ -39,6 +39,7 @@ public class ConversationFragment extends Fragment implements PacketCollector {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        System.out.println("Conersation fragment on Create");
         View view = inflater.inflate(R.layout.fragment_conversation, container, false);
         initView(view);
         return view;
@@ -47,6 +48,7 @@ public class ConversationFragment extends Fragment implements PacketCollector {
     @Override
     public void onResume() {
         super.onResume();
+        System.out.println("Conersation fragment on resume");
         Platform.getInstance().getChatManager().addPacketCollector(Message.class, this);
         this.conversations = DbManager.getInstance().fetchConversations();
         setConversationAdapter();
@@ -55,7 +57,20 @@ public class ConversationFragment extends Fragment implements PacketCollector {
     @Override
     public void onStop() {
         super.onStop();
+        System.out.println("Conersation fragment on stop");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        System.out.println("Conersation fragment on pause");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         Platform.getInstance().getChatManager().removePacketCollector(Message.class, this);
+        System.out.println("Conersation fragment on destroy");
     }
 
     private void initView(View view) {
@@ -80,6 +95,8 @@ public class ConversationFragment extends Fragment implements PacketCollector {
 
     @Override
     public void collect(Packet packet) {
+        System.out.println("Conersation fragment entering collect for packet : " + packet);
+
         if (packet instanceof Message) {
             Message msg = (Message) packet;
 
@@ -107,6 +124,7 @@ public class ConversationFragment extends Fragment implements PacketCollector {
                 chatLine.setText(msg.getContent().toString());
             }
 
+            System.out.println("Conersation fragment generating notification for packet : " + packet);
             NotificationUtils.show(chatLine.getText(), chatLine, getActivity());
 
             this.conversations = DbManager.getInstance().fetchConversations();
@@ -117,6 +135,7 @@ public class ConversationFragment extends Fragment implements PacketCollector {
                 }
             });
 
+            System.out.println("Conersation fragment get out from collect for packet : " + packet);
         }
     }
 

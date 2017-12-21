@@ -55,10 +55,12 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.out.println("Chat activity on create");
         setContentView(R.layout.activity_chat);
         initView();
         setChatAdapter();
         initOnclickListener();
+
     }
 
     private void initView() {
@@ -82,6 +84,7 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
     @Override
     protected void onResume() {
         super.onResume();
+        System.out.println("Chat activity on resume");
 
         Platform.getInstance().getChatManager().addPacketCollector(Message.class, this);
         Platform.getInstance().getChatManager().addPacketCollector(AckPacket.class, this);
@@ -99,8 +102,21 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
     @Override
     protected void onStop() {
         super.onStop();
+        System.out.println("Chat activity on stop");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        System.out.println("Chat activity on pause");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         Platform.getInstance().getChatManager().removePacketCollector(Message.class, this);
         Platform.getInstance().getChatManager().removePacketCollector(AckPacket.class, this);
+        System.out.println("Chat activity on destroy");
     }
 
     @Override
@@ -220,6 +236,7 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
 
     @Override
     public void collect(Packet packet) {
+        System.out.println("Entering chat actvity JID : " + this.jid.getBareJID() + " collect Packet for packet : " + packet );
         if (packet instanceof Message) {
             Message msg = (Message) packet;
 
@@ -264,6 +281,7 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
                 });
 
             } else {
+                System.out.println();
                 NotificationUtils.show(chatLine.getText(), chatLine, this);
             }
 
@@ -288,6 +306,8 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
             }
 
         }
+
+        System.out.println("gettting out from collect method chat actvity JID : " + this.jid.getBareJID() + " collect Packet for packet : " + packet );
     }
 
     @Override
