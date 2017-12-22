@@ -1,5 +1,6 @@
 package abs.sf.beach.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,12 +10,14 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.List;
 
 import abs.ixi.client.util.CollectionUtils;
 import abs.ixi.client.xmpp.packet.Roster.RosterItem;
+import abs.sf.beach.activity.CreateGroupActivity;
 import abs.sf.beach.adapter.ContactAdapter;
 import abs.sf.beach.android.R;
 import abs.sf.client.android.db.DbManager;
@@ -24,6 +27,7 @@ public class ContactFragment extends Fragment {
     private List<RosterItem> rosterItems;
     private EditText etMessage;
     private ContactAdapter adapter;
+    private Button btnCreateGroup;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -36,6 +40,7 @@ public class ContactFragment extends Fragment {
     private void initView(View view) {
         etMessage = (EditText) view.findViewById(R.id.etMessage);
         recyclerViewContacts = (RecyclerView) view.findViewById(R.id.recyclerViewContacts);
+        btnCreateGroup = (Button) view.findViewById(R.id.btnCreateGroup);
     }
 
     private void initOnClickListener(){
@@ -55,6 +60,15 @@ public class ContactFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        btnCreateGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CreateGroupActivity.class);
+                intent.putExtra("name","Create Group");
+                startActivity(intent);
             }
         });
     }

@@ -34,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/searchLayout"
+        android:layout_above="@+id/btnCreateGroup"
         android:paddingTop="@dimen/dimen_size_5"
         android:background="@color/white"
         android:clipToPadding="false"/>
@@ -45,5 +46,13 @@
         android:layout_height="@dimen/dimen_size_30"
         android:layout_centerInParent="true"
         android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/btnCreateGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Group"
+        android:layout_alignParentBottom="true"
+        />
 
 </RelativeLayout>

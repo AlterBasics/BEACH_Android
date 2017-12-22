@@ -2,57 +2,71 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:padding="@dimen/dimen_size_10">
+    android:background="@color/white">
+
+    <include
+        android:id="@+id/headerLayout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        layout="@layout/header"/>
 
     <RelativeLayout
-        android:id="@+id/rlGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_below="@+id/headerLayout"
+        android:padding="@dimen/dimen_size_10">
 
-        <ImageView
-            android:id="@+id/ivGroup"
-            android:layout_width="@dimen/dimen_size_60"
-            android:layout_height="@dimen/dimen_size_60"
-            android:layout_alignParentLeft="true"
-            android:background="@mipmap/group" />
-
-
-        <Spinner
-            android:id="@+id/spGroupType"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/rlGroup"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dimen_size_15"
-            android:layout_toRightOf="@+id/ivGroup"
-            android:entries="@array/group_type" />
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ivGroup"
+                android:layout_width="@dimen/dimen_size_60"
+                android:layout_height="@dimen/dimen_size_60"
+                android:layout_alignParentLeft="true"
+                android:background="@mipmap/group" />
+
+
+            <Spinner
+                android:id="@+id/spGroupType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dimen_size_15"
+                android:layout_toRightOf="@+id/ivGroup"
+                android:entries="@array/group_type" />
+
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/etGroupName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dimen_size_10"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_below="@+id/rlGroup"
+            android:background="@drawable/rectangle_gray"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:hint="Enter group name" />
+
+        <Button
+            android:id="@+id/btnCreateGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_below="@+id/etGroupName"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:background="@drawable/blue_corner"
+            android:paddingLeft="@dimen/dimen_size_5"
+            android:paddingRight="@dimen/dimen_size_5"
+            android:text="@string/create_group"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
 
     </RelativeLayout>
 
-    <EditText
-        android:id="@+id/etGroupName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/dimen_size_10"
-        android:layout_marginTop="@dimen/dimen_size_15"
-        android:layout_below="@+id/rlGroup"
-        android:background="@drawable/rectangle_gray"
-        android:singleLine="true"
-        android:maxLines="1"
-        android:text="Enter group name" />
-
-    <Button
-        android:id="@+id/btnCreateGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_below="@+id/etGroupName"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dimen_size_15"
-        android:background="@drawable/blue_corner"
-        android:paddingLeft="@dimen/dimen_size_5"
-        android:paddingRight="@dimen/dimen_size_5"
-        android:text="@string/create_group"
-        android:textAllCaps="false"
-        android:textColor="@color/white" />
 </RelativeLayout>
