@@ -27,7 +27,7 @@ import abs.sf.beach.utils.AddParticipantsListner;
  * added into the group. This will be called from GroupDetailsActivity.
  */
 
-public class AddParticipantFragment extends Fragment {
+public class AddRemoveParticipantFragment extends Fragment {
     private ImageView ivBack, ivNext;
     private TextView tvHeader;
     private EditText etMessage;
@@ -42,12 +42,12 @@ public class AddParticipantFragment extends Fragment {
         itemList = items;
         roomJID = rJID;
         groupName = name;
-        return new AddParticipantFragment();
+        return new AddRemoveParticipantFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add_participant, container, false);
+        View view = inflater.inflate(R.layout.fragment_add_remove_participant, container, false);
         initView(view);
         initClickListener();
         return view;
