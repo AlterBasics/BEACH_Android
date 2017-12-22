@@ -22,6 +22,7 @@ import abs.ixi.client.util.TaskExecutor;
 import abs.ixi.client.util.UUIDGenerator;
 import abs.ixi.client.xmpp.packet.IQPushRegistration.PushNotificationService;
 import abs.sf.beach.android.R;
+import abs.sf.beach.notification.NotificationGenerator;
 import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.beach.utils.ApplicationProps;
 import abs.sf.beach.utils.SharedPrefs;
@@ -50,6 +51,9 @@ public class LoginActivity extends StringflowActivity {
 
         Log.i(LoginActivity.class.getName(), "Loading Stringflow SDK");
         loadSDK();
+
+        Log.i(LoginActivity.class.getName(), "Instantiating NotificationGenerator");
+        NotificationGenerator.getInstance();
 
         if (!SharedPrefs.getInstance().getLoginStatus()) {
             setContentView(R.layout.activity_login);

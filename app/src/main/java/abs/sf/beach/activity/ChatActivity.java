@@ -33,6 +33,7 @@ import abs.ixi.client.xmpp.packet.MessageContent;
 import abs.ixi.client.xmpp.packet.Packet;
 import abs.sf.beach.adapter.ChatAdapter;
 import abs.sf.beach.android.R;
+import abs.sf.beach.notification.NotificationGenerator;
 import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.beach.utils.NotificationUtils;
 import abs.sf.beach.utils.VerticalSpaceDecorator;
@@ -51,6 +52,7 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
     private Map<String, ChatLine> chatMap;
     private List<ChatLine> chatLines;
     private JID jid, mJid;
+
     private boolean isGroup;
     private final static int GROUP_DETAILS = 1;
 
@@ -99,6 +101,7 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
         }
 
         setChatAdapter();
+        NotificationGenerator.getInstance().setChatActivity(this);
     }
 
     @Override
@@ -110,7 +113,12 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
     @Override
     protected void onPause() {
         super.onPause();
+        NotificationGenerator.getInstance().removeChatActivity();
         System.out.println("Chat activity on pause");
+    }
+
+    public JID getJID () {
+        return this.jid;
     }
 
     @Override
