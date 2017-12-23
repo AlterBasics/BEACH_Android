@@ -1,5 +1,9 @@
 package abs.sf.beach.notification;
 
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.HandlerThread;
+
 import java.util.List;
 
 import abs.ixi.client.core.PacketCollector;
@@ -8,6 +12,7 @@ import abs.ixi.client.util.StringUtils;
 import abs.ixi.client.xmpp.packet.Message;
 import abs.ixi.client.xmpp.packet.Packet;
 import abs.sf.beach.activity.ChatActivity;
+import abs.sf.beach.core.BasicApplication;
 import abs.sf.beach.utils.NotificationUtils;
 import abs.sf.client.android.managers.AndroidChatManager;
 import abs.sf.client.android.messaging.ChatLine;
@@ -42,20 +47,31 @@ public class NotificationGenerator implements ChatLineReceiver{
     @Override
     public void handleChatLine(final ChatLine chatLine) {
         if(chatActivity == null) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    NotificationUtils.show(chatLine.getText(), chatLine, ChatActivity.this);
-                }
-            });
+
+            new NotificationCaller(chatLine).execute();
 
         } else if(!StringUtils.safeEquals(chatActivity.getJID().getBareJID(), chatLine.getPeerBareJid())){
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    NotificationUtils.show(chatLine.getText(), chatLine, ChatActivity.this);
-                }
-            });
+
+            new NotificationCaller(chatLine).execute();
+
+        }
+    }
+
+    private class NotificationCaller extends AsyncTask<Void, Void, Void>{
+        private ChatLine chatLine;
+        public NotificationCaller(ChatLine chatLine){
+            this.chatLine = chatLine;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            NotificationUtils.show(chatLine.getText(), chatLine, BasicApplication.getContext());
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return null;
         }
     }
 
