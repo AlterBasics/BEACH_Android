@@ -8,14 +8,19 @@ import abs.ixi.client.util.StringUtils;
 import abs.ixi.client.xmpp.packet.Message;
 import abs.ixi.client.xmpp.packet.Packet;
 import abs.sf.beach.activity.ChatActivity;
+import abs.sf.beach.utils.NotificationUtils;
+import abs.sf.client.android.managers.AndroidChatManager;
+import abs.sf.client.android.messaging.ChatLine;
+import abs.sf.client.android.messaging.ChatLineReceiver;
 
-public class NotificationGenerator implements PacketCollector{
+public class NotificationGenerator implements ChatLineReceiver{
     private ChatActivity chatActivity;
 
     private static NotificationGenerator instance;
 
     private  NotificationGenerator() {
-        Platform.getInstance().getChatManager().addPacketCollector(Message.class, this);
+        AndroidChatManager chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
+        chatManager.addChatLineReceiver(this);
     }
 
     public synchronized static NotificationGenerator getInstance() {
@@ -35,18 +40,23 @@ public class NotificationGenerator implements PacketCollector{
     }
 
     @Override
-    public void collect(Packet packet) {
-        Message message = (Message) packet;
-
+    public void handleChatLine(final ChatLine chatLine) {
         if(chatActivity == null) {
-            //generate notification
-        } else if(!StringUtils.safeEquals(chatActivity.getJID().getBareJID(), message.getFrom().getBareJID())){
-            //generate notification
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    NotificationUtils.show(chatLine.getText(), chatLine, ChatActivity.this);
+                }
+            });
+
+        } else if(!StringUtils.safeEquals(chatActivity.getJID().getBareJID(), chatLine.getPeerBareJid())){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    NotificationUtils.show(chatLine.getText(), chatLine, ChatActivity.this);
+                }
+            });
         }
     }
 
-    @Override
-    public <T extends Packet> void collect(List<T> list) {
-
-    }
 }

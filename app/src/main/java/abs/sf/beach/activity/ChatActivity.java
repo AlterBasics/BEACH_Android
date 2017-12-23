@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -22,27 +21,20 @@ import abs.ixi.client.core.PacketCollector;
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.core.Session;
 import abs.ixi.client.util.CollectionUtils;
-import abs.ixi.client.util.DateUtils;
 import abs.ixi.client.util.StringUtils;
-import abs.ixi.client.util.TaskExecutor;
-import abs.ixi.client.util.UUIDGenerator;
 import abs.ixi.client.xmpp.JID;
 import abs.ixi.client.xmpp.packet.AckPacket;
-import abs.ixi.client.xmpp.packet.Message;
-import abs.ixi.client.xmpp.packet.MessageContent;
 import abs.ixi.client.xmpp.packet.Packet;
 import abs.sf.beach.adapter.ChatAdapter;
 import abs.sf.beach.android.R;
 import abs.sf.beach.notification.NotificationGenerator;
-import abs.sf.beach.utils.AndroidUtils;
-import abs.sf.beach.utils.NotificationUtils;
 import abs.sf.beach.utils.VerticalSpaceDecorator;
 import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidChatManager;
-import abs.sf.client.android.managers.AndroidUserManager;
 import abs.sf.client.android.messaging.ChatLine;
+import abs.sf.client.android.messaging.ChatLineReceiver;
 
-public class ChatActivity extends StringflowActivity implements PacketCollector {
+public class ChatActivity extends StringflowActivity implements PacketCollector, ChatLineReceiver {
     private RecyclerView recyclerView;
     private ChatAdapter adapter;
     private EditText etMessage;
@@ -56,6 +48,8 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
     private boolean isGroup;
     private final static int GROUP_DETAILS = 1;
 
+    private AndroidChatManager chatManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +59,7 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
         setChatAdapter();
         initOnclickListener();
 
+        chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
     }
 
     private void initView() {
@@ -89,10 +84,6 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
     protected void onResume() {
         super.onResume();
         System.out.println("Chat activity on resume");
-
-        Platform.getInstance().getChatManager().addPacketCollector(Message.class, this);
-        Platform.getInstance().getChatManager().addPacketCollector(AckPacket.class, this);
-
         String from = getIntent().getStringExtra("from");
         if(!StringUtils.isNullOrEmpty(from) &&
                 StringUtils.safeEquals(from, "NotificationUtils", false)){
@@ -101,7 +92,7 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
         }
 
         setChatAdapter();
-        NotificationGenerator.getInstance().setChatActivity(this);
+        subscribeActivity();
     }
 
     @Override
@@ -113,20 +104,30 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
     @Override
     protected void onPause() {
         super.onPause();
-        NotificationGenerator.getInstance().removeChatActivity();
+        unSubscribeActivity();
         System.out.println("Chat activity on pause");
-    }
-
-    public JID getJID () {
-        return this.jid;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Platform.getInstance().getChatManager().removePacketCollector(Message.class, this);
-        Platform.getInstance().getChatManager().removePacketCollector(AckPacket.class, this);
         System.out.println("Chat activity on destroy");
+    }
+
+    private void subscribeActivity () {
+        this.chatManager.addChatLineReceiver(this);
+        Platform.getInstance().getChatManager().addPacketCollector(AckPacket.class, this);
+        NotificationGenerator.getInstance().setChatActivity(this);
+    }
+
+    private void unSubscribeActivity() {
+        this.chatManager.removeChatLineReceiver(this);
+        Platform.getInstance().getChatManager().removePacketCollector(AckPacket.class, this);
+        NotificationGenerator.getInstance().removeChatActivity();
+    }
+
+    public JID getJID () {
+        return this.jid;
     }
 
     @Override
@@ -218,7 +219,7 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
 
                 try {
 
-                    ChatLine chatLine = AndroidChatManager.getInstance().sendTextMessage(etMessage.getText().toString(),jid.getBareJID(),isGroup);
+                    ChatLine chatLine = chatManager.sendTextMessage(etMessage.getText().toString(),jid.getBareJID(),isGroup);
                     chatMap.put(chatLine.getMessageId(), chatLine);
                     chatLines.add(chatLine);
                     etMessage.setText("");
@@ -245,60 +246,24 @@ public class ChatActivity extends StringflowActivity implements PacketCollector 
     }
 
     @Override
+    public void handleChatLine(final ChatLine chatLine) {
+        if (StringUtils.safeEquals(chatLine.getPeerBareJid(), this.jid.getBareJID(), false)) {
+            chatMap.put(chatLine.getMessageId(), chatLine);
+            chatLines.add(chatLine);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    recyclerView.scrollToPosition(chatLines.size()-1);
+                    adapter.notifyDataSetChanged();
+                }
+            });
+        }
+    }
+
+    @Override
     public void collect(Packet packet) {
         System.out.println("Entering chat actvity JID : " + this.jid.getBareJID() + " collect Packet for packet : " + packet );
-        if (packet instanceof Message) {
-            Message msg = (Message) packet;
-            final ChatLine chatLine = new ChatLine(msg.getId(), msg.getFrom().getBareJID(), ChatLine.Direction.RECEIVE, ChatLine.ContentType.TEXT);
-            chatLine.setDeliveryStatus(-1);
-
-            if(msg.getFrom().getResource() != null) {
-                chatLine.setPeerResource(msg.getFrom().getResource().trim());
-            }
-
-            chatLine.setPeerName(msg.getFrom().getNode());
-            chatLine.setDisplayTime(DateUtils.displayTime(DateUtils.currentTimeInMiles()));
-
-            if (msg.getType().val().equalsIgnoreCase("groupchat")) {
-                String memberNickName = chatLine.getPeerResource();
-                JID memberJID = new JID(memberNickName, Platform.getInstance().getSession().get(Session.KEY_DOMAIN).toString());
-
-                String userName = DbManager.getInstance().getUserName(memberJID.getBareJID());
-
-                if (StringUtils.isNullOrEmpty(userName)) {
-                    chatLine.setPeerName(memberNickName);
-
-                } else {
-                    chatLine.setPeerName(userName);
-                }
-            }
-
-            if (msg.getContent().isContentType(MessageContent.MessageContentType.BODY)) {
-                chatLine.setContentType(ChatLine.ContentType.TEXT);
-                chatLine.setText(msg.getContent().toString());
-            }
-            if (StringUtils.safeEquals(msg.getFrom().getBareJID(), this.jid.getBareJID(), false) && msg.getContent() != null) {
-                chatMap.put(chatLine.getMessageId(), chatLine);
-                chatLines.add(chatLine);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        recyclerView.scrollToPosition(chatLines.size()-1);
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-            } else {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        recyclerView.scrollToPosition(chatLines.size()-1);
-                        adapter.notifyDataSetChanged();
-                        NotificationUtils.show(chatLine.getText(), chatLine, ChatActivity.this);
-                    }
-                });
-            }
-
-        } else if(packet instanceof AckPacket) {
+        if(packet instanceof AckPacket) {
             AckPacket ack = (AckPacket) packet;
             List<String> messageIds = ack.getMessageIds();
 
