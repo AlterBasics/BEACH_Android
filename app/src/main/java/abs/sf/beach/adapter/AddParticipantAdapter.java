@@ -13,6 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.UUIDGenerator;
 import abs.ixi.client.xmpp.JID;
 import abs.ixi.client.xmpp.packet.Roster;
@@ -79,7 +80,9 @@ public class AddParticipantAdapter extends RecyclerView.Adapter<AddParticipantAd
         dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                AndroidUserManager.getInstance().addChatRoomMemberRequest(UUIDGenerator.secureId(), roomJID, item.getJid());
+                AndroidUserManager chatManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+
+                chatManager.sendAddChatRoomMemberRequest(UUIDGenerator.secureId(), roomJID, item.getJid());
                 listener.add("requestAddParticipant", item);
                 dialog.dismiss();
             }

@@ -102,7 +102,8 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
         dialog.setPositiveButton("EXIT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                AndroidUserManager.getInstance().removeChatRoomMemberRequest(UUIDGenerator.secureId(), roomJID, jid);
+                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                userManager.removeChatRoomMemberRequest(UUIDGenerator.secureId(), roomJID, jid);
                 memberList.remove(pos);
                 notifyDataSetChanged();
                 dialog.dismiss();

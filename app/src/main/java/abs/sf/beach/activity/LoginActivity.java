@@ -84,7 +84,7 @@ public class LoginActivity extends StringflowActivity {
             });
 
         } else {
-            AndroidUserManager.getInstance().loginInBackground(SharedPrefs.getInstance().getUsername(), SharedPrefs.getInstance().getPassword(), ApplicationProps.DOMAIN);
+            Platform.getInstance().getUserManager().loginInBackground(SharedPrefs.getInstance().getUsername(), SharedPrefs.getInstance().getPassword(), ApplicationProps.DOMAIN);
             startActivity(new Intent(LoginActivity.this, ChatBaseActivity.class));
             finish();
         }
@@ -94,7 +94,7 @@ public class LoginActivity extends StringflowActivity {
         try {
             getProgressDialog("Authenticating...").show();
 
-            Future<StreamNegotiator.NegotiationResult> future = AndroidUserManager.getInstance().loginAsync(user, pwd, ApplicationProps.DOMAIN);
+            Future<StreamNegotiator.NegotiationResult> future = Platform.getInstance().getUserManager().loginAsync(user, pwd, ApplicationProps.DOMAIN);
 
             StreamNegotiator.NegotiationResult result = null;
             try {

@@ -49,6 +49,7 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
     private boolean isGroupMember;
     private GroupDetailsAdapter adapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,7 +135,8 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
             @Override
             public void onClick(View v) {
                 if (!isGroupMember) {
-                    AndroidUserManager.getInstance().deleteChatRoom(roomJID);
+                    AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                    userManager.deleteChatRoom(roomJID);
                     goBack(true, false);
                 } else {
                     showExitGroupAlert();
@@ -215,8 +217,11 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 AndroidUtils.showToast(GroupDetailsActivity.this, "Report has been taken against this group.");
-                AndroidUserManager.getInstance().leaveChatRoom(roomJID);
-                AndroidUserManager.getInstance().deleteChatRoom(roomJID);
+
+                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+
+                userManager.leaveChatRoom(roomJID);
+                userManager.deleteChatRoom(roomJID);
                 goBack(true, false);
                 dialog.dismiss();
             }
@@ -237,7 +242,9 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         dialog.setPositiveButton("EXIT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                AndroidUserManager.getInstance().leaveChatRoom(roomJID);
+                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                userManager.leaveChatRoom(roomJID);
+
                 goBack(false, false);
                 dialog.dismiss();
             }

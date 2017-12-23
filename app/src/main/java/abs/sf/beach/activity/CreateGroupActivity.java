@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.StringUtils;
 import abs.ixi.client.xmpp.packet.ChatRoom;
 import abs.sf.beach.android.R;
@@ -30,12 +31,16 @@ public class CreateGroupActivity extends StringflowActivity{
     private ImageView ivBack, ivNext;
     private TextView tvHeader;
 
+    private AndroidUserManager userManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
         initView();
         initOnclickListener();
+
+        this.userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
     }
 
     private void initView(){
@@ -80,14 +85,16 @@ public class CreateGroupActivity extends StringflowActivity{
                 String groupName = etGroupName.getText().toString();
                 if(StringUtils.isNullOrEmpty(groupName)){
                     AndroidUtils.showToast(CreateGroupActivity.this, "Please enter group name");
+
                 }else{
-                    boolean isCreated = AndroidUserManager.getInstance().createChatRoom(groupName);
+                    boolean isCreated = userManager.createRoom(groupName);
+
                     if(isCreated){
                         ChatRoom.AccessMode accessMode = ChatRoom.AccessMode.PUBLIC;
                         if(StringUtils.safeEquals(selectedGroupType, ChatRoom.AccessMode.PUBLIC.val())){
                             accessMode = ChatRoom.AccessMode.PRIVATE;
                         }
-                        AndroidUserManager.getInstance().updateRoomAccessMode(groupName, accessMode);
+                        userManager.updateRoomAccessMode(groupName, accessMode);
                         CreateGroupActivity.this.finish();
                     }
                 }

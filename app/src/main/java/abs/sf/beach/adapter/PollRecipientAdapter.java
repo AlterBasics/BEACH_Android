@@ -18,11 +18,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import abs.ixi.client.core.Platform;
 import abs.ixi.client.xmpp.packet.Roster;
 import abs.sf.beach.activity.PollRecipientActivity;
 import abs.sf.beach.android.R;
 import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.client.android.managers.AndroidChatManager;
+import abs.sf.client.android.managers.AndroidUserManager;
 
 import static abs.sf.beach.android.R.id.cbSelect;
 import static android.R.id.list;
@@ -138,7 +140,9 @@ public class PollRecipientAdapter extends RecyclerView.Adapter<PollRecipientAdap
         for(String s : selectedRecipient.keySet()){
             list.add(s);
         }
-        AndroidChatManager.getInstance().sendPollMessage(pollId, list);
+        AndroidChatManager chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
+
+        chatManager.sendPollMessage(pollId, list);
         ((PollRecipientActivity)(context)).finish();
         //1956741773
     }

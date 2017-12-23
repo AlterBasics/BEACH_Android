@@ -13,12 +13,14 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import abs.ixi.client.core.Platform;
 import abs.ixi.client.core.PollType;
 import abs.ixi.client.util.DateUtils;
 import abs.ixi.client.util.StringUtils;
 import abs.sf.beach.android.R;
 import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.client.android.db.DbManager;
+import abs.sf.client.android.managers.AndroidChatManager;
 import abs.sf.client.android.managers.AndroidUserManager;
 import abs.sf.client.android.messaging.PollContent;
 
@@ -152,9 +154,11 @@ public class PollResponseActivity extends StringflowActivity {
      * @param pollResponse
      */
     private void savePollResponse(String pollResponse){
-        AndroidUserManager.getInstance().storePollResponse(pollId, pollResponse);
+        AndroidUserManager chatManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+
+        chatManager.storePollResponse(pollId, pollResponse);
         DbManager.getInstance().updatePollStatus(pollId, PollContent.PollStatus.RESPONDED);
-        DbManager.getInstance().storePollResponse(pollId, pollResponse, AndroidUserManager.getInstance().getUserJID());
+        DbManager.getInstance().storePollResponse(pollId, pollResponse, Platform.getInstance().getUserJID());
         PollResponseActivity.this.finish();
     }
 
