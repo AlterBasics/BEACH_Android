@@ -1,16 +1,9 @@
 package abs.sf.beach.notification;
 
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.HandlerThread;
 
-import java.util.List;
-
-import abs.ixi.client.core.PacketCollector;
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.StringUtils;
-import abs.ixi.client.xmpp.packet.Message;
-import abs.ixi.client.xmpp.packet.Packet;
 import abs.sf.beach.activity.ChatActivity;
 import abs.sf.beach.core.BasicApplication;
 import abs.sf.beach.utils.NotificationUtils;
@@ -36,11 +29,11 @@ public class NotificationGenerator implements ChatLineReceiver{
         return instance;
     }
 
-    public void setChatActivity(ChatActivity chatActivity) {
+    public synchronized  void setChatActivity(ChatActivity chatActivity) {
         this.chatActivity = chatActivity;
     }
 
-    public void removeChatActivity() {
+    public  synchronized void removeChatActivity() {
         this.chatActivity = null;
     }
 

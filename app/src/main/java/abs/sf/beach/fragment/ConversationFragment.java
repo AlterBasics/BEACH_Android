@@ -103,7 +103,7 @@ public class ConversationFragment extends Fragment implements ChatLineReceiver {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                adapter.notifyDataSetChanged();
+                setConversationAdapter();
             }
         });
     }
