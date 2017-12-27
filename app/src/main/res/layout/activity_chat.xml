@@ -24,7 +24,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/sendLayout"
+        android:layout_above="@+id/etMessage"
         android:layout_below="@+id/headerLayout"
         android:paddingBottom="@dimen/dimen_size_5"
         android:clipToPadding="false"
