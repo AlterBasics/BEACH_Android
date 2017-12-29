@@ -1,5 +1,8 @@
 package abs.sf.beach.activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 
 import android.support.v7.app.ActionBar;
@@ -30,6 +33,7 @@ import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.beach.utils.NotificationUtils;
 import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.messaging.ChatLine;
+import abs.sf.client.android.utils.ContextProvider;
 
 
 public class ChatBaseActivity extends StringflowActivity {
@@ -48,6 +52,7 @@ public class ChatBaseActivity extends StringflowActivity {
         initView();
         initViewPager();
         initOnclickListeners();
+
     }
 
     private void initView() {

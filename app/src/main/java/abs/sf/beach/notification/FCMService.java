@@ -13,14 +13,17 @@ import abs.sf.beach.utils.NotificationUtils;
 import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.messaging.Conversation;
+import abs.sf.client.android.notification.fcm.SFFcmService;
 import abs.sf.client.android.utils.SFNotifiactionCode;
 
-public class FCMService extends FirebaseMessagingService {
+public class FCMService extends SFFcmService{
     private static final String TAG = FCMService.class.getSimpleName();
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        super.onMessageReceived(remoteMessage);
 
+        //handle non SF notifications
     }
 
 }

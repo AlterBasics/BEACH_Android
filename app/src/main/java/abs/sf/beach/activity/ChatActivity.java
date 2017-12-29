@@ -61,7 +61,7 @@ public class ChatActivity extends StringflowActivity implements PacketCollector,
         initOnclickListener();
 
         chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
-        subscribeForChatline();
+        subscribeForChatlineAndAck();
     }
 
     private void initView() {
@@ -112,21 +112,21 @@ public class ChatActivity extends StringflowActivity implements PacketCollector,
 
     @Override
     protected void onDestroy() {
-        unsubscibeForChatLine();
+        unsubscibeForChatLineAndAck();
         super.onDestroy();
         System.out.println("Chat activity on destroy");
     }
 
-    private void subscribeForChatline() {
+    private void subscribeForChatlineAndAck() {
         this.chatManager.addChatLineReceiver(this);
-
         SFFcmService.addChatLineReceiver(this);
+        this.chatManager.addPacketCollector(AckPacket.class, this);
     }
 
-    private void unsubscibeForChatLine() {
+    private void unsubscibeForChatLineAndAck() {
         this.chatManager.removeChatLineReceiver(this);
-
         SFFcmService.removeChatLineReceiver(this);
+        this.chatManager.removePacketCollector(AckPacket.class, this);
     }
 
     public JID getJID () {
