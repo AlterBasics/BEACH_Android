@@ -1,6 +1,11 @@
 package abs.sf.beach.notification;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
+import android.support.v4.content.LocalBroadcastManager;
 
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.StringUtils;
@@ -10,35 +15,20 @@ import abs.sf.beach.utils.NotificationUtils;
 import abs.sf.client.android.managers.AndroidChatManager;
 import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.messaging.ChatLineReceiver;
+import abs.sf.client.android.utils.SFConstants;
 
-public class NotificationGenerator implements ChatLineReceiver{
-    private ChatActivity chatActivity;
+public class NotificationGenerator extends BroadcastReceiver {
+    private static  ChatActivity chatActivity;
 
-    private static NotificationGenerator instance;
-
-    private  NotificationGenerator() {
-        AndroidChatManager chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
-        chatManager.addChatLineReceiver(this);
-    }
-
-    public synchronized static NotificationGenerator getInstance() {
-        if (instance == null) {
-            instance = new NotificationGenerator();
-        }
-
-        return instance;
-    }
-
-    public synchronized  void setChatActivity(ChatActivity chatActivity) {
-        this.chatActivity = chatActivity;
-    }
-
-    public  synchronized void removeChatActivity() {
-        this.chatActivity = null;
+    public NotificationGenerator() {
+        //LocalBroadcastManager.getInstance(BasicApplication.getContext()).registerReceiver(this, new IntentFilter("ON_MESSAGE"));
     }
 
     @Override
-    public void handleChatLine(final ChatLine chatLine) {
+    public void onReceive(Context context, Intent intent) {
+
+        ChatLine chatLine = (ChatLine) intent.getSerializableExtra(SFConstants.CHATLINE_OBJECT);
+
         if(chatActivity == null) {
 
             new NotificationCaller(chatLine).execute();
@@ -50,7 +40,15 @@ public class NotificationGenerator implements ChatLineReceiver{
         }
     }
 
-    private class NotificationCaller extends AsyncTask<Void, Void, Void>{
+    public static synchronized  void setChatActivity(ChatActivity cActivity) {
+        chatActivity = cActivity;
+    }
+
+    public static synchronized void removeChatActivity() {
+        chatActivity = null;
+    }
+
+   private class NotificationCaller extends AsyncTask<Void, Void, Void>{
         private ChatLine chatLine;
         public NotificationCaller(ChatLine chatLine){
             this.chatLine = chatLine;

@@ -23,6 +23,7 @@ import abs.sf.client.android.managers.AndroidChatManager;
 import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.messaging.ChatLineReceiver;
 import abs.sf.client.android.messaging.Conversation;
+import abs.sf.client.android.notification.fcm.SFFcmService;
 
 
 /**
@@ -33,16 +34,12 @@ public class ConversationFragment extends Fragment implements ChatLineReceiver {
     private List<Conversation> conversations;
     private ConversationAdapter adapter;
 
-    private AndroidChatManager chatManager;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         System.out.println("Conersation fragment on Create");
         View view = inflater.inflate(R.layout.fragment_conversation, container, false);
         initView(view);
-
-        chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
-
+        subscribeForChatline();
         return view;
     }
 
@@ -52,8 +49,6 @@ public class ConversationFragment extends Fragment implements ChatLineReceiver {
         System.out.println("Conersation fragment on resume");
         this.conversations = DbManager.getInstance().fetchConversations();
         setConversationAdapter();
-
-        this.chatManager.addChatLineReceiver(this);
     }
 
     @Override
@@ -65,14 +60,28 @@ public class ConversationFragment extends Fragment implements ChatLineReceiver {
     @Override
     public void onPause() {
         super.onPause();
-        this.chatManager.removeChatLineReceiver(this);
         System.out.println("Conersation fragment on pause");
     }
 
     @Override
     public void onDestroy() {
+        unsubscibeForChatLine();
         super.onDestroy();
         System.out.println("Conersation fragment on destroy");
+    }
+
+    private void subscribeForChatline() {
+        AndroidChatManager chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
+        chatManager.addChatLineReceiver(this);
+
+        SFFcmService.addChatLineReceiver(this);
+    }
+
+    private void unsubscibeForChatLine() {
+        AndroidChatManager chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
+        chatManager.removeChatLineReceiver(this);
+
+        SFFcmService.removeChatLineReceiver(this);
     }
 
     private void initView(View view) {

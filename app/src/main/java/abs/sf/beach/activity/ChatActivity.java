@@ -33,6 +33,7 @@ import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidChatManager;
 import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.messaging.ChatLineReceiver;
+import abs.sf.client.android.notification.fcm.SFFcmService;
 
 public class ChatActivity extends StringflowActivity implements PacketCollector, ChatLineReceiver {
     private RecyclerView recyclerView;
@@ -60,6 +61,7 @@ public class ChatActivity extends StringflowActivity implements PacketCollector,
         initOnclickListener();
 
         chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
+        subscribeForChatline();
     }
 
     private void initView() {
@@ -92,7 +94,7 @@ public class ChatActivity extends StringflowActivity implements PacketCollector,
         }
 
         setChatAdapter();
-        subscribeActivity();
+        NotificationGenerator.setChatActivity(this);
     }
 
     @Override
@@ -104,26 +106,27 @@ public class ChatActivity extends StringflowActivity implements PacketCollector,
     @Override
     protected void onPause() {
         super.onPause();
-        unSubscribeActivity();
+        NotificationGenerator.removeChatActivity();
         System.out.println("Chat activity on pause");
     }
 
     @Override
     protected void onDestroy() {
+        unsubscibeForChatLine();
         super.onDestroy();
         System.out.println("Chat activity on destroy");
     }
 
-    private void subscribeActivity () {
+    private void subscribeForChatline() {
         this.chatManager.addChatLineReceiver(this);
-        Platform.getInstance().getChatManager().addPacketCollector(AckPacket.class, this);
-        NotificationGenerator.getInstance().setChatActivity(this);
+
+        SFFcmService.addChatLineReceiver(this);
     }
 
-    private void unSubscribeActivity() {
+    private void unsubscibeForChatLine() {
         this.chatManager.removeChatLineReceiver(this);
-        Platform.getInstance().getChatManager().removePacketCollector(AckPacket.class, this);
-        NotificationGenerator.getInstance().removeChatActivity();
+
+        SFFcmService.removeChatLineReceiver(this);
     }
 
     public JID getJID () {

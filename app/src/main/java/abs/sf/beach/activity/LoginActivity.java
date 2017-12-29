@@ -7,27 +7,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import abs.ixi.client.UserManager;
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.io.StreamNegotiator;
 import abs.ixi.client.util.StringUtils;
-import abs.ixi.client.util.TaskExecutor;
-import abs.ixi.client.util.UUIDGenerator;
-import abs.ixi.client.xmpp.packet.IQPushRegistration.PushNotificationService;
 import abs.sf.beach.android.R;
-import abs.sf.beach.notification.NotificationGenerator;
 import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.beach.utils.ApplicationProps;
 import abs.sf.beach.utils.SharedPrefs;
-import abs.sf.client.android.managers.AndroidUserManager;
 import abs.sf.client.android.utils.SDKLoader;
+
 
 public class LoginActivity extends StringflowActivity {
     private static final Logger ROOT_LOGGER = Logger.getLogger("");
@@ -51,9 +45,6 @@ public class LoginActivity extends StringflowActivity {
 
         Log.i(LoginActivity.class.getName(), "Loading Stringflow SDK");
         loadSDK();
-
-        Log.i(LoginActivity.class.getName(), "Instantiating NotificationGenerator");
-        NotificationGenerator.getInstance();
 
         if (!SharedPrefs.getInstance().getLoginStatus()) {
             setContentView(R.layout.activity_login);

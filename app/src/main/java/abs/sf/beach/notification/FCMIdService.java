@@ -20,16 +20,11 @@ public class FCMIdService extends FirebaseInstanceIdService {
 
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
-        // Saving reg id to shared preferences
-        storeRegIdInPref(refreshedToken);
-
-        // Notify UI that registration has completed, so the progress indicator can be hidden.
-        Intent registrationComplete = new Intent(ApplicationProps.REGISTRATION_COMPLETE);
-        registrationComplete.putExtra("token", refreshedToken);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
+        // Storing fcm token
+        storeFcmToken(refreshedToken);
     }
 
-    private void storeRegIdInPref(String token) {
+    private void storeFcmToken(String token) {
         SharedPrefProxy.getInstance().savePushNotifiactionDetatils(IQPushRegistration.PushNotificationService.FCM, token);
     }
 }

@@ -40,6 +40,13 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <!-- Your custom "com.layer.sdk.PUSH" notification Receiver -->
+        <receiver android:name="abs.sf.beach.notification.NotificationGenerator">
+            <intent-filter>
+                <action android:name="abs.sf.beach.android.ON_MESSAGE"/>
+                <category android:name="abs.sf.beach.android"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
