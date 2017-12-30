@@ -58,7 +58,7 @@ public class ChatActivity extends StringflowActivity implements PacketCollector,
         setChatAdapter();
         initOnclickListener();
 
-        chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
+        this.chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
         subscribeForChatlineAndAck();
     }
 

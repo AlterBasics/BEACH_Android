@@ -33,13 +33,17 @@ public class ConversationFragment extends Fragment implements ChatLineReceiver {
     private RecyclerView recyclerViewConversation;
     private List<Conversation> conversations;
     private ConversationAdapter adapter;
+    private AndroidChatManager chatManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         System.out.println("Conersation fragment on Create");
         View view = inflater.inflate(R.layout.fragment_conversation, container, false);
         initView(view);
+
+        this.chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
         subscribeForChatline();
+
         return view;
     }
 
@@ -71,15 +75,13 @@ public class ConversationFragment extends Fragment implements ChatLineReceiver {
     }
 
     private void subscribeForChatline() {
-        AndroidChatManager chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
-        chatManager.addChatLineReceiver(this);
+        this.chatManager.addChatLineReceiver(this);
 
         SFFcmService.addChatLineReceiver(this);
     }
 
     private void unsubscibeForChatLine() {
-        AndroidChatManager chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
-        chatManager.removeChatLineReceiver(this);
+        this.chatManager.removeChatLineReceiver(this);
 
         SFFcmService.removeChatLineReceiver(this);
     }

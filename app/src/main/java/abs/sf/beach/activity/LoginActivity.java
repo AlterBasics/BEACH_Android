@@ -7,12 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import abs.ixi.client.core.Callback;
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.io.StreamNegotiator;
 import abs.ixi.client.util.StringUtils;
@@ -59,16 +58,7 @@ public class LoginActivity extends StringflowActivity {
                     boolean success = validateInputs(user, pwd);
 
                     if (success) {
-                        boolean authenticated = login(user, pwd);
-                        if (authenticated) {
-                            SharedPrefs.getInstance().setUsername(user);
-                            SharedPrefs.getInstance().setPassword(pwd);
-                            SharedPrefs.getInstance().setLoginStatus(true);
-
-                            startActivity(new Intent(LoginActivity.this, ChatBaseActivity.class));
-                            finish();
-                        }
-
+                        login(user, pwd);
                     }
                 }
             });
@@ -80,37 +70,40 @@ public class LoginActivity extends StringflowActivity {
         }
     }
 
-    private boolean login(String user, String pwd) {
+    private boolean login(final String userName, final String pwd) {
         try {
             getProgressDialog("Authenticating...").show();
 
-            Future<StreamNegotiator.NegotiationResult> future = Platform.getInstance().getUserManager().loginAsync(user, pwd, ApplicationProps.DOMAIN);
+            Platform.getInstance().getUserManager().login(userName, pwd, ApplicationProps.DOMAIN, new Callback<StreamNegotiator.NegotiationResult, Exception>() {
+                @Override
+                public void onSuccess(StreamNegotiator.NegotiationResult result) {
+                    if (result.isSuccess()) {
+                        SharedPrefs.getInstance().setUsername(userName);
+                        SharedPrefs.getInstance().setPassword(pwd);
+                        SharedPrefs.getInstance().setLoginStatus(true);
 
-            StreamNegotiator.NegotiationResult result = null;
-            try {
-                result = future.get();
+                        startActivity(new Intent(LoginActivity.this, ChatBaseActivity.class));
+                        finish();
 
-            } catch (InterruptedException | ExecutionException e) {
-                AndroidUtils.showToast(context(), "Something went wrong. Please try after sometime");
-                return false;
-            }
+                    } else {
 
-            if (result.isSuccess()) {
-                return true;
+                        if (result.getError() == StreamNegotiator.NegotiationError.AUTHENTICATION_FAILED) {
+                            AndroidUtils.showToast(context(), "Entered userId Password are incorrect");
 
-            } else {
+                        } else if (result.getError() == StreamNegotiator.NegotiationError.TIME_OUT) {
+                            AndroidUtils.showToast(context(), "Server response timed out. try again...");
 
-                if (result.getError() == StreamNegotiator.NegotiationError.AUTHENTICATION_FAILED) {
-                    AndroidUtils.showToast(context(), "Entered userId Password are incorrect");
+                        } else {
+                            AndroidUtils.showToast(context(), "Something went wrong. Please try after sometime");
+                        }
+                    }
+                }
 
-                } else if (result.getError() == StreamNegotiator.NegotiationError.TIME_OUT) {
-                    AndroidUtils.showToast(context(), "Server response timed out. try again...");
-
-                } else {
+                @Override
+                public void onFailure(Exception e) {
                     AndroidUtils.showToast(context(), "Something went wrong. Please try after sometime");
                 }
-            }
-
+            });
 
         } finally {
             closeProgressDialog();
