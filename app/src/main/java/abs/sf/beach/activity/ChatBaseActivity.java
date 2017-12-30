@@ -31,6 +31,7 @@ import abs.sf.beach.fragment.ContactFragment;
 import abs.sf.beach.fragment.ConversationFragment;
 import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.beach.utils.NotificationUtils;
+import abs.sf.beach.utils.SharedPrefs;
 import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidUserManager;
 import abs.sf.client.android.messaging.ChatLine;
@@ -129,6 +130,7 @@ public class ChatBaseActivity extends StringflowActivity {
             public void onClick(View v) {
                 AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
                 userManager.shutdownSDK();
+                SharedPrefs.getInstance().clear();
                 startActivity(new Intent(ChatBaseActivity.this, LoginActivity.class));
                 ChatBaseActivity.this.finish();
             }
