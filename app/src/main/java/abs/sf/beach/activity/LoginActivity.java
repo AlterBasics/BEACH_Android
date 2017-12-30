@@ -60,7 +60,6 @@ public class LoginActivity extends StringflowActivity {
 
                     if (success) {
                         boolean authenticated = login(user, pwd);
-
                         if (authenticated) {
                             SharedPrefs.getInstance().setUsername(user);
                             SharedPrefs.getInstance().setPassword(pwd);

@@ -20,11 +20,7 @@ import abs.sf.client.android.utils.SFConstants;
 public class NotificationGenerator extends BroadcastReceiver {
     private static  ChatActivity chatActivity;
 
-    public NotificationGenerator() {
-        //LocalBroadcastManager.getInstance(BasicApplication.getContext()).registerReceiver(this, new IntentFilter("ON_MESSAGE"));
-    }
-
-    @Override
+  @Override
     public void onReceive(Context context, Intent intent) {
 
         ChatLine chatLine = (ChatLine) intent.getSerializableExtra(SFConstants.CHATLINE_OBJECT);

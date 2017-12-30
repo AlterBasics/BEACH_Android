@@ -13,9 +13,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import abs.ixi.client.core.PacketCollector;
 import abs.ixi.client.core.Platform;
@@ -42,7 +41,6 @@ public class ChatActivity extends StringflowActivity implements PacketCollector,
     private Button btnSend, btnCreatePoll;
     private ImageView ivBack, ivNext;
     private TextView tvHeader;
-    private Map<String, ChatLine> chatMap;
     private List<ChatLine> chatLines;
     private JID jid, mJid;
 
@@ -165,16 +163,16 @@ public class ChatActivity extends StringflowActivity implements PacketCollector,
             btnCreatePoll.setVisibility(View.GONE);
         }
 
-        chatMap = DbManager.getInstance().fetchConversationChatline(jid.getBareJID(), isGroup);
-        chatLines = new ArrayList<>(chatMap.values());
+        chatLines = DbManager.getInstance().fetchConversationChatlines(jid.getBareJID(), isGroup);
+
         adapter = new ChatAdapter(ChatActivity.this, chatLines, isGroup);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(ChatActivity.this);
         mLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new VerticalSpaceDecorator(10));
         recyclerView.setAdapter(adapter);
-        if (chatMap.size() > 0) {
-            recyclerView.scrollToPosition(chatMap.size() - 1);
+        if (chatLines.size() > 0) {
+            recyclerView.scrollToPosition(chatLines.size() - 1);
         }
     }
 
@@ -223,11 +221,10 @@ public class ChatActivity extends StringflowActivity implements PacketCollector,
                 try {
 
                     ChatLine chatLine = chatManager.sendTextMessage(etMessage.getText().toString(),jid.getBareJID(),isGroup);
-                    chatMap.put(chatLine.getMessageId(), chatLine);
                     chatLines.add(chatLine);
                     etMessage.setText("");
-                    adapter.notifyItemInserted(chatMap.size()-1);
-                    recyclerView.scrollToPosition(chatMap.size() - 1);
+                    adapter.notifyItemInserted(chatLines.size()-1);
+                    recyclerView.scrollToPosition(chatLines.size() - 1);
 
                 } catch (Exception e) {
                     //swallow
@@ -251,7 +248,6 @@ public class ChatActivity extends StringflowActivity implements PacketCollector,
     @Override
     public void handleChatLine(final ChatLine chatLine) {
         if (StringUtils.safeEquals(chatLine.getPeerBareJid(), this.jid.getBareJID(), false)) {
-            chatMap.put(chatLine.getMessageId(), chatLine);
             chatLines.add(chatLine);
             runOnUiThread(new Runnable() {
                 @Override
@@ -264,38 +260,46 @@ public class ChatActivity extends StringflowActivity implements PacketCollector,
     }
 
     @Override
-    public void collect(Packet packet) {
-        System.out.println("Entering chat actvity JID : " + this.jid.getBareJID() + " collect Packet for packet : " + packet );
-        if(packet instanceof AckPacket) {
-            AckPacket ack = (AckPacket) packet;
-            List<String> messageIds = ack.getMessageIds();
+    public <T extends Packet> void collect(List<T> packets) {
+        Iterator var2 = packets.iterator();
 
-            if(!CollectionUtils.isNullOrEmpty(messageIds)) {
-                for(String messageId : messageIds) {
-                    ChatLine line = chatMap.get(messageId);
-
-                    if(line != null)
-                        line.setDeliveryStatus(1);
-                }
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-            }
+        while(var2.hasNext()) {
+            Packet packet = (Packet)var2.next();
+            this.collect(packet);
         }
 
-        System.out.println("gettting out from collect method chat actvity JID : " + this.jid.getBareJID() + " collect Packet for packet : " + packet );
     }
 
     @Override
-    public <T extends Packet> void collect(List<T> list) {
-        for (T packet : list) {
-            this.collect(packet);
+    public void collect(Packet packet) {
+        System.out.println("Entering chat actvity JID : " + this.jid.getBareJID() + " collect Packet for packet : " + packet);
+        if (packet instanceof AckPacket) {
+            AckPacket ack = (AckPacket) packet;
+            List<String> messageIds = ack.getMessageIds();
+
+            if (!CollectionUtils.isNullOrEmpty(messageIds)) {
+                for (final String messageId : messageIds) {
+
+                    for (ChatLine line : chatLines) {
+                        if (StringUtils.safeEquals(line.getMessageId(), messageId)) {
+                            line.setDeliveryStatus(1);
+                        }
+                    }
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+            }
+
+            System.out.println("gettting out from collect method chat actvity JID : " + this.jid.getBareJID() + " collect Packet for packet : " + packet);
         }
+
     }
+
 
     @Override
     public void onBackPressed() {
@@ -306,4 +310,5 @@ public class ChatActivity extends StringflowActivity implements PacketCollector,
         DbManager.getInstance().updateUnreadCount(jid.getBareJID());
         this.finish();
     }
+
 }

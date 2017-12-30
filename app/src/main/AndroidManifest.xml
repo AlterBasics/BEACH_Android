@@ -35,13 +35,12 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
         <service android:name="abs.sf.beach.notification.FCMService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
-        <!-- Your custom "com.layer.sdk.PUSH" notification Receiver -->
 
         <receiver android:name="abs.sf.beach.notification.NotificationGenerator">
             <intent-filter>
