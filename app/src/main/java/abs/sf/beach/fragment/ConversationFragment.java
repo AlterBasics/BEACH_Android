@@ -21,7 +21,7 @@ import abs.sf.beach.android.R;
 import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidChatManager;
 import abs.sf.client.android.messaging.ChatLine;
-import abs.sf.client.android.messaging.ChatLineReceiver;
+import abs.sf.client.android.messaging.ChatListener;
 import abs.sf.client.android.messaging.Conversation;
 import abs.sf.client.android.notification.fcm.SFFcmService;
 
@@ -29,7 +29,7 @@ import abs.sf.client.android.notification.fcm.SFFcmService;
 /**
  * this fragment is for Conversations
  */
-public class ConversationFragment extends Fragment implements ChatLineReceiver {
+public class ConversationFragment extends Fragment implements ChatListener {
     private RecyclerView recyclerViewConversation;
     private List<Conversation> conversations;
     private ConversationAdapter adapter;
@@ -75,15 +75,13 @@ public class ConversationFragment extends Fragment implements ChatLineReceiver {
     }
 
     private void subscribeForChatline() {
-        this.chatManager.addChatLineReceiver(this);
-
-        SFFcmService.addChatLineReceiver(this);
+        this.chatManager.addChatListener(this);
+        SFFcmService.addChatListener(this);
     }
 
     private void unsubscibeForChatLine() {
-        this.chatManager.removeChatLineReceiver(this);
-
-        SFFcmService.removeChatLineReceiver(this);
+        this.chatManager.removeChatListener(this);
+        SFFcmService.removeChatListener(this);
     }
 
     private void initView(View view) {
@@ -109,7 +107,7 @@ public class ConversationFragment extends Fragment implements ChatLineReceiver {
     }
 
     @Override
-    public void handleChatLine(final ChatLine chatLine) {
+    public void onChatLine(ChatLine chatLine) {
         this.conversations = DbManager.getInstance().fetchConversations();
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -117,6 +115,26 @@ public class ConversationFragment extends Fragment implements ChatLineReceiver {
                 setConversationAdapter();
             }
         });
+    }
+
+    @Override
+    public void onAck(String s) {
+        //Do nothing
+    }
+
+    @Override
+    public void onCMDeliveryReceipt(String s) {
+        //Do nothing
+    }
+
+    @Override
+    public void onCMAcknowledgeReceipt(String s) {
+        //Do nothing
+    }
+
+    @Override
+    public void onCMDisplayedReceipt(String s) {
+        //Do nothing
     }
 
     @Override

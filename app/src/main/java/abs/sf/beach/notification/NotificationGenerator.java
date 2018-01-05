@@ -3,18 +3,17 @@ package abs.sf.beach.notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.AsyncTask;
-import android.support.v4.content.LocalBroadcastManager;
 
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.StringUtils;
+import abs.ixi.client.xmpp.InvalidJabberId;
+import abs.ixi.client.xmpp.JID;
 import abs.sf.beach.activity.ChatActivity;
 import abs.sf.beach.core.BasicApplication;
 import abs.sf.beach.utils.NotificationUtils;
 import abs.sf.client.android.managers.AndroidChatManager;
 import abs.sf.client.android.messaging.ChatLine;
-import abs.sf.client.android.messaging.ChatLineReceiver;
 import abs.sf.client.android.utils.SFConstants;
 
 public class NotificationGenerator extends BroadcastReceiver {
@@ -28,14 +27,26 @@ public class NotificationGenerator extends BroadcastReceiver {
         if(chatActivity == null) {
 
             new NotificationCaller(chatLine).execute();
+            sendCMAcknowledgeReceipt(chatLine);
 
         } else if(!StringUtils.safeEquals(chatActivity.getJID().getBareJID(), chatLine.getPeerBareJid())){
 
             new NotificationCaller(chatLine).execute();
+            sendCMAcknowledgeReceipt(chatLine);
 
         }
     }
 
+    public void sendCMAcknowledgeReceipt(ChatLine chatLine) {
+        try {
+            if(chatLine.isMarkable()) {
+                AndroidChatManager chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
+                chatManager.sendMsgCMAcknowledgedReceipt(chatLine.getMessageId(), new JID(chatLine.getPeerBareJid()));
+            }
+        } catch (InvalidJabberId e) {
+            //Swallow exception
+        }
+    }
     public static synchronized  void setChatActivity(ChatActivity cActivity) {
         chatActivity = cActivity;
     }
