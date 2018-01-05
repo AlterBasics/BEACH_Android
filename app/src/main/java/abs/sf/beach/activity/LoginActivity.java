@@ -1,5 +1,6 @@
 package abs.sf.beach.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +28,6 @@ public class LoginActivity extends StringflowActivity {
 
     private EditText password;
     private EditText userName;
-
     private Button login;
 
     static {
@@ -72,40 +72,57 @@ public class LoginActivity extends StringflowActivity {
 
     private boolean login(final String userName, final String pwd) {
         try {
-            getProgressDialog("Authenticating...").show();
+            ProgressDialog progressDialog = getProgressDialog("Authenticating...");
+            progressDialog.show();
 
             Platform.getInstance().getUserManager().login(userName, pwd, ApplicationProps.DOMAIN, new Callback<StreamNegotiator.NegotiationResult, Exception>() {
                 @Override
                 public void onSuccess(StreamNegotiator.NegotiationResult result) {
+                    Log.d(LoginActivity.this.getClass().getName(),""+result.isSuccess());
                     if (result.isSuccess()) {
                         SharedPrefs.getInstance().setUsername(userName);
                         SharedPrefs.getInstance().setPassword(pwd);
                         SharedPrefs.getInstance().setLoginStatus(true);
-
+                        Log.d(LoginActivity.this.getClass().getName(),""+result.isSuccess());
+                        closeProgressDialog();
                         startActivity(new Intent(LoginActivity.this, ChatBaseActivity.class));
                         finish();
 
                     } else {
-
+                        Log.d(LoginActivity.this.getClass().getName(),"Else:"+result.isSuccess());
+                        final String msg;
                         if (result.getError() == StreamNegotiator.NegotiationError.AUTHENTICATION_FAILED) {
-                            AndroidUtils.showToast(context(), "Entered userId Password are incorrect");
+                            msg = "Entered userId Password are incorrect";
 
                         } else if (result.getError() == StreamNegotiator.NegotiationError.TIME_OUT) {
-                            AndroidUtils.showToast(context(), "Server response timed out. try again...");
+                            msg = "Server response timed out. try again...";
 
                         } else {
-                            AndroidUtils.showToast(context(), "Something went wrong. Please try after sometime");
+                            msg = "Something went wrong. Please try after sometime";
                         }
+
+                        LoginActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                AndroidUtils.showToast(context(), msg);
+                            }
+                        });
                     }
                 }
 
                 @Override
                 public void onFailure(Exception e) {
-                    AndroidUtils.showToast(context(), "Something went wrong. Please try after sometime");
+                    LoginActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            AndroidUtils.showToast(context(), "Something went wrong. Please try after sometime");
+                        }
+                    });
                 }
             });
 
         } finally {
+            Log.d(LoginActivity.this.getClass().getName(),"Finally");
             closeProgressDialog();
         }
 
