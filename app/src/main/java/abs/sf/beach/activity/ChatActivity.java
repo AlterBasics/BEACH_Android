@@ -38,6 +38,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     private ImageView ivBack, ivNext;
     private TextView tvHeader;
     private List<ChatLine> chatLines;
+
     private JID jid, mJid;
 
     private boolean isGroup;
@@ -261,7 +262,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     }
 
     @Override
-    public void onAck(String messageId) {
+    public void onServerAck(String messageId) {
         for (ChatLine line : chatLines) {
             if (StringUtils.safeEquals(line.getMessageId(), messageId)) {
                 line.setDeliveryStatus(1);
