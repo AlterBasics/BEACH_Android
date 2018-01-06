@@ -118,7 +118,7 @@ public class ConversationFragment extends Fragment implements ChatListener {
     }
 
     @Override
-    public void onAck(String s) {
+    public void onServerAck(String s) {
         //Do nothing
     }
 

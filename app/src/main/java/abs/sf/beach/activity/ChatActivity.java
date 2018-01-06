@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.List;
+import java.util.Map;
 
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.core.Session;
@@ -37,7 +37,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     private Button btnSend, btnCreatePoll;
     private ImageView ivBack, ivNext;
     private TextView tvHeader;
-    private List<ChatLine> chatLines;
+    private Map<String, ChatLine> chatLineMap;
 
     private JID jid, mJid;
 
@@ -158,7 +158,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
             btnCreatePoll.setVisibility(View.GONE);
         }
 
-        chatLines = DbManager.getInstance().fetchConversationChatlines(jid.getBareJID(), isGroup);
+        this.chatLineMap = DbManager.getInstance().fetchChatlinesMap(jid.getBareJID(), isGroup);
 
         adapter = new ChatAdapter(ChatActivity.this, chatLines, isGroup);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(ChatActivity.this);
@@ -166,10 +166,10 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new VerticalSpaceDecorator(10));
         recyclerView.setAdapter(adapter);
-        if (chatLines.size() > 0) {
-            recyclerView.scrollToPosition(chatLines.size() - 1);
+        if (chatLineMap.size() > 0) {
+            recyclerView.scrollToPosition(chatLineMap.size() - 1);
 
-            for(ChatLine chatLine : chatLines) {
+            for(ChatLine chatLine : chatLineMap.values()) {
                 this.sendReadReceipt(chatLine);
             }
 
@@ -220,11 +220,14 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
 
                 try {
 
-                    ChatLine chatLine = chatManager.sendTextMessage(etMessage.getText().toString(),jid.getBareJID(),isGroup);
+                    ChatLine chatLine = chatManager.sendTextMessage(etMessage.getText().toString(),jid.getBareJID(),isGroup, true);
+                    chatLineMap.put(chatLine.getMessageId(), chatLine);
+
                     chatLines.add(chatLine);
+
                     etMessage.setText("");
-                    adapter.notifyItemInserted(chatLines.size()-1);
-                    recyclerView.scrollToPosition(chatLines.size() - 1);
+                    adapter.notifyItemInserted(chatLineMap.size()-1);
+                    recyclerView.scrollToPosition(chatLineMap.size() - 1);
 
                 } catch (Exception e) {
                     //swallow
@@ -248,11 +251,14 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     @Override
     public void onChatLine(ChatLine chatLine) {
         if (StringUtils.safeEquals(chatLine.getPeerBareJid(), this.jid.getBareJID(), false)) {
+            chatLineMap.put(chatLine.getMessageId(), chatLine);
+
             chatLines.add(chatLine);
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    recyclerView.scrollToPosition(chatLines.size()-1);
+                    recyclerView.scrollToPosition(chatLineMap.size()-1);
                     adapter.notifyDataSetChanged();
                 }
             });
@@ -263,11 +269,8 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
 
     @Override
     public void onServerAck(String messageId) {
-        for (ChatLine line : chatLines) {
-            if (StringUtils.safeEquals(line.getMessageId(), messageId)) {
-                line.setDeliveryStatus(1);
-            }
-        }
+        ChatLine line = chatLineMap.get(messageId);
+        line.setDeliveryStatus(1);
 
         runOnUiThread(new Runnable() {
             @Override
@@ -279,12 +282,8 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
 
     @Override
     public void onCMDeliveryReceipt(String messageId) {
-        for (ChatLine line : chatLines) {
-            if (StringUtils.safeEquals(line.getMessageId(), messageId)) {
-                line.setDeliveryStatus(2);
-            }
-        }
-
+        ChatLine line = chatLineMap.get(messageId);
+        line.setDeliveryStatus(2);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -295,11 +294,8 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
 
     @Override
     public void onCMAcknowledgeReceipt(String messageId) {
-        for (ChatLine line : chatLines) {
-            if (StringUtils.safeEquals(line.getMessageId(), messageId)) {
-                line.setDeliveryStatus(2);
-            }
-        }
+        ChatLine line = chatLineMap.get(messageId);
+        line.setDeliveryStatus(2);
 
         runOnUiThread(new Runnable() {
             @Override
@@ -311,12 +307,8 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
 
     @Override
     public void onCMDisplayedReceipt(String messageId) {
-        for (ChatLine line : chatLines) {
-            if (StringUtils.safeEquals(line.getMessageId(), messageId)) {
-                line.setDeliveryStatus(3);
-            }
-        }
-
+        ChatLine line = chatLineMap.get(messageId);
+        line.setDeliveryStatus(3);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
