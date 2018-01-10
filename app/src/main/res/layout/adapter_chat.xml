@@ -155,7 +155,7 @@
                                 android:id="@+id/ivStatus"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@mipmap/tick_undelivered" />
+                                android:background="@mipmap/tick_sent" />
                         </LinearLayout>
                     </LinearLayout>
                 </android.support.v7.widget.CardView>

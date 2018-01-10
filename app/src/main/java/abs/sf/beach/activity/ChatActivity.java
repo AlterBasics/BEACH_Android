@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 import java.util.Map;
 
 import abs.ixi.client.core.Platform;
@@ -29,6 +30,7 @@ import abs.sf.client.android.managers.AndroidChatManager;
 import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.messaging.ChatListener;
 import abs.sf.client.android.notification.fcm.SFFcmService;
+
 
 public class ChatActivity extends StringflowActivity implements ChatListener {
     private RecyclerView recyclerView;
@@ -160,7 +162,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
 
         this.chatLineMap = DbManager.getInstance().fetchChatlinesMap(jid.getBareJID(), isGroup);
 
-        adapter = new ChatAdapter(ChatActivity.this, chatLines, isGroup);
+        adapter = new ChatAdapter(ChatActivity.this, chatLineMap, isGroup);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(ChatActivity.this);
         mLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -223,7 +225,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
                     ChatLine chatLine = chatManager.sendTextMessage(etMessage.getText().toString(),jid.getBareJID(),isGroup, true);
                     chatLineMap.put(chatLine.getMessageId(), chatLine);
 
-                    chatLines.add(chatLine);
+                    //chatLines.add(chatLine);
 
                     etMessage.setText("");
                     adapter.notifyItemInserted(chatLineMap.size()-1);
@@ -253,7 +255,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         if (StringUtils.safeEquals(chatLine.getPeerBareJid(), this.jid.getBareJID(), false)) {
             chatLineMap.put(chatLine.getMessageId(), chatLine);
 
-            chatLines.add(chatLine);
+            //chatLines.add(chatLine);
 
             runOnUiThread(new Runnable() {
                 @Override

@@ -2,7 +2,6 @@ package abs.sf.beach.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,33 +11,28 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.List;
+import java.util.Map;
 
 import abs.ixi.client.util.DateUtils;
 import abs.sf.beach.activity.PollResponseActivity;
 import abs.sf.beach.android.R;
-import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.messaging.PollContent;
-
-import static abs.sf.beach.android.R.id.fromMsg;
-import static abs.sf.beach.android.R.id.toMsg;
-import static abs.sf.client.android.messaging.ChatLine.Direction.RECEIVE;
-import static abs.sf.client.android.messaging.ChatLine.Direction.SEND;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     private static final int POLL=1;
     private static final int TEXT=2;
 
     private Context context;
-    private List<ChatLine> msgList;
+    private Map<String, ChatLine> chatLine;
+    private String[] mKeys;
     private boolean isGroup;
 
-    public ChatAdapter(Context context, List<ChatLine> msgList, boolean isGroup) {
+    public ChatAdapter(Context context, Map<String, ChatLine> chatLine, boolean isGroup) {
         this.context = context;
-        this.msgList = msgList;
+        this.chatLine = chatLine;
+        this.mKeys = chatLine.keySet().toArray(new String[chatLine.size()]);
         this.isGroup = isGroup;
     }
 
@@ -106,7 +100,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        ChatLine chatLine = msgList.get(position);
+        ChatLine chatLine = this.chatLine.get(mKeys[position]);
 
         switch (chatLine.getContentType()){
             case POLL:
@@ -122,7 +116,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        ChatLine chatLine = msgList.get(position);
+        ChatLine chatLine = this.chatLine.get(mKeys[position]);
         if(chatLine.getContentType().equals(ChatLine.ContentType.POLL)){
             return POLL;
         }
@@ -132,7 +126,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return msgList.size();
+        return chatLine.size();
     }
 
     private void setPollViews(final ChatLine chatLine, PollViewHolder holder){
@@ -156,10 +150,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 holder.fromQuestion.setText(content.getQuestion());
                 holder.fromMsgTime.setText(chatLine.getDisplayTime());
                 holder.fromExpiryTime.setText("Poll expires on" + DateUtils.getDisplayTime(content.getExpiryTime()));
-                if(chatLine.getDeliveryStatus()==1){
+                if(chatLine.getDeliveryStatus()==0){
+                    holder.ivStatus.setImageResource(R.mipmap.tick_unsent);
+                }else if(chatLine.getDeliveryStatus()==1){
+                    holder.ivStatus.setImageResource(R.mipmap.tick_sent);
+                }else if(chatLine.getDeliveryStatus()==2){
                     holder.ivStatus.setImageResource(R.mipmap.tick_delivered);
                 }else{
-                    holder.ivStatus.setImageResource(R.mipmap.tick_undelivered);
+                    holder.ivStatus.setImageResource(R.mipmap.tick_read);
                 }
                 if(content.getStatus().name().equalsIgnoreCase(PollContent.PollStatus.RESPONDED.name())){
                     holder.btnFromRespond.setText("You responded");
@@ -192,10 +190,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 holder.fromLayout.setVisibility(View.VISIBLE);
                 holder.fromMsg.setText(chatLine.getText());
                 holder.fromMsgTime.setText(chatLine.getDisplayTime());
-                if(chatLine.getDeliveryStatus()==1){
+                if(chatLine.getDeliveryStatus()==0){
+                    holder.ivStatus.setImageResource(R.mipmap.tick_unsent);
+                }else if(chatLine.getDeliveryStatus()==1){
+                    holder.ivStatus.setImageResource(R.mipmap.tick_sent);
+                }else if(chatLine.getDeliveryStatus()==2){
                     holder.ivStatus.setImageResource(R.mipmap.tick_delivered);
                 }else{
-                    holder.ivStatus.setImageResource(R.mipmap.tick_undelivered);
+                    holder.ivStatus.setImageResource(R.mipmap.tick_read);
                 }
                 break;
 
