@@ -153,9 +153,9 @@
 
                             <ImageView
                                 android:id="@+id/ivStatus"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@mipmap/tick_sent" />
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                />
                         </LinearLayout>
                     </LinearLayout>
                 </android.support.v7.widget.CardView>

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.List;
 import java.util.Map;
 
 import abs.ixi.client.util.DateUtils;
@@ -25,14 +26,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     private static final int TEXT=2;
 
     private Context context;
-    private Map<String, ChatLine> chatLine;
-    private String[] mKeys;
+    private List<ChatLine> chatLines;
     private boolean isGroup;
 
-    public ChatAdapter(Context context, Map<String, ChatLine> chatLine, boolean isGroup) {
+    public ChatAdapter(Context context, List<ChatLine> chatLines, boolean isGroup) {
         this.context = context;
-        this.chatLine = chatLine;
-        this.mKeys = chatLine.keySet().toArray(new String[chatLine.size()]);
+        this.chatLines = chatLines;
         this.isGroup = isGroup;
     }
 
@@ -100,7 +99,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        ChatLine chatLine = this.chatLine.get(mKeys[position]);
+        ChatLine chatLine = this.chatLines.get(position);
 
         switch (chatLine.getContentType()){
             case POLL:
@@ -116,7 +115,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        ChatLine chatLine = this.chatLine.get(mKeys[position]);
+        ChatLine chatLine = this.chatLines.get(position);
         if(chatLine.getContentType().equals(ChatLine.ContentType.POLL)){
             return POLL;
         }
@@ -126,7 +125,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return chatLine.size();
+        return chatLines.size();
     }
 
     private void setPollViews(final ChatLine chatLine, PollViewHolder holder){
@@ -156,7 +155,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                     holder.ivStatus.setImageResource(R.mipmap.tick_sent);
                 }else if(chatLine.getDeliveryStatus()==2){
                     holder.ivStatus.setImageResource(R.mipmap.tick_delivered);
-                }else{
+                }else if(chatLine.getDeliveryStatus()==3){
                     holder.ivStatus.setImageResource(R.mipmap.tick_read);
                 }
                 if(content.getStatus().name().equalsIgnoreCase(PollContent.PollStatus.RESPONDED.name())){

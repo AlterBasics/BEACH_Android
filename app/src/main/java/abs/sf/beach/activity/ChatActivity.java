@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import java.util.List;
 import java.util.Map;
 
 import abs.ixi.client.core.Platform;
@@ -39,7 +40,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     private Button btnSend, btnCreatePoll;
     private ImageView ivBack, ivNext;
     private TextView tvHeader;
-    private Map<String, ChatLine> chatLineMap;
+    private List<ChatLine> chatLines;
 
     private JID jid, mJid;
 
@@ -54,7 +55,6 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         System.out.println("Chat activity on create");
         setContentView(R.layout.activity_chat);
         initView();
-        setChatAdapter();
         initOnclickListener();
 
         this.chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
@@ -160,18 +160,18 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
             btnCreatePoll.setVisibility(View.GONE);
         }
 
-        this.chatLineMap = DbManager.getInstance().fetchChatlinesMap(jid.getBareJID(), isGroup);
+        this.chatLines = DbManager.getInstance().fetchConversationChatlines(jid.getBareJID(), isGroup);
 
-        adapter = new ChatAdapter(ChatActivity.this, chatLineMap, isGroup);
+        adapter = new ChatAdapter(ChatActivity.this, chatLines, isGroup);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(ChatActivity.this);
         mLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new VerticalSpaceDecorator(10));
         recyclerView.setAdapter(adapter);
-        if (chatLineMap.size() > 0) {
-            recyclerView.scrollToPosition(chatLineMap.size() - 1);
+        if (chatLines.size() > 0) {
+            recyclerView.scrollToPosition(chatLines.size() - 1);
 
-            for(ChatLine chatLine : chatLineMap.values()) {
+            for(ChatLine chatLine : chatLines) {
                 this.sendReadReceipt(chatLine);
             }
 
@@ -223,13 +223,11 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
                 try {
 
                     ChatLine chatLine = chatManager.sendTextMessage(etMessage.getText().toString(),jid.getBareJID(),isGroup, true);
-                    chatLineMap.put(chatLine.getMessageId(), chatLine);
-
-                    //chatLines.add(chatLine);
+                    chatLines.add(chatLine);
 
                     etMessage.setText("");
-                    adapter.notifyItemInserted(chatLineMap.size()-1);
-                    recyclerView.scrollToPosition(chatLineMap.size() - 1);
+                    adapter.notifyItemInserted(chatLines.size()-1);
+                    recyclerView.scrollToPosition(chatLines.size() - 1);
 
                 } catch (Exception e) {
                     //swallow
@@ -253,14 +251,12 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     @Override
     public void onChatLine(ChatLine chatLine) {
         if (StringUtils.safeEquals(chatLine.getPeerBareJid(), this.jid.getBareJID(), false)) {
-            chatLineMap.put(chatLine.getMessageId(), chatLine);
-
-            //chatLines.add(chatLine);
+            chatLines.add(chatLine);
 
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    recyclerView.scrollToPosition(chatLineMap.size()-1);
+                    recyclerView.scrollToPosition(chatLines.size()-1);
                     adapter.notifyDataSetChanged();
                 }
             });
@@ -271,52 +267,72 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
 
     @Override
     public void onServerAck(String messageId) {
-        ChatLine line = chatLineMap.get(messageId);
-        line.setDeliveryStatus(1);
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.notifyDataSetChanged();
-            }
-        });
+        for(int position = chatLines.size()-1 ; position==0  ; position--) {
+            ChatLine line = chatLines.get(position);
+            line.setDeliveryStatus(1);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
+            break;
+        }
     }
 
     @Override
     public void onCMDeliveryReceipt(String messageId) {
-        ChatLine line = chatLineMap.get(messageId);
-        line.setDeliveryStatus(2);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.notifyDataSetChanged();
+        for(int position = chatLines.size()-1 ; position>=0  ; position--) {
+            ChatLine line = chatLines.get(position);
+
+            if(StringUtils.safeEquals(line.getMessageId(), messageId)) {
+                line.setDeliveryStatus(2);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+                break;
             }
-        });
+        }
     }
 
     @Override
     public void onCMAcknowledgeReceipt(String messageId) {
-        ChatLine line = chatLineMap.get(messageId);
-        line.setDeliveryStatus(2);
+        for(int position = chatLines.size()-1 ; position >= 0  ; position--) {
+            ChatLine line = chatLines.get(position);
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.notifyDataSetChanged();
+            if(StringUtils.safeEquals(line.getMessageId(), messageId)) {
+                line.setDeliveryStatus(2);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+                break;
             }
-        });
+        }
     }
 
     @Override
     public void onCMDisplayedReceipt(String messageId) {
-        ChatLine line = chatLineMap.get(messageId);
-        line.setDeliveryStatus(3);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.notifyDataSetChanged();
+        for(int position = chatLines.size()-1 ; position >= 0  ; position--) {
+            ChatLine line = chatLines.get(position);
+
+            if(StringUtils.safeEquals(line.getMessageId(), messageId)) {
+                line.setDeliveryStatus(3);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+                break;
             }
-        });
+
+        }
     }
 
     @Override
