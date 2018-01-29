@@ -284,16 +284,20 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     @Override
     public void onServerAck(final String messageId, final JID contactJID) {
         if(StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
-            for(int position = chatLines.size()-1 ; position==0  ; position--) {
+            for(int position = chatLines.size()-1 ; position>=0  ; position--) {
                 ChatLine line = chatLines.get(position);
-                line.setDeliveryStatus(1);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-                break;
+
+                if(StringUtils.safeEquals(line.getMessageId(), messageId)) {
+                    line.setDeliveryStatus(1);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                    break;
+                }
+
             }
         }
     }
