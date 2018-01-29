@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 
 import java.util.List;
-import java.util.Map;
 
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.core.Session;
@@ -222,7 +221,9 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
 
                 try {
 
-                    ChatLine chatLine = chatManager.sendTextMessage(etMessage.getText().toString(),jid.getBareJID(),isGroup, true);
+                    ChatLine chatLine = chatManager.sendTextMessage(
+                            etMessage.getText().toString(),jid.getBareJID(),isGroup, true, true);
+
                     chatLines.add(chatLine);
 
                     etMessage.setText("");
@@ -266,72 +267,107 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     }
 
     @Override
-    public void onServerAck(String messageId) {
-        for(int position = chatLines.size()-1 ; position==0  ; position--) {
-            ChatLine line = chatLines.get(position);
-            line.setDeliveryStatus(1);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    adapter.notifyDataSetChanged();
+    public void onServerAck(final String messageId, final JID contactJID) {
+        if(StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
+            for(int position = chatLines.size()-1 ; position==0  ; position--) {
+                ChatLine line = chatLines.get(position);
+                line.setDeliveryStatus(1);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onCMDeliveryReceipt(final String messageId, final JID contactJID) {
+        if(StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
+            for(int position = chatLines.size()-1 ; position>=0  ; position--) {
+                ChatLine line = chatLines.get(position);
+
+                if(StringUtils.safeEquals(line.getMessageId(), messageId)) {
+                    line.setDeliveryStatus(2);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                    break;
                 }
-            });
-            break;
-        }
-    }
-
-    @Override
-    public void onCMDeliveryReceipt(String messageId) {
-        for(int position = chatLines.size()-1 ; position>=0  ; position--) {
-            ChatLine line = chatLines.get(position);
-
-            if(StringUtils.safeEquals(line.getMessageId(), messageId)) {
-                line.setDeliveryStatus(2);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-                break;
             }
         }
     }
 
     @Override
-    public void onCMAcknowledgeReceipt(String messageId) {
-        for(int position = chatLines.size()-1 ; position >= 0  ; position--) {
-            ChatLine line = chatLines.get(position);
+    public void onCMAcknowledgeReceipt(final String messageId, final JID contactJID) {
+        if(StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
+            for(int position = chatLines.size()-1 ; position >= 0  ; position--) {
+                ChatLine line = chatLines.get(position);
 
-            if(StringUtils.safeEquals(line.getMessageId(), messageId)) {
-                line.setDeliveryStatus(2);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-                break;
+                if(StringUtils.safeEquals(line.getMessageId(), messageId)) {
+                    line.setDeliveryStatus(2);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                    break;
+                }
             }
         }
     }
 
     @Override
-    public void onCMDisplayedReceipt(String messageId) {
-        for(int position = chatLines.size()-1 ; position >= 0  ; position--) {
-            ChatLine line = chatLines.get(position);
+    public void onCMDisplayedReceipt(final String messageId, final JID contactJID) {
+        if(StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
+            for(int position = chatLines.size()-1 ; position >= 0  ; position--) {
+                ChatLine line = chatLines.get(position);
 
-            if(StringUtils.safeEquals(line.getMessageId(), messageId)) {
-                line.setDeliveryStatus(3);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-                break;
+                if(StringUtils.safeEquals(line.getMessageId(), messageId)) {
+                    line.setDeliveryStatus(3);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                    break;
+                }
             }
+        }
+    }
 
+    @Override
+    public void onComposingCSN(JID contactJId) {
+        if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
+            //TODO: Do UI related stuff
+        }
+    }
+
+    @Override
+    public void onPausedCSN(JID contactJId) {
+        if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
+            //TODO: Do UI related stuff
+        }
+    }
+
+    @Override
+    public void onInactiveCSN(JID contactJId) {
+        if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
+            //TODO: Do UI related stuff
+        }
+    }
+
+    @Override
+    public void onGoneCSN(JID contactJId) {
+        if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
+            //TODO: Do UI related stuff
         }
     }
 

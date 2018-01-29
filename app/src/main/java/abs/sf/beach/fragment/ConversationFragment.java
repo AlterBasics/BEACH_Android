@@ -16,6 +16,7 @@ import java.util.List;
 
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.CollectionUtils;
+import abs.ixi.client.xmpp.JID;
 import abs.sf.beach.adapter.ConversationAdapter;
 import abs.sf.beach.android.R;
 import abs.sf.client.android.db.DbManager;
@@ -118,26 +119,6 @@ public class ConversationFragment extends Fragment implements ChatListener {
     }
 
     @Override
-    public void onServerAck(String s) {
-        //Do nothing
-    }
-
-    @Override
-    public void onCMDeliveryReceipt(String s) {
-        //Do nothing
-    }
-
-    @Override
-    public void onCMAcknowledgeReceipt(String s) {
-        //Do nothing
-    }
-
-    @Override
-    public void onCMDisplayedReceipt(String s) {
-        //Do nothing
-    }
-
-    @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if(isVisibleToUser){
@@ -145,4 +126,45 @@ public class ConversationFragment extends Fragment implements ChatListener {
             setConversationAdapter();
         }
     }
+
+    @Override
+    public void onServerAck(String s, JID jid) {
+
+    }
+
+    @Override
+    public void onCMDeliveryReceipt(String s, JID jid) {
+
+    }
+
+    @Override
+    public void onCMAcknowledgeReceipt(String s, JID jid) {
+
+    }
+
+    @Override
+    public void onCMDisplayedReceipt(String s, JID jid) {
+
+    }
+
+    @Override
+    public void onComposingCSN(JID jid) {
+
+    }
+
+    @Override
+    public void onPausedCSN(JID jid) {
+
+    }
+
+    @Override
+    public void onInactiveCSN(JID jid) {
+
+    }
+
+    @Override
+    public void onGoneCSN(JID jid) {
+
+    }
+
 }
