@@ -64,7 +64,7 @@ public class NotificationGenerator extends BroadcastReceiver {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            NotificationUtils.show(chatLine.getText(), chatLine, BasicApplication.getContext());
+            NotificationUtils.show(chatLine, BasicApplication.getContext());
         }
 
         @Override

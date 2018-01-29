@@ -19,6 +19,7 @@ import java.util.List;
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.core.Session;
 import abs.ixi.client.util.StringUtils;
+import abs.ixi.client.util.UUIDGenerator;
 import abs.ixi.client.xmpp.InvalidJabberId;
 import abs.ixi.client.xmpp.JID;
 import abs.sf.beach.adapter.ChatAdapter;
@@ -42,6 +43,10 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     private List<ChatLine> chatLines;
 
     private JID jid, mJid;
+
+    private String conversationId;
+
+    private boolean isCSNActive;
 
     private boolean isGroup;
     private final static int GROUP_DETAILS = 1;
@@ -70,10 +75,11 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         tvHeader = (TextView) findViewById(R.id.tvHeader);
         ivNext.setVisibility(View.INVISIBLE);
         jid = (JID) getIntent().getSerializableExtra("jid");
+        conversationId = UUIDGenerator.secureId();
         tvHeader.setText(getIntent().getStringExtra("name"));
 
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar!=null){
+        if(actionBar!=null) {
             actionBar.hide();
         }
     }
@@ -86,6 +92,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         if(!StringUtils.isNullOrEmpty(from) &&
                 StringUtils.safeEquals(from, "NotificationUtils", false)){
             jid = (JID) getIntent().getSerializableExtra("jid");
+            conversationId = (String) getIntent().getSerializableExtra("conversationId");
             tvHeader.setText(jid.getNode());
         }
 
@@ -103,6 +110,11 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     protected void onPause() {
         super.onPause();
         NotificationGenerator.removeChatActivity();
+
+        if(isCSNActive) {
+            this.chatManager.sendInactiveCSN(this.jid);
+        }
+
         System.out.println("Chat activity on pause");
     }
 
@@ -220,8 +232,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
                 }
 
                 try {
-
-                    ChatLine chatLine = chatManager.sendTextMessage(
+                    ChatLine chatLine = chatManager.sendTextMessage(conversationId,
                             etMessage.getText().toString(),jid.getBareJID(),isGroup, true, true);
 
                     chatLines.add(chatLine);
@@ -254,10 +265,14 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         if (StringUtils.safeEquals(chatLine.getPeerBareJid(), this.jid.getBareJID(), false)) {
             chatLines.add(chatLine);
 
+            isCSNActive = chatLine.isCsnActive();
+
+            conversationId = chatLine.getConversationId();
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    recyclerView.scrollToPosition(chatLines.size()-1);
+                    recyclerView.scrollToPosition(chatLines.size() - 1);
                     adapter.notifyDataSetChanged();
                 }
             });

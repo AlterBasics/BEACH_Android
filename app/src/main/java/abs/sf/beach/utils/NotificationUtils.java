@@ -90,10 +90,11 @@ public class NotificationUtils {
         }
     }
 
-    public static void show(String message, ChatLine chatLine, Context mContext) {
+    public static void show(ChatLine chatLine, Context mContext) {
 
         Intent notificationIntent = new Intent(BasicApplication.getContext(), ChatActivity.class);
         try {
+            notificationIntent.putExtra("conversationId", chatLine.getConversationId());
             notificationIntent.putExtra("jid", new JID(chatLine.getPeerBareJid()));
             notificationIntent.putExtra("name", chatLine.getPeerName());
             notificationIntent.putExtra("from", "NotificationUtils");
@@ -101,7 +102,7 @@ public class NotificationUtils {
             PendingIntent intent = PendingIntent.getActivity(mContext, (int) System.currentTimeMillis(),
                     notificationIntent, 0);
 
-            buildNotification(message, intent, chatLine.getPeerName(), mContext);
+            buildNotification(chatLine.getText(), intent, chatLine.getPeerName(), mContext);
         } catch (InvalidJabberId invalidJabberId) {
             invalidJabberId.printStackTrace();
         }
