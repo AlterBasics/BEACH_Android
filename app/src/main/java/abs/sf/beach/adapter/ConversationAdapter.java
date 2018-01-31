@@ -43,7 +43,12 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         Conversation conversation = conversations.get(position);
 
         holder.userName.setText(conversation.getPeerName());
-        holder.chatMsg.setText(conversation.getLastChatLine());
+
+        if(conversation.isTyping()){
+            holder.chatMsg.setText(context.getString(R.string.is_typing));
+        }else {
+            holder.chatMsg.setText(conversation.getLastChatLine());
+        }
 
         if (conversation.getDisplayTime() != null) {
             holder.chatMsgTime.setText(conversation.getDisplayTime());

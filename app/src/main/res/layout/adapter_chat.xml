@@ -36,9 +36,9 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingLeft="@dimen/dimen_size_5"
-                        android:paddingTop="@dimen/dimen_size_5"
-                        android:paddingRight="@dimen/dimen_size_3"
+                        android:paddingLeft="@dimen/dimen_size_2"
+                        android:paddingTop="@dimen/dimen_size_2"
+                        android:paddingRight="@dimen/dimen_size_2"
                         android:orientation="vertical">
 
                         <TextView
@@ -121,9 +121,9 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="@dimen/dimen_size_5"
-                        android:paddingTop="@dimen/dimen_size_5"
-                        android:paddingRight="@dimen/dimen_size_3"
+                        android:paddingLeft="@dimen/dimen_size_2"
+                        android:paddingTop="@dimen/dimen_size_2"
+                        android:paddingRight="@dimen/dimen_size_2"
                         android:orientation="vertical">
 
                         <TextView
@@ -145,7 +145,7 @@
                                 android:id="@+id/fromMsgTime"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginRight="@dimen/dimen_size_5"
+                                android:layout_marginRight="@dimen/dimen_size_2"
                                 android:singleLine="true"
                                 android:text="10:36 p.m"
                                 android:textColor="@color/white"

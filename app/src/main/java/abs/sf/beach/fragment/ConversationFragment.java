@@ -16,6 +16,7 @@ import java.util.List;
 
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.CollectionUtils;
+import abs.ixi.client.util.StringUtils;
 import abs.ixi.client.xmpp.JID;
 import abs.sf.beach.adapter.ConversationAdapter;
 import abs.sf.beach.android.R;
@@ -25,6 +26,8 @@ import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.messaging.ChatListener;
 import abs.sf.client.android.messaging.Conversation;
 import abs.sf.client.android.notification.fcm.SFFcmService;
+
+import static abs.sf.beach.android.R.id.tvTyping;
 
 
 /**
@@ -149,17 +152,53 @@ public class ConversationFragment extends Fragment implements ChatListener {
 
     @Override
     public void onComposingCSN(JID jid) {
-
+        final int pos = searchJID(jid);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(pos>-1){
+                    conversations.get(pos).setTyping(true);
+                    adapter.notifyItemChanged(pos);
+                }
+            }
+        });
     }
 
     @Override
     public void onPausedCSN(JID jid) {
-
+        final int pos = searchJID(jid);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(pos>-1){
+                    conversations.get(pos).setTyping(false);
+                    adapter.notifyItemChanged(pos);
+                }
+            }
+        });
     }
 
     @Override
     public void onInactiveCSN(JID jid) {
+        final int pos = searchJID(jid);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(pos>-1){
+                    conversations.get(pos).setTyping(false);
+                    adapter.notifyItemChanged(pos);
+                }
+            }
+        });
+    }
 
+    private int searchJID(JID jid){
+        for(int i=0; i<conversations.size(); i++){
+            if(StringUtils.safeEquals(jid.getBareJID(), conversations.get(i).getPeerJid())) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override

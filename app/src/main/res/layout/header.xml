@@ -19,19 +19,37 @@
             android:padding="10dp"
             android:src="@mipmap/back" />
 
-        <TextView
-            android:id="@+id/tvHeader"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_toRightOf="@+id/ivBack"
             android:layout_toLeftOf="@+id/ivNext"
-            android:text="@string/chat"
-            android:singleLine="true"
-            android:gravity="center"
             android:layout_centerHorizontal="true"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/chat"
+                android:singleLine="true"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/tvTyping"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/is_typing"
+                android:singleLine="true"
+                android:gravity="left"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:visibility="invisible"/>
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/ivNext"

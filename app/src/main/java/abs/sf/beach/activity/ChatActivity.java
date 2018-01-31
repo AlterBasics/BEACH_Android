@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import abs.ixi.client.ChatManager;
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.core.Session;
 import abs.ixi.client.util.StringUtils;
@@ -25,6 +29,7 @@ import abs.ixi.client.xmpp.JID;
 import abs.sf.beach.adapter.ChatAdapter;
 import abs.sf.beach.android.R;
 import abs.sf.beach.notification.NotificationGenerator;
+import abs.sf.beach.utils.CustomTypingEditText;
 import abs.sf.beach.utils.VerticalSpaceDecorator;
 import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidChatManager;
@@ -36,10 +41,10 @@ import abs.sf.client.android.notification.fcm.SFFcmService;
 public class ChatActivity extends StringflowActivity implements ChatListener {
     private RecyclerView recyclerView;
     private ChatAdapter adapter;
-    private EditText etMessage;
+    private CustomTypingEditText etMessage;
     private Button btnSend, btnCreatePoll;
     private ImageView ivBack, ivNext;
-    private TextView tvHeader;
+    private TextView tvHeader, tvTyping;
     private List<ChatLine> chatLines;
 
     private JID jid, mJid;
@@ -52,6 +57,8 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     private final static int GROUP_DETAILS = 1;
 
     private AndroidChatManager chatManager;
+
+    private StringBuilder typedChars, stoppedChars;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +76,18 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         ivBack = (ImageView) findViewById(R.id.ivBack);
         ivNext = (ImageView) findViewById(R.id.ivNext);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        etMessage = (EditText) findViewById(R.id.etMessage);
+        etMessage = (CustomTypingEditText) findViewById(R.id.etMessage);
         btnSend = (Button) findViewById(R.id.btnSend);
         btnCreatePoll = (Button) findViewById(R.id.btnCreatePoll);
         tvHeader = (TextView) findViewById(R.id.tvHeader);
+        tvHeader.setGravity(Gravity.LEFT);
         ivNext.setVisibility(View.INVISIBLE);
         jid = (JID) getIntent().getSerializableExtra("jid");
         conversationId = UUIDGenerator.secureId();
         tvHeader.setText(getIntent().getStringExtra("name"));
+        typedChars = new StringBuilder();
+        stoppedChars = new StringBuilder();
+        tvTyping = (TextView) findViewById(R.id.tvTyping);
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar!=null) {
@@ -177,7 +188,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(ChatActivity.this);
         mLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new VerticalSpaceDecorator(10));
+        recyclerView.addItemDecoration(new VerticalSpaceDecorator(5));
         recyclerView.setAdapter(adapter);
         if (chatLines.size() > 0) {
             recyclerView.scrollToPosition(chatLines.size() - 1);
@@ -241,11 +252,31 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
                     adapter.notifyItemInserted(chatLines.size()-1);
                     recyclerView.scrollToPosition(chatLines.size() - 1);
 
+                    typedChars = new StringBuilder();
+
                 } catch (Exception e) {
                     //swallow
                 }
             }
         });
+
+        etMessage.setOnTypingModified(new CustomTypingEditText.OnTypingModified() {
+
+            @Override
+            public void onIsTypingModified(EditText view, boolean isTyping) {
+
+                if(isTyping){
+                    chatManager.sendComposingCSN(jid);
+                    Log.i("started_typing", "onIsTypingModified: User started typing.");
+                }else{
+                    chatManager.sendGoneCSN(jid);
+                    Log.i("stopped_typing", "onIsTypingModified: User stopped typing");
+                }
+            }
+
+        });
+
+
     }
 
     private void chatMemberViewsHideShowOperation(boolean isGroupMember){
@@ -366,6 +397,12 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     public void onComposingCSN(JID contactJId) {
         if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
             //TODO: Do UI related stuff
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    tvTyping.setVisibility(View.VISIBLE);
+                }
+            });
         }
     }
 
@@ -373,6 +410,12 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     public void onPausedCSN(JID contactJId) {
         if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
             //TODO: Do UI related stuff
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    tvTyping.setVisibility(View.GONE);
+                }
+            });
         }
     }
 
@@ -380,6 +423,12 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     public void onInactiveCSN(JID contactJId) {
         if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
             isCSNActive = false;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    tvTyping.setVisibility(View.GONE);
+                }
+            });
         }
     }
 
@@ -388,6 +437,12 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
             isCSNActive = false;
             //TODO: Do UI related stuff
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    tvTyping.setVisibility(View.GONE);
+                }
+            });
         }
     }
 
