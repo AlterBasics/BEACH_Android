@@ -379,13 +379,14 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     @Override
     public void onInactiveCSN(JID contactJId) {
         if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
-            //TODO: Do UI related stuff
+            isCSNActive = false;
         }
     }
 
     @Override
     public void onGoneCSN(JID contactJId) {
         if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
+            isCSNActive = false;
             //TODO: Do UI related stuff
         }
     }
