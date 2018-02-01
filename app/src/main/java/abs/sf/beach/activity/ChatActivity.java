@@ -269,7 +269,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
                     chatManager.sendComposingCSN(jid);
                     Log.i("started_typing", "onIsTypingModified: User started typing.");
                 }else{
-                    chatManager.sendGoneCSN(jid);
+                    chatManager.sendPausedCSN(jid);
                     Log.i("stopped_typing", "onIsTypingModified: User stopped typing");
                 }
             }
@@ -396,7 +396,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     @Override
     public void onComposingCSN(JID contactJId) {
         if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
-            //TODO: Do UI related stuff
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -409,7 +409,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     @Override
     public void onPausedCSN(JID contactJId) {
         if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
-            //TODO: Do UI related stuff
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -423,6 +423,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     public void onInactiveCSN(JID contactJId) {
         if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
             isCSNActive = false;
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -436,7 +437,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     public void onGoneCSN(JID contactJId) {
         if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
             isCSNActive = false;
-            //TODO: Do UI related stuff
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

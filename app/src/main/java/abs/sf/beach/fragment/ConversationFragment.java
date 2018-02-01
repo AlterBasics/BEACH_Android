@@ -203,7 +203,16 @@ public class ConversationFragment extends Fragment implements ChatListener {
 
     @Override
     public void onGoneCSN(JID jid) {
-
+        final int pos = searchJID(jid);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(pos>-1){
+                    conversations.get(pos).setTyping(false);
+                    adapter.notifyItemChanged(pos);
+                }
+            }
+        });
     }
 
 }
