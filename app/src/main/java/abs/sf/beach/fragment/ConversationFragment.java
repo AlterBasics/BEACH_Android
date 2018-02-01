@@ -214,5 +214,4 @@ public class ConversationFragment extends Fragment implements ChatListener {
         }
         return -1;
     }
-
 }
