@@ -192,6 +192,20 @@ public class ConversationFragment extends Fragment implements ChatListener {
         });
     }
 
+    @Override
+    public void onGoneCSN(JID jid) {
+        final int pos = searchJID(jid);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(pos>-1){
+                    conversations.get(pos).setTyping(false);
+                    adapter.notifyItemChanged(pos);
+                }
+            }
+        });
+    }
+
     private int searchJID(JID jid){
         for(int i=0; i<conversations.size(); i++){
             if(StringUtils.safeEquals(jid.getBareJID(), conversations.get(i).getPeerJid())) {
@@ -199,11 +213,6 @@ public class ConversationFragment extends Fragment implements ChatListener {
             }
         }
         return -1;
-    }
-
-    @Override
-    public void onGoneCSN(JID jid) {
-
     }
 
 }

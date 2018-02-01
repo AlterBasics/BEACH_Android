@@ -58,7 +58,6 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
 
     private AndroidChatManager chatManager;
 
-    private StringBuilder typedChars, stoppedChars;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +84,6 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         jid = (JID) getIntent().getSerializableExtra("jid");
         conversationId = UUIDGenerator.secureId();
         tvHeader.setText(getIntent().getStringExtra("name"));
-        typedChars = new StringBuilder();
-        stoppedChars = new StringBuilder();
         tvTyping = (TextView) findViewById(R.id.tvTyping);
 
         ActionBar actionBar = getSupportActionBar();
@@ -252,8 +249,6 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
                     adapter.notifyItemInserted(chatLines.size()-1);
                     recyclerView.scrollToPosition(chatLines.size() - 1);
 
-                    typedChars = new StringBuilder();
-
                 } catch (Exception e) {
                     //swallow
                 }
@@ -264,7 +259,9 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
 
             @Override
             public void onIsTypingModified(EditText view, boolean isTyping) {
-
+                if(!isCSNActive){
+                    return;
+                }
                 if(isTyping){
                     chatManager.sendComposingCSN(jid);
                     Log.i("started_typing", "onIsTypingModified: User started typing.");
@@ -275,8 +272,6 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
             }
 
         });
-
-
     }
 
     private void chatMemberViewsHideShowOperation(boolean isGroupMember){
