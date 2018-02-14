@@ -24,6 +24,7 @@ import abs.sf.client.android.messaging.PollContent;
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     private static final int POLL=1;
     private static final int TEXT=2;
+    private static final int IMAGE=3;
 
     private Context context;
     private List<ChatLine> chatLines;

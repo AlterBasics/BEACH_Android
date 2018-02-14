@@ -2,26 +2,41 @@ package abs.sf.beach.activity;
 
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import abs.ixi.client.ChatManager;
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.core.Session;
+import abs.ixi.client.util.DateUtils;
 import abs.ixi.client.util.StringUtils;
 import abs.ixi.client.util.UUIDGenerator;
 import abs.ixi.client.xmpp.InvalidJabberId;
@@ -29,6 +44,7 @@ import abs.ixi.client.xmpp.JID;
 import abs.sf.beach.adapter.ChatAdapter;
 import abs.sf.beach.android.R;
 import abs.sf.beach.notification.NotificationGenerator;
+import abs.sf.beach.utils.ApplicationProps;
 import abs.sf.beach.utils.CustomTypingEditText;
 import abs.sf.beach.utils.VerticalSpaceDecorator;
 import abs.sf.client.android.db.DbManager;
@@ -42,10 +58,13 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     private RecyclerView recyclerView;
     private ChatAdapter adapter;
     private CustomTypingEditText etMessage;
-    private Button btnSend, btnCreatePoll;
+    private Button btnSend, btnAttach;
     private ImageView ivBack, ivNext;
     private TextView tvHeader, tvTyping;
     private List<ChatLine> chatLines;
+    private LinearLayout llAttach, llCamera, llGallery, llPoll;
+    private RelativeLayout rlMainChat;
+    private Boolean isAttachOpen;
 
     private JID jid, mJid;
 
@@ -58,6 +77,9 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
 
     private AndroidChatManager chatManager;
 
+    private static int REQUEST_IMAGE_CAPTURE = 1;
+    private static int REQUEST_IMAGE_SELECT = 2;
+    private String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +99,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         etMessage = (CustomTypingEditText) findViewById(R.id.etMessage);
         btnSend = (Button) findViewById(R.id.btnSend);
-        btnCreatePoll = (Button) findViewById(R.id.btnCreatePoll);
+        btnAttach = (Button) findViewById(R.id.btnAttach);
         tvHeader = (TextView) findViewById(R.id.tvHeader);
         tvHeader.setGravity(Gravity.LEFT);
         ivNext.setVisibility(View.INVISIBLE);
@@ -85,11 +107,16 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         conversationId = UUIDGenerator.secureId();
         tvHeader.setText(getIntent().getStringExtra("name"));
         tvTyping = (TextView) findViewById(R.id.tvTyping);
-
+        llAttach = (LinearLayout) findViewById(R.id.llAttach);
+        llCamera = (LinearLayout) findViewById(R.id.llCamera);
+        llGallery = (LinearLayout) findViewById(R.id.llGallery);
+        llPoll = (LinearLayout) findViewById(R.id.llPoll);
+        rlMainChat = (RelativeLayout) findViewById(R.id.rlMainChat);
         ActionBar actionBar = getSupportActionBar();
         if(actionBar!=null) {
             actionBar.hide();
         }
+        isAttachOpen = false;
     }
 
     @Override
@@ -147,18 +174,6 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         return this.jid;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == GROUP_DETAILS && resultCode == RESULT_OK){
-            boolean isGroupDeleted = data.getBooleanExtra("isGroupDeleted", false);
-            if(isGroupDeleted){
-                ChatActivity.this.finish();
-            }
-            boolean isGroupMember = data.getBooleanExtra("isGroupMember", true);
-            chatMemberViewsHideShowOperation(isGroupMember);
-        }
-    }
 
     private void setChatAdapter() {
         isGroup = DbManager.getInstance().isRosterGroup(jid.getBareJID());
@@ -173,10 +188,10 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
             ivNext.setImageResource(R.mipmap.ic_info);
             ivNext.setVisibility(View.VISIBLE);
             chatMemberViewsHideShowOperation(isGroupMember);
-            btnCreatePoll.setVisibility(View.VISIBLE);
+            llPoll.setVisibility(View.VISIBLE);
         }else{
             ivNext.setVisibility(View.INVISIBLE);
-            btnCreatePoll.setVisibility(View.GONE);
+            llPoll.setVisibility(View.GONE);
         }
 
         this.chatLines = DbManager.getInstance().fetchConversationChatlines(jid.getBareJID(), isGroup);
@@ -193,7 +208,6 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
             for(ChatLine chatLine : chatLines) {
                 this.sendReadReceipt(chatLine);
             }
-
         }
     }
 
@@ -223,12 +237,40 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
             }
         });
 
-        btnCreatePoll.setOnClickListener(new View.OnClickListener() {
+        rlMainChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actionOnAttachLayout();
+            }
+        });
+
+        btnAttach.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actionOnAttachLayout();
+            }
+        });
+
+        llPoll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ChatActivity.this, PollActivity.class);
                 intent.putExtra("poll", "create");
                 startActivity(intent);
+            }
+        });
+
+        llCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                camera();
+            }
+        });
+
+        llGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gallery();
             }
         });
 
@@ -248,7 +290,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
                     etMessage.setText("");
                     adapter.notifyItemInserted(chatLines.size()-1);
                     recyclerView.scrollToPosition(chatLines.size() - 1);
-
+                    chatManager.sendComposingCSN(jid);
                 } catch (Exception e) {
                     //swallow
                 }
@@ -264,13 +306,10 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
                 }
                 if(isTyping){
                     chatManager.sendComposingCSN(jid);
-                    Log.i("started_typing", "onIsTypingModified: User started typing.");
                 }else{
                     chatManager.sendPausedCSN(jid);
-                    Log.i("stopped_typing", "onIsTypingModified: User stopped typing");
                 }
             }
-
         });
     }
 
@@ -460,6 +499,161 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         } catch (InvalidJabberId e) {
             //Swallow exception
         }
+    }
+
+    private void camera(){
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+
+                Uri photoURI = Uri.fromFile(photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    private void gallery(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_IMAGE_SELECT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == GROUP_DETAILS && resultCode == RESULT_OK){
+            boolean isGroupDeleted = data.getBooleanExtra("isGroupDeleted", false);
+            if(isGroupDeleted){
+                ChatActivity.this.finish();
+            }
+            boolean isGroupMember = data.getBooleanExtra("isGroupMember", true);
+            chatMemberViewsHideShowOperation(isGroupMember);
+        }
+        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            addPicInGallery(mCurrentPhotoPath);
+            /*Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            try {
+                FileOutputStream os = new FileOutputStream(mCurrentPhotoPath);
+                Bitmap.createBitmap(imageBitmap);
+                imageBitmap.compress(Bitmap.CompressFormat.JPEG,100,os);
+                os.flush();
+                os.close();
+            }catch (IOException ie){
+                ie.printStackTrace();
+            }*/
+        } else if (requestCode == REQUEST_IMAGE_SELECT && resultCode == RESULT_OK) {
+            Uri selectedImageUri = data.getData();
+            if (selectedImageUri != null) {
+                // Get the path from the Uri
+                String path = getPathFromURI(selectedImageUri);
+                Log.i("", "Image Path : " + path);
+                // Set the image in ImageView
+                //imgView.setImageURI(selectedImageUri);
+                try {
+                    //FileInputStream is = new FileInputStream(selectedImageUri.getPath());
+                    Bitmap imageBitmap = BitmapFactory.decodeFile(selectedImageUri.getPath());
+                    createImageFile();
+                    //mCurrentPhotoPath = file.getPath();
+                    FileOutputStream os = new FileOutputStream(mCurrentPhotoPath);
+                    imageBitmap.compress(Bitmap.CompressFormat.JPEG,100,os);
+                    os.flush();
+                    os.close();
+                }catch (IOException ie){
+                    ie.printStackTrace();
+                }catch (NullPointerException ne){
+                    ne.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = DateUtils.currentTimestamp().toString();
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = new File(Environment.getExternalStorageDirectory()+ ApplicationProps.FILE_SEPARATOR + ApplicationProps.APP_NAME
+                + ApplicationProps.FILE_SEPARATOR+ "Media" + ApplicationProps.FILE_SEPARATOR + "Images" + ApplicationProps.FILE_SEPARATOR +"Sent");
+        if(!storageDir.exists()){
+            storageDir.mkdirs();
+        }
+
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void addPicInGallery(String filePath) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(filePath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
+
+    private String getPathFromURI(Uri contentUri) {
+        String res = null;
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        if (cursor.moveToFirst()) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            res = cursor.getString(column_index);
+        }
+        cursor.close();
+        return res;
+    }
+
+    private void actionOnAttachLayout(){
+        if(!isAttachOpen){
+            isAttachOpen = true;
+            llAttach.setVisibility(View.VISIBLE);
+           // slideUp(llAttach);
+        }else{
+            isAttachOpen = false;
+            //slideDown(llAttach);
+            llAttach.setVisibility(View.GONE);
+        }
+    }
+
+    // slide the view from below itself to the current position
+    public void slideUp(View view){
+        view.setVisibility(View.VISIBLE);
+        TranslateAnimation animate = new TranslateAnimation(
+                0,                 // fromXDelta
+                0,                 // toXDelta
+                view.getHeight(),  // fromYDelta
+                0);                // toYDelta
+        animate.setDuration(100);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
+    }
+
+    // slide the view from its current position to below itself
+    public void slideDown(View view){
+        TranslateAnimation animate = new TranslateAnimation(
+                0,                 // fromXDelta
+                0,                 // toXDelta
+                0,                 // fromYDelta
+                view.getHeight()); // toYDelta
+        animate.setDuration(100);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
     }
 
 }
