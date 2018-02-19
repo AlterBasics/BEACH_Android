@@ -1,6 +1,9 @@
 package abs.sf.beach.activity;
 
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -22,6 +25,7 @@ import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -43,18 +47,24 @@ import abs.ixi.client.xmpp.InvalidJabberId;
 import abs.ixi.client.xmpp.JID;
 import abs.sf.beach.adapter.ChatAdapter;
 import abs.sf.beach.android.R;
+import abs.sf.beach.fragment.DisplayPictureFragment;
 import abs.sf.beach.notification.NotificationGenerator;
 import abs.sf.beach.utils.ApplicationProps;
 import abs.sf.beach.utils.CustomTypingEditText;
+import abs.sf.beach.utils.FragmentListeners;
 import abs.sf.beach.utils.VerticalSpaceDecorator;
 import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidChatManager;
 import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.messaging.ChatListener;
 import abs.sf.client.android.notification.fcm.SFFcmService;
+import eu.janmuller.android.simplecropimage.CropImage;
+
+import static abs.sf.beach.android.R.id.addParticipantContainer;
+import static android.R.attr.start;
 
 
-public class ChatActivity extends StringflowActivity implements ChatListener {
+public class ChatActivity extends StringflowActivity implements ChatListener, FragmentListeners {
     private RecyclerView recyclerView;
     private ChatAdapter adapter;
     private CustomTypingEditText etMessage;
@@ -65,8 +75,10 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
     private LinearLayout llAttach, llCamera, llGallery, llPoll;
     private RelativeLayout rlMainChat;
     private Boolean isAttachOpen;
-
+    private Fragment fragment;
+    private boolean isFragmentOpen;
     private JID jid, mJid;
+    private FrameLayout displayPictureContainer;
 
     private String conversationId;
 
@@ -77,8 +89,9 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
 
     private AndroidChatManager chatManager;
 
-    private static int REQUEST_IMAGE_CAPTURE = 1;
-    private static int REQUEST_IMAGE_SELECT = 2;
+    private static int REQUEST_IMAGE_CAPTURE = 2;
+    private static int REQUEST_IMAGE_SELECT = 3;
+    private static int CROP_PICTURE = 4;
     private String mCurrentPhotoPath;
 
     @Override
@@ -112,6 +125,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         llGallery = (LinearLayout) findViewById(R.id.llGallery);
         llPoll = (LinearLayout) findViewById(R.id.llPoll);
         rlMainChat = (RelativeLayout) findViewById(R.id.rlMainChat);
+        displayPictureContainer = (FrameLayout) findViewById(R.id.displayPictureContainer);
         ActionBar actionBar = getSupportActionBar();
         if(actionBar!=null) {
             actionBar.hide();
@@ -487,6 +501,11 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
             startActivity(new Intent(ChatActivity.this, ChatBaseActivity.class));
         }
 
+        if(isFragmentOpen){
+            closeFragment();
+            return;
+        }
+
         DbManager.getInstance().updateUnreadCount(jid.getBareJID());
         this.finish();
     }
@@ -541,6 +560,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         }
         else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             addPicInGallery(mCurrentPhotoPath);
+            startCropImage(mCurrentPhotoPath);
             /*Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             try {
@@ -569,13 +589,33 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
                     imageBitmap.compress(Bitmap.CompressFormat.JPEG,100,os);
                     os.flush();
                     os.close();
+                    startCropImage(mCurrentPhotoPath);
                 }catch (IOException ie){
                     ie.printStackTrace();
                 }catch (NullPointerException ne){
                     ne.printStackTrace();
                 }
             }
+        } else if (requestCode == CROP_PICTURE && resultCode == RESULT_OK) {
+            String path = data.getStringExtra(CropImage.IMAGE_PATH);
+            if (path == null) {
+                return;
+            }
+            Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+            openFragment(DisplayPictureFragment.getInstance(mCurrentPhotoPath));
+            isFragmentOpen = true;
+            //profilePic.setImageBitmap(bitmap);
+            return;
         }
+    }
+
+    private void startCropImage(String path){
+        Intent intent = new Intent(this, CropImage.class);
+        intent.putExtra(CropImage.IMAGE_PATH, path);
+        intent.putExtra(CropImage.SCALE, true);
+        intent.putExtra(CropImage.ASPECT_X, 1);
+        intent.putExtra(CropImage.ASPECT_Y, 1);
+        startActivityForResult(intent, CROP_PICTURE);
     }
 
     private File createImageFile() throws IOException {
@@ -656,4 +696,30 @@ public class ChatActivity extends StringflowActivity implements ChatListener {
         view.startAnimation(animate);
     }
 
+    private void openFragment(Fragment fragment) {
+        this.fragment = fragment;
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.displayPictureContainer, fragment);
+        fragmentTransaction.commit();
+        displayPictureContainer.setVisibility(View.VISIBLE);
+        isFragmentOpen = true;
+    }
+
+    private void closeFragment() {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.remove(fragment);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+        ft.commit();
+        displayPictureContainer.setVisibility(View.GONE);
+        isFragmentOpen = false;
+    }
+
+    @Override
+    public void onCloseFragment() {
+        actionOnAttachLayout();
+        closeFragment();
+        //TODO: 1. Resize captured image as per display 2. add image in chatline 3. send it
+    }
 }

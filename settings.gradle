@@ -1,1 +1,1 @@
-include ':app', ':sf-sdk-android'
+include ':app', ':sf-sdk-android', ':simplecropimagelib'
