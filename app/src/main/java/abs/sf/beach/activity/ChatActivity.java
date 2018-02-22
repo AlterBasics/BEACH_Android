@@ -720,6 +720,23 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     public void onCloseFragment() {
         actionOnAttachLayout();
         closeFragment();
+        sendImage();
         //TODO: 1. Resize captured image as per display 2. add image in chatline 3. send it
+    }
+
+    private void sendImage(){
+        try {
+            ChatLine chatLine = chatManager.sendTextMessage(conversationId,
+                    etMessage.getText().toString(),jid.getBareJID(),isGroup, true, true);
+
+            chatLines.add(chatLine);
+
+            etMessage.setText("");
+            adapter.notifyItemInserted(chatLines.size()-1);
+            recyclerView.scrollToPosition(chatLines.size() - 1);
+            chatManager.sendComposingCSN(jid);
+        } catch (Exception e) {
+            //swallow
+        }
     }
 }

@@ -1,8 +1,11 @@
 package abs.sf.beach.utils;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
 import android.widget.Toast;
 
 /**
@@ -37,6 +40,22 @@ public class AndroidUtils {
 
     public static void showToast(Context ctx, String alert) {
         Toast.makeText(ctx, alert, Toast.LENGTH_LONG).show();
+    }
+
+    public static int screenWidth(Context ctx){
+        DisplayMetrics displayMetrics = getDisplayMetrics(ctx);
+        return displayMetrics.widthPixels;
+    }
+
+    public static int screenHeight(Context ctx){
+        DisplayMetrics displayMetrics = getDisplayMetrics(ctx);
+        return displayMetrics.heightPixels;
+    }
+
+    private static DisplayMetrics getDisplayMetrics(Context ctx){
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) ctx).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics;
     }
 
 }
