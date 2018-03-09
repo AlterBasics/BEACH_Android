@@ -60,9 +60,6 @@ import abs.sf.client.android.messaging.ChatListener;
 import abs.sf.client.android.notification.fcm.SFFcmService;
 import eu.janmuller.android.simplecropimage.CropImage;
 
-import static abs.sf.beach.android.R.id.addParticipantContainer;
-import static android.R.attr.start;
-
 
 public class ChatActivity extends StringflowActivity implements ChatListener, FragmentListeners {
     private RecyclerView recyclerView;

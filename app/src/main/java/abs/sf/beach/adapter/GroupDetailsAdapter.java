@@ -60,12 +60,16 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
                     if(!StringUtils.isNullOrEmpty(member.getAffiliation().val()) && StringUtils.safeEquals(member.getAffiliation().val(), ChatRoom.Affiliation.ADMIN.val()) ||
                             StringUtils.safeEquals(member.getAffiliation().val(), ChatRoom.Affiliation.OWNER.val())){
                         ChatRoom.ChatRoomMember m = memberList.get(getAdapterPosition());
+
                         if(!StringUtils.safeEquals(member.getUserJID().getBareJID(), m.getUserJID().getBareJID())){
-                            showRemoveParticipantAlert(member.getUserJID(), getAdapterPosition());
+                            showRemoveParticipantAlert(m.getUserJID(), getAdapterPosition());
+
+                        } else {
+                            //Do nothing
                         }
                     }
                 }
-            });
+            }); 
         }
     }
 

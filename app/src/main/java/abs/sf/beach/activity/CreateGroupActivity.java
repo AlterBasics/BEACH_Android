@@ -91,7 +91,7 @@ public class CreateGroupActivity extends StringflowActivity{
 
                     if(isCreated){
                         ChatRoom.AccessMode accessMode = ChatRoom.AccessMode.PUBLIC;
-                        if(StringUtils.safeEquals(selectedGroupType, ChatRoom.AccessMode.PUBLIC.val())){
+                        if(StringUtils.safeEquals(selectedGroupType, ChatRoom.AccessMode.PRIVATE.val(), false)){
                             accessMode = ChatRoom.AccessMode.PRIVATE;
                         }
                         userManager.updateRoomAccessMode(groupName, accessMode);
