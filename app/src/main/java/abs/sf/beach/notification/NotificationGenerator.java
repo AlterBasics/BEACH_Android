@@ -17,19 +17,19 @@ import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.utils.SFConstants;
 
 public class NotificationGenerator extends BroadcastReceiver {
-    private static  ChatActivity chatActivity;
+    private static ChatActivity chatActivity;
 
-  @Override
+    @Override
     public void onReceive(Context context, Intent intent) {
 
         ChatLine chatLine = (ChatLine) intent.getSerializableExtra(SFConstants.CHATLINE_OBJECT);
 
-        if(chatActivity == null) {
+        if (chatActivity == null) {
 
             new NotificationCaller(chatLine).execute();
             sendCMAcknowledgeReceipt(chatLine);
 
-        } else if(!StringUtils.safeEquals(chatActivity.getJID().getBareJID(), chatLine.getPeerBareJid())){
+        } else if (!StringUtils.safeEquals(chatActivity.getJID().getBareJID(), chatLine.getPeerBareJid())) {
 
             new NotificationCaller(chatLine).execute();
             sendCMAcknowledgeReceipt(chatLine);
@@ -39,15 +39,19 @@ public class NotificationGenerator extends BroadcastReceiver {
 
     public void sendCMAcknowledgeReceipt(ChatLine chatLine) {
         try {
-            if(chatLine.isMarkable()) {
+            if (chatLine.isMarkable()) {
                 AndroidChatManager chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
-                chatManager.sendMsgCMAcknowledgedReceipt(chatLine.getMessageId(), new JID(chatLine.getPeerBareJid()));
+
+                if (chatManager != null) {
+                    chatManager.sendMsgCMAcknowledgedReceipt(chatLine.getMessageId(), new JID(chatLine.getPeerBareJid()));
+                }
             }
         } catch (InvalidJabberId e) {
             //Swallow exception
         }
     }
-    public static synchronized  void setChatActivity(ChatActivity cActivity) {
+
+    public static synchronized void setChatActivity(ChatActivity cActivity) {
         chatActivity = cActivity;
     }
 
@@ -55,9 +59,10 @@ public class NotificationGenerator extends BroadcastReceiver {
         chatActivity = null;
     }
 
-   private class NotificationCaller extends AsyncTask<Void, Void, Void>{
+    private class NotificationCaller extends AsyncTask<Void, Void, Void> {
         private ChatLine chatLine;
-        public NotificationCaller(ChatLine chatLine){
+
+        public NotificationCaller(ChatLine chatLine) {
             this.chatLine = chatLine;
         }
 
