@@ -157,6 +157,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 }else if(chatLine.getDeliveryStatus()==2){
                     holder.ivStatus.setImageResource(R.mipmap.tick_delivered);
                 }else if(chatLine.getDeliveryStatus()==3){
+                    holder.ivStatus.setImageResource(R.mipmap.tick_delivered);
+                } else if(chatLine.getDeliveryStatus()==4){
                     holder.ivStatus.setImageResource(R.mipmap.tick_read);
                 }
                 if(content.getStatus().name().equalsIgnoreCase(PollContent.PollStatus.RESPONDED.name())){
