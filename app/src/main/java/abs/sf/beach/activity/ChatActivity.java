@@ -405,7 +405,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
                 ChatLine line = chatLines.get(position);
 
                 if(StringUtils.safeEquals(line.getMessageId(), messageId)) {
-                    line.setDeliveryStatus(2);
+                    line.setDeliveryStatus(3);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -425,7 +425,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
                 ChatLine line = chatLines.get(position);
 
                 if(StringUtils.safeEquals(line.getMessageId(), messageId)) {
-                    line.setDeliveryStatus(3);
+                    line.setDeliveryStatus(4);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
