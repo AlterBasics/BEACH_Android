@@ -157,13 +157,4 @@ public class LoginActivity extends StringflowActivity {
         return true;
     }
 
-    /**
-     * Load Stringflow android sdk. Stringflow android sdk loading does not
-     * involve network operations such as TCP connection initiation; therefore
-     * SDK loading can be executed on Android main thread.
-     */
-    private void loadSDK() {
-        SDKLoader.loadSDK(ApplicationProps.SERVER, 5222, this);
-    }
-
 }

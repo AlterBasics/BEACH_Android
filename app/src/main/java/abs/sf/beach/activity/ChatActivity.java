@@ -133,9 +133,6 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         isAttachOpen = false;
     }
 
-    private void loadSDK() {
-        SDKLoader.loadSDK(ApplicationProps.SERVER, 5222, this);
-    }
 
     @Override
     protected void onResume() {

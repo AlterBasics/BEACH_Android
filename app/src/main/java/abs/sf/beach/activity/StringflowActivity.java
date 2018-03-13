@@ -8,7 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.TaskExecutor;
+import abs.sf.beach.utils.ApplicationProps;
 import abs.sf.client.android.utils.ContextProvider;
+import abs.sf.client.android.utils.SDKLoader;
 
 /**
  * Root activity for all the activities defined in Beach application.
@@ -61,6 +63,15 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
         });
     }
 
+    protected void loadSDK() {
+        SDKLoader.loadSDK(ApplicationProps.SERVER, 5222, this);
+    }
+
+    /**
+     * Load Stringflow android sdk. Stringflow android sdk loading does not
+     * involve network operations such as TCP connection initiation; therefore
+     * SDK loading can be executed on Android main thread.
+     */
     @Override
     public Context context() {
         return this;
