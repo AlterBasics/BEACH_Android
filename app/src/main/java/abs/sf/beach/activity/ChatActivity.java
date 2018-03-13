@@ -58,6 +58,7 @@ import abs.sf.client.android.managers.AndroidChatManager;
 import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.messaging.ChatListener;
 import abs.sf.client.android.notification.fcm.SFFcmService;
+import abs.sf.client.android.utils.SDKLoader;
 import eu.janmuller.android.simplecropimage.CropImage;
 
 
@@ -99,6 +100,8 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         initView();
         initOnclickListener();
 
+        loadSDK();
+
         this.chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
         subscribeForChatline();
     }
@@ -124,10 +127,14 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         rlMainChat = (RelativeLayout) findViewById(R.id.rlMainChat);
         displayPictureContainer = (FrameLayout) findViewById(R.id.displayPictureContainer);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar!=null) {
+        if (actionBar != null) {
             actionBar.hide();
         }
         isAttachOpen = false;
+    }
+
+    private void loadSDK() {
+        SDKLoader.loadSDK(ApplicationProps.SERVER, 5222, this);
     }
 
     @Override
@@ -135,8 +142,8 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         super.onResume();
         System.out.println("Chat activity on resume");
         String from = getIntent().getStringExtra("from");
-        if(!StringUtils.isNullOrEmpty(from) &&
-                StringUtils.safeEquals(from, "NotificationUtils", false)){
+        if (!StringUtils.isNullOrEmpty(from) &&
+                StringUtils.safeEquals(from, "NotificationUtils", false)) {
             jid = (JID) getIntent().getSerializableExtra("jid");
             conversationId = (String) getIntent().getSerializableExtra("conversationId");
             tvHeader.setText(jid.getNode());
@@ -157,7 +164,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         super.onPause();
         NotificationGenerator.removeChatActivity();
 
-        if(isCSNActive) {
+        if (isCSNActive) {
             this.chatManager.sendInactiveCSN(this.jid);
         }
 
@@ -181,7 +188,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         SFFcmService.removeChatListener(this);
     }
 
-    public JID getJID () {
+    public JID getJID() {
         return this.jid;
     }
 
@@ -189,18 +196,18 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     private void setChatAdapter() {
         isGroup = DbManager.getInstance().isRosterGroup(jid.getBareJID());
         mJid = (JID) Platform.getInstance().getSession().get(Session.KEY_USER_JID);
-        if(isGroup){
-            boolean isGroupMember = DbManager.getInstance().isChatRoomMember(jid,mJid);
+        if (isGroup) {
+            boolean isGroupMember = DbManager.getInstance().isChatRoomMember(jid, mJid);
             String from = getIntent().getStringExtra("from");
-            if(!StringUtils.isNullOrEmpty(from) &&
-                    StringUtils.safeEquals(from, "UserSearch", false)){
+            if (!StringUtils.isNullOrEmpty(from) &&
+                    StringUtils.safeEquals(from, "UserSearch", false)) {
                 isGroupMember = true;
             }
             ivNext.setImageResource(R.mipmap.ic_info);
             ivNext.setVisibility(View.VISIBLE);
             chatMemberViewsHideShowOperation(isGroupMember);
             llPoll.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             ivNext.setVisibility(View.INVISIBLE);
             llPoll.setVisibility(View.GONE);
         }
@@ -213,10 +220,11 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new VerticalSpaceDecorator(5));
         recyclerView.setAdapter(adapter);
+
         if (chatLines.size() > 0) {
             recyclerView.scrollToPosition(chatLines.size() - 1);
 
-            for(ChatLine chatLine : chatLines) {
+            for (ChatLine chatLine : chatLines) {
                 this.sendReadReceipt(chatLine);
             }
         }
@@ -237,13 +245,13 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isGroup){
-                    boolean isGroupMember = DbManager.getInstance().isChatRoomMember(jid,mJid);
+                if (isGroup) {
+                    boolean isGroupMember = DbManager.getInstance().isChatRoomMember(jid, mJid);
                     Intent intent = new Intent(ChatActivity.this, GroupDetailsActivity.class);
                     intent.putExtra("jid", jid);
                     intent.putExtra("name", getIntent().getStringExtra("name"));
-                    intent.putExtra("isGroupMember",isGroupMember);
-                    startActivityForResult(intent,GROUP_DETAILS);
+                    intent.putExtra("isGroupMember", isGroupMember);
+                    startActivityForResult(intent, GROUP_DETAILS);
                 }
             }
         });
@@ -294,12 +302,12 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
                 try {
                     ChatLine chatLine = chatManager.sendTextMessage(conversationId,
-                            etMessage.getText().toString(),jid.getBareJID(),isGroup, true, true);
+                            etMessage.getText().toString(), jid.getBareJID(), isGroup, true, true);
 
                     chatLines.add(chatLine);
 
                     etMessage.setText("");
-                    adapter.notifyItemInserted(chatLines.size()-1);
+                    adapter.notifyItemInserted(chatLines.size() - 1);
                     recyclerView.scrollToPosition(chatLines.size() - 1);
                     chatManager.sendComposingCSN(jid);
                 } catch (Exception e) {
@@ -312,25 +320,25 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
             @Override
             public void onIsTypingModified(EditText view, boolean isTyping) {
-                if(!isCSNActive){
+                if (!isCSNActive) {
                     return;
                 }
-                if(isTyping){
+                if (isTyping) {
                     chatManager.sendComposingCSN(jid);
-                }else{
+                } else {
                     chatManager.sendPausedCSN(jid);
                 }
             }
         });
     }
 
-    private void chatMemberViewsHideShowOperation(boolean isGroupMember){
-        if(!isGroupMember){
+    private void chatMemberViewsHideShowOperation(boolean isGroupMember) {
+        if (!isGroupMember) {
             etMessage.setHint(R.string.no_rec_msg);
             etMessage.setGravity(Gravity.CENTER);
             etMessage.setEnabled(false);
             btnSend.setVisibility(View.GONE);
-        }else{
+        } else {
             etMessage.setEnabled(true);
             btnSend.setEnabled(true);
         }
@@ -359,11 +367,11 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
     @Override
     public void onServerAck(final String messageId, final JID contactJID) {
-        if(StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
-            for(int position = chatLines.size()-1 ; position>=0  ; position--) {
+        if (StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
+            for (int position = chatLines.size() - 1; position >= 0; position--) {
                 ChatLine line = chatLines.get(position);
 
-                if(StringUtils.safeEquals(line.getMessageId(), messageId)) {
+                if (StringUtils.safeEquals(line.getMessageId(), messageId)) {
                     line.setDeliveryStatus(1);
                     runOnUiThread(new Runnable() {
                         @Override
@@ -380,11 +388,11 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
     @Override
     public void onCMDeliveryReceipt(final String messageId, final JID contactJID) {
-        if(StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
-            for(int position = chatLines.size()-1 ; position>=0  ; position--) {
+        if (StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
+            for (int position = chatLines.size() - 1; position >= 0; position--) {
                 ChatLine line = chatLines.get(position);
 
-                if(StringUtils.safeEquals(line.getMessageId(), messageId)) {
+                if (StringUtils.safeEquals(line.getMessageId(), messageId)) {
                     line.setDeliveryStatus(2);
                     runOnUiThread(new Runnable() {
                         @Override
@@ -400,11 +408,11 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
     @Override
     public void onCMAcknowledgeReceipt(final String messageId, final JID contactJID) {
-        if(StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
-            for(int position = chatLines.size()-1 ; position >= 0  ; position--) {
+        if (StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
+            for (int position = chatLines.size() - 1; position >= 0; position--) {
                 ChatLine line = chatLines.get(position);
 
-                if(StringUtils.safeEquals(line.getMessageId(), messageId)) {
+                if (StringUtils.safeEquals(line.getMessageId(), messageId)) {
                     line.setDeliveryStatus(3);
                     runOnUiThread(new Runnable() {
                         @Override
@@ -420,11 +428,11 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
     @Override
     public void onCMDisplayedReceipt(final String messageId, final JID contactJID) {
-        if(StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
-            for(int position = chatLines.size()-1 ; position >= 0  ; position--) {
+        if (StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
+            for (int position = chatLines.size() - 1; position >= 0; position--) {
                 ChatLine line = chatLines.get(position);
 
-                if(StringUtils.safeEquals(line.getMessageId(), messageId)) {
+                if (StringUtils.safeEquals(line.getMessageId(), messageId)) {
                     line.setDeliveryStatus(4);
                     runOnUiThread(new Runnable() {
                         @Override
@@ -440,7 +448,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
     @Override
     public void onComposingCSN(JID contactJId) {
-        if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
+        if (StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
 
             runOnUiThread(new Runnable() {
                 @Override
@@ -453,7 +461,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
     @Override
     public void onPausedCSN(JID contactJId) {
-        if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
+        if (StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
 
             runOnUiThread(new Runnable() {
                 @Override
@@ -466,7 +474,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
     @Override
     public void onInactiveCSN(JID contactJId) {
-        if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
+        if (StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
             isCSNActive = false;
 
             runOnUiThread(new Runnable() {
@@ -480,7 +488,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
     @Override
     public void onGoneCSN(JID contactJId) {
-        if(StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
+        if (StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
             isCSNActive = false;
 
             runOnUiThread(new Runnable() {
@@ -498,7 +506,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
             startActivity(new Intent(ChatActivity.this, ChatBaseActivity.class));
         }
 
-        if(isFragmentOpen){
+        if (isFragmentOpen) {
             closeFragment();
             return;
         }
@@ -509,7 +517,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
     public void sendReadReceipt(ChatLine chatLine) {
         try {
-            if(chatLine.isMarkable() && !chatLine.isMarked()) {
+            if (chatLine.isMarkable() && !chatLine.isMarked()) {
                 this.chatManager.sendCMReadReceipt(chatLine.getMessageId(), new JID(chatLine.getPeerBareJid()));
             }
         } catch (InvalidJabberId e) {
@@ -517,7 +525,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         }
     }
 
-    private void camera(){
+    private void camera() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -538,7 +546,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         }
     }
 
-    private void gallery(){
+    private void gallery() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -547,15 +555,14 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == GROUP_DETAILS && resultCode == RESULT_OK){
+        if (requestCode == GROUP_DETAILS && resultCode == RESULT_OK) {
             boolean isGroupDeleted = data.getBooleanExtra("isGroupDeleted", false);
-            if(isGroupDeleted){
+            if (isGroupDeleted) {
                 ChatActivity.this.finish();
             }
             boolean isGroupMember = data.getBooleanExtra("isGroupMember", true);
             chatMemberViewsHideShowOperation(isGroupMember);
-        }
-        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             addPicInGallery(mCurrentPhotoPath);
             startCropImage(mCurrentPhotoPath);
             /*Bundle extras = data.getExtras();
@@ -583,13 +590,13 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
                     createImageFile();
                     //mCurrentPhotoPath = file.getPath();
                     FileOutputStream os = new FileOutputStream(mCurrentPhotoPath);
-                    imageBitmap.compress(Bitmap.CompressFormat.JPEG,100,os);
+                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
                     os.flush();
                     os.close();
                     startCropImage(mCurrentPhotoPath);
-                }catch (IOException ie){
+                } catch (IOException ie) {
                     ie.printStackTrace();
-                }catch (NullPointerException ne){
+                } catch (NullPointerException ne) {
                     ne.printStackTrace();
                 }
             }
@@ -606,7 +613,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         }
     }
 
-    private void startCropImage(String path){
+    private void startCropImage(String path) {
         Intent intent = new Intent(this, CropImage.class);
         intent.putExtra(CropImage.IMAGE_PATH, path);
         intent.putExtra(CropImage.SCALE, true);
@@ -619,9 +626,9 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         // Create an image file name
         String timeStamp = DateUtils.currentTimestamp().toString();
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = new File(Environment.getExternalStorageDirectory()+ ApplicationProps.FILE_SEPARATOR + ApplicationProps.APP_NAME
-                + ApplicationProps.FILE_SEPARATOR+ "Media" + ApplicationProps.FILE_SEPARATOR + "Images" + ApplicationProps.FILE_SEPARATOR +"Sent");
-        if(!storageDir.exists()){
+        File storageDir = new File(Environment.getExternalStorageDirectory() + ApplicationProps.FILE_SEPARATOR + ApplicationProps.APP_NAME
+                + ApplicationProps.FILE_SEPARATOR + "Media" + ApplicationProps.FILE_SEPARATOR + "Images" + ApplicationProps.FILE_SEPARATOR + "Sent");
+        if (!storageDir.exists()) {
             storageDir.mkdirs();
         }
 
@@ -656,12 +663,12 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         return res;
     }
 
-    private void actionOnAttachLayout(){
-        if(!isAttachOpen){
+    private void actionOnAttachLayout() {
+        if (!isAttachOpen) {
             isAttachOpen = true;
             llAttach.setVisibility(View.VISIBLE);
-           // slideUp(llAttach);
-        }else{
+            // slideUp(llAttach);
+        } else {
             isAttachOpen = false;
             //slideDown(llAttach);
             llAttach.setVisibility(View.GONE);
@@ -669,7 +676,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     }
 
     // slide the view from below itself to the current position
-    public void slideUp(View view){
+    public void slideUp(View view) {
         view.setVisibility(View.VISIBLE);
         TranslateAnimation animate = new TranslateAnimation(
                 0,                 // fromXDelta
@@ -682,7 +689,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     }
 
     // slide the view from its current position to below itself
-    public void slideDown(View view){
+    public void slideDown(View view) {
         TranslateAnimation animate = new TranslateAnimation(
                 0,                 // fromXDelta
                 0,                 // toXDelta
@@ -721,15 +728,15 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         //TODO: 1. Resize captured image as per display 2. add image in chatline 3. send it
     }
 
-    private void sendImage(){
+    private void sendImage() {
         try {
             ChatLine chatLine = chatManager.sendTextMessage(conversationId,
-                    etMessage.getText().toString(),jid.getBareJID(),isGroup, true, true);
+                    etMessage.getText().toString(), jid.getBareJID(), isGroup, true, true);
 
             chatLines.add(chatLine);
 
             etMessage.setText("");
-            adapter.notifyItemInserted(chatLines.size()-1);
+            adapter.notifyItemInserted(chatLines.size() - 1);
             recyclerView.scrollToPosition(chatLines.size() - 1);
             chatManager.sendComposingCSN(jid);
         } catch (Exception e) {
