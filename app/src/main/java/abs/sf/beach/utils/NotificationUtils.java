@@ -15,6 +15,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -94,6 +95,38 @@ public class NotificationUtils {
 
         Intent notificationIntent = new Intent(BasicApplication.getContext(), ChatActivity.class);
         try {
+//            notificationIntent.setAction(Intent.ACTION_MAIN);
+//            notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+            notificationIntent.putExtra("conversationId", chatLine.getConversationId());
+            notificationIntent.putExtra("jid", new JID(chatLine.getPeerBareJid()));
+            notificationIntent.putExtra("name", chatLine.getPeerName());
+            notificationIntent.putExtra("from", "NotificationUtils");
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+            // Create the TaskStackBuilder and add the intent, which inflates the back stack
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(BasicApplication.getContext());
+            stackBuilder.addNextIntentWithParentStack(notificationIntent);
+
+            // Get the PendingIntent containing the entire back stack
+            PendingIntent resultPendingIntent =
+                    stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT
+                            | PendingIntent.FLAG_ONE_SHOT);
+
+            buildNotification(chatLine.getText(), resultPendingIntent, chatLine.getPeerName(), mContext);
+        } catch (InvalidJabberId invalidJabberId) {
+            invalidJabberId.printStackTrace();
+        }
+    }
+
+    public static void show1(ChatLine chatLine, Context mContext) {
+
+        Intent notificationIntent = new Intent(BasicApplication.getContext(), ChatActivity.class);
+        try {
+            notificationIntent.setAction(Intent.ACTION_MAIN);
+            notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+
             notificationIntent.putExtra("conversationId", chatLine.getConversationId());
             notificationIntent.putExtra("jid", new JID(chatLine.getPeerBareJid()));
             notificationIntent.putExtra("name", chatLine.getPeerName());

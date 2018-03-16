@@ -99,11 +99,6 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         setContentView(R.layout.activity_chat);
         initView();
         initOnclickListener();
-
-        loadSDK();
-
-        this.chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
-        subscribeForChatline();
     }
 
     private void initView() {
@@ -139,15 +134,24 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         super.onResume();
         System.out.println("Chat activity on resume");
         String from = getIntent().getStringExtra("from");
+
+        loadSDK();
+
         if (!StringUtils.isNullOrEmpty(from) &&
                 StringUtils.safeEquals(from, "NotificationUtils", false)) {
             jid = (JID) getIntent().getSerializableExtra("jid");
             conversationId = (String) getIntent().getSerializableExtra("conversationId");
             tvHeader.setText(jid.getNode());
+
+            loginBackground();
         }
 
-        setChatAdapter();
+        this.chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
+        subscribeForChatline();
+
         NotificationGenerator.setChatActivity(this);
+
+        setChatAdapter();
     }
 
     @Override
@@ -159,6 +163,8 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     @Override
     protected void onPause() {
         super.onPause();
+
+        unsubscibeForChatLine();
         NotificationGenerator.removeChatActivity();
 
         if (isCSNActive) {
@@ -170,7 +176,6 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
     @Override
     protected void onDestroy() {
-        unsubscibeForChatLine();
         super.onDestroy();
         System.out.println("Chat activity on destroy");
     }
@@ -306,7 +311,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
                     etMessage.setText("");
                     adapter.notifyItemInserted(chatLines.size() - 1);
                     recyclerView.scrollToPosition(chatLines.size() - 1);
-                    chatManager.sendComposingCSN(jid);
+                   // chatManager.sendComposingCSN(jid);
                 } catch (Exception e) {
                     //swallow
                 }

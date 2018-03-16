@@ -23,6 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name="abs.sf.beach.activity.ChatBaseActivity" />
         <activity android:name="abs.sf.beach.activity.ChatActivity" />
         <activity android:name="abs.sf.beach.activity.GroupDetailsActivity" />

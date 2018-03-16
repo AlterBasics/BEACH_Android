@@ -64,7 +64,7 @@ public class LoginActivity extends StringflowActivity {
             });
 
         } else {
-            Platform.getInstance().getUserManager().loginInBackground(SharedPrefs.getInstance().getUsername(), SharedPrefs.getInstance().getPassword(), ApplicationProps.DOMAIN);
+            loginBackground();
             startActivity(new Intent(LoginActivity.this, ChatBaseActivity.class));
             finish();
         }

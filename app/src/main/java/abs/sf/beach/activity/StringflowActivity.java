@@ -3,12 +3,14 @@ package abs.sf.beach.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.TaskExecutor;
 import abs.sf.beach.utils.ApplicationProps;
+import abs.sf.beach.utils.SharedPrefs;
 import abs.sf.client.android.utils.ContextProvider;
 import abs.sf.client.android.utils.SDKLoader;
 
@@ -37,15 +39,15 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
             this.pDialog = new ProgressDialog(StringflowActivity.this);
             pDialog.setMessage(msg);
             pDialog.setCancelable(cancelable);
-        } else{
-          this.pDialog.cancel();
+        } else {
+            this.pDialog.cancel();
         }
 
         return pDialog;
     }
 
-    protected void closeProgressDialog(){
-        if(this.pDialog != null) {
+    protected void closeProgressDialog() {
+        if (this.pDialog != null) {
             this.pDialog.cancel();
         }
     }
@@ -65,6 +67,20 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
 
     protected void loadSDK() {
         SDKLoader.loadSDK(ApplicationProps.SERVER, 5222, this);
+    }
+
+    protected void loginBackground() {
+        if (SharedPrefs.getInstance().getLoginStatus()) {
+
+            if (!Platform.getInstance().getLoginStatus()) {
+                Platform.getInstance().getUserManager().loginInBackground(SharedPrefs.getInstance().getUsername(),
+                        SharedPrefs.getInstance().getPassword(), ApplicationProps.DOMAIN);
+            }
+
+        } else {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
     }
 
     /**
