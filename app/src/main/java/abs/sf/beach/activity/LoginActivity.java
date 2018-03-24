@@ -20,6 +20,7 @@ import abs.sf.beach.android.R;
 import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.beach.utils.ApplicationProps;
 import abs.sf.beach.utils.SharedPrefs;
+import abs.sf.client.android.managers.AndroidUserManager;
 import abs.sf.client.android.utils.SDKLoader;
 
 
@@ -75,21 +76,21 @@ public class LoginActivity extends StringflowActivity {
             ProgressDialog progressDialog = getProgressDialog("Authenticating...");
             progressDialog.show();
 
-            Platform.getInstance().getUserManager().login(userName, pwd, ApplicationProps.DOMAIN, new Callback<StreamNegotiator.NegotiationResult, Exception>() {
+            ((AndroidUserManager) Platform.getInstance().getUserManager()).loginUser(userName, pwd, ApplicationProps.DOMAIN, new Callback<StreamNegotiator.NegotiationResult, Exception>() {
                 @Override
                 public void onSuccess(StreamNegotiator.NegotiationResult result) {
-                    Log.d(LoginActivity.this.getClass().getName(),""+result.isSuccess());
+                    Log.d(LoginActivity.this.getClass().getName(), "" + result.isSuccess());
                     if (result.isSuccess()) {
                         SharedPrefs.getInstance().setUsername(userName);
                         SharedPrefs.getInstance().setPassword(pwd);
                         SharedPrefs.getInstance().setLoginStatus(true);
-                        Log.d(LoginActivity.this.getClass().getName(),""+result.isSuccess());
+                        Log.d(LoginActivity.this.getClass().getName(), "" + result.isSuccess());
                         closeProgressDialog();
                         startActivity(new Intent(LoginActivity.this, ChatBaseActivity.class));
                         finish();
 
                     } else {
-                        Log.d(LoginActivity.this.getClass().getName(),"Else:"+result.isSuccess());
+                        Log.d(LoginActivity.this.getClass().getName(), "Else:" + result.isSuccess());
                         final String msg;
                         if (result.getError() == StreamNegotiator.NegotiationError.AUTHENTICATION_FAILED) {
                             msg = "Entered userId Password are incorrect";
@@ -122,7 +123,7 @@ public class LoginActivity extends StringflowActivity {
             });
 
         } finally {
-            Log.d(LoginActivity.this.getClass().getName(),"Finally");
+            Log.d(LoginActivity.this.getClass().getName(), "Finally");
             closeProgressDialog();
         }
 

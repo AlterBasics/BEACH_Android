@@ -70,11 +70,16 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
     }
 
     protected void loginBackground() {
+
         if (SharedPrefs.getInstance().getLoginStatus()) {
 
             if (!Platform.getInstance().getLoginStatus()) {
+                System.out.println("login in background");
                 Platform.getInstance().getUserManager().loginInBackground(SharedPrefs.getInstance().getUsername(),
                         SharedPrefs.getInstance().getPassword(), ApplicationProps.DOMAIN);
+
+            } else {
+                System.out.println("Already logged in");
             }
 
         } else {

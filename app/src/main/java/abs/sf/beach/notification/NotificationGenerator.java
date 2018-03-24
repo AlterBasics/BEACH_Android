@@ -12,6 +12,7 @@ import abs.ixi.client.xmpp.JID;
 import abs.sf.beach.activity.ChatActivity;
 import abs.sf.beach.core.BasicApplication;
 import abs.sf.beach.utils.NotificationUtils;
+import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidChatManager;
 import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.utils.SFConstants;
@@ -43,7 +44,9 @@ public class NotificationGenerator extends BroadcastReceiver {
                 AndroidChatManager chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
 
                 if (chatManager != null) {
-                    chatManager.sendMsgCMAcknowledgedReceipt(chatLine.getMessageId(), new JID(chatLine.getPeerBareJid()));
+                    chatManager.sendMsgCMAcknowledgedReceipt(chatLine.getMessageId(),
+                            new JID(chatLine.getPeerBareJid()),
+                            DbManager.getInstance().isRosterGroup(chatLine.getPeerBareJid()));
                 }
             }
         } catch (InvalidJabberId e) {

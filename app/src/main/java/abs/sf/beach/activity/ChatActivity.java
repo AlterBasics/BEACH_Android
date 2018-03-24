@@ -520,7 +520,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     public void sendReadReceipt(ChatLine chatLine) {
         try {
             if (chatLine.isMarkable() && !chatLine.isMarked()) {
-                this.chatManager.sendCMReadReceipt(chatLine.getMessageId(), new JID(chatLine.getPeerBareJid()));
+                this.chatManager.sendCMReadReceipt(chatLine.getMessageId(), new JID(chatLine.getPeerBareJid()), isGroup);
             }
         } catch (InvalidJabberId e) {
             //Swallow exception
