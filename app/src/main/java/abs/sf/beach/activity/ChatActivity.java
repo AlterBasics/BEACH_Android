@@ -171,6 +171,8 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
             this.chatManager.sendInactiveCSN(this.jid);
         }
 
+        DbManager.getInstance().updateUnreadCount(jid.getBareJID());
+
         System.out.println("Chat activity on pause");
     }
 
@@ -239,7 +241,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
                 if (ChatActivity.this.isTaskRoot()) {
                     startActivity(new Intent(ChatActivity.this, ChatBaseActivity.class));
                 }
-                DbManager.getInstance().updateUnreadCount(jid.getBareJID());
+
                 finish();
             }
         });
@@ -513,7 +515,6 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
             return;
         }
 
-        DbManager.getInstance().updateUnreadCount(jid.getBareJID());
         this.finish();
     }
 
