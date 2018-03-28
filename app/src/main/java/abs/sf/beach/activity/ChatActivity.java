@@ -305,8 +305,16 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
                 }
 
                 try {
-                    ChatLine chatLine = chatManager.sendTextMessage(conversationId,
-                            etMessage.getText().toString(), jid.getBareJID(), isGroup, true, true);
+                    ChatLine chatLine;
+
+                    if(isGroup) {
+                        chatLine = chatManager.sendTextMessage(conversationId,
+                                etMessage.getText().toString(), jid.getBareJID(), isGroup, false, true);
+
+                    } else {
+                        chatLine = chatManager.sendTextMessage(conversationId,
+                                etMessage.getText().toString(), jid.getBareJID(), isGroup, true, true);
+                    }
 
                     chatLines.add(chatLine);
 
