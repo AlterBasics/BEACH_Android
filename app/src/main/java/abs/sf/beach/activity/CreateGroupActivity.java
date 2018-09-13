@@ -1,13 +1,11 @@
 package abs.sf.beach.activity;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -18,9 +16,6 @@ import abs.ixi.client.xmpp.packet.ChatRoom;
 import abs.sf.beach.android.R;
 import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.client.android.managers.AndroidUserManager;
-
-import static abs.sf.beach.android.R.id.fragmentContainer;
-
 
 public class CreateGroupActivity extends StringflowActivity{
     private Spinner spGroupType;

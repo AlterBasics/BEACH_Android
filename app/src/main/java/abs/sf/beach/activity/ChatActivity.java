@@ -13,14 +13,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
@@ -37,7 +33,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import abs.ixi.client.ChatManager;
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.core.Session;
 import abs.ixi.client.util.DateUtils;
@@ -58,7 +53,6 @@ import abs.sf.client.android.managers.AndroidChatManager;
 import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.messaging.ChatListener;
 import abs.sf.client.android.notification.fcm.SFFcmService;
-import abs.sf.client.android.utils.SDKLoader;
 import eu.janmuller.android.simplecropimage.CropImage;
 
 

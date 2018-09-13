@@ -10,33 +10,19 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.List;
-
-import abs.ixi.client.core.PacketCollector;
 import abs.ixi.client.core.Platform;
-import abs.ixi.client.core.Session;
-import abs.ixi.client.util.StringUtils;
-import abs.ixi.client.xmpp.JID;
-import abs.ixi.client.xmpp.packet.Message;
-import abs.ixi.client.xmpp.packet.MessageContent;
-import abs.ixi.client.xmpp.packet.Packet;
 import abs.sf.beach.android.R;
 import abs.sf.beach.fragment.ContactFragment;
 import abs.sf.beach.fragment.ConversationFragment;
-import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.beach.utils.NotificationUtils;
 import abs.sf.beach.utils.SharedPrefs;
-import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidUserManager;
-import abs.sf.client.android.messaging.ChatLine;
-import abs.sf.client.android.utils.ContextProvider;
-
 
 public class ChatBaseActivity extends StringflowActivity {
     private static final int NUM_PAGES = 2;

@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
-import java.util.Map;
 
 import abs.ixi.client.util.DateUtils;
 import abs.sf.beach.activity.PollResponseActivity;

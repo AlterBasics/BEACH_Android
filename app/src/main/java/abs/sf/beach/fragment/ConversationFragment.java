@@ -27,8 +27,6 @@ import abs.sf.client.android.messaging.ChatListener;
 import abs.sf.client.android.messaging.Conversation;
 import abs.sf.client.android.notification.fcm.SFFcmService;
 
-import static abs.sf.beach.android.R.id.tvTyping;
-
 
 /**
  * this fragment is for Conversations
