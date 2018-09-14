@@ -114,11 +114,7 @@ public class ChatBaseActivity extends StringflowActivity {
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-                userManager.shutdownSDK();
-                SharedPrefs.getInstance().clear();
-                startActivity(new Intent(ChatBaseActivity.this, LoginActivity.class));
-                ChatBaseActivity.this.finish();
+                logout();
             }
         });
     }

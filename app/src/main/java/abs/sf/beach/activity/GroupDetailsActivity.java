@@ -131,18 +131,27 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
                 GroupDetailsActivity.this.finish();
             }
         });
+
         cvExitGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!isGroupMember) {
+
                     AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-                    userManager.deleteChatRoom(roomJID);
+
+                    //TODO: Think y we r deleting it i think only leave
+                    //userManager.deleteChatRoom(roomJID);
+
+                    userManager.sendLeaveChatRoomRequest(roomJID);
+
                     goBack(true, false);
+
                 } else {
                     showExitGroupAlert();
                 }
             }
         });
+
         cvReportSpam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -216,12 +225,16 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         dialog.setPositiveButton("REPORT AND LEAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 AndroidUtils.showToast(GroupDetailsActivity.this, "Report has been taken against this group.");
 
                 AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
 
-                userManager.leaveChatRoom(roomJID);
-                userManager.deleteChatRoom(roomJID);
+                //TODO: Only leave group remove delete call
+                //userManager.deleteChatRoom(roomJID);
+
+                userManager.sendLeaveChatRoomRequest(roomJID);
+
                 goBack(true, false);
                 dialog.dismiss();
             }
@@ -243,7 +256,8 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-                userManager.leaveChatRoom(roomJID);
+
+                userManager.sendLeaveChatRoomRequest(roomJID);
 
                 goBack(false, false);
                 dialog.dismiss();

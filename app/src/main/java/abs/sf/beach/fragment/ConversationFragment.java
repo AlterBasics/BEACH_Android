@@ -109,7 +109,7 @@ public class ConversationFragment extends Fragment implements ChatListener {
     }
 
     @Override
-    public void onChatLine(ChatLine chatLine) {
+    public void onNewMessageReceived(ChatLine chatLine) {
         this.conversations = DbManager.getInstance().fetchConversations();
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -129,32 +129,33 @@ public class ConversationFragment extends Fragment implements ChatListener {
     }
 
     @Override
-    public void onServerAck(String s, JID jid) {
-
+    public void onMessageSent(String s, JID jid) {
+        //Do nothing
     }
 
     @Override
-    public void onCMDeliveryReceipt(String s, JID jid) {
-
+    public void onMessageDeliveredToReceiver(String s, JID jid) {
+        //Do nothing
     }
 
     @Override
-    public void onCMAcknowledgeReceipt(String s, JID jid) {
-
+    public void onMessageAcknowledgedToReceiver(String s, JID jid) {
+        //Do nothing
     }
 
     @Override
-    public void onCMDisplayedReceipt(String s, JID jid) {
-
+    public void onMessageViewedByReceiver(String s, JID jid) {
+        //Do nothing
     }
 
     @Override
-    public void onComposingCSN(JID jid) {
-        final int pos = searchJID(jid);
+    public void onContactTypingStarted(JID contactJID) {
+        final int pos = searchJID(contactJID);
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(pos>-1){
+                if(pos > -1){
                     conversations.get(pos).setTyping(true);
                     adapter.notifyItemChanged(pos);
                 }
@@ -163,8 +164,9 @@ public class ConversationFragment extends Fragment implements ChatListener {
     }
 
     @Override
-    public void onPausedCSN(JID jid) {
-        final int pos = searchJID(jid);
+    public void onContactTypingPaused(JID contactJID) {
+        final int pos = searchJID(contactJID);
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -177,8 +179,9 @@ public class ConversationFragment extends Fragment implements ChatListener {
     }
 
     @Override
-    public void onInactiveCSN(JID jid) {
-        final int pos = searchJID(jid);
+    public void onContactInactivityInUserChat(JID contactJID) {
+        final int pos = searchJID(contactJID);
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -191,8 +194,9 @@ public class ConversationFragment extends Fragment implements ChatListener {
     }
 
     @Override
-    public void onGoneCSN(JID jid) {
-        final int pos = searchJID(jid);
+    public void onContactGoneFromUserChat(JID contactJID) {
+        final int pos = searchJID(contactJID);
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -205,11 +209,12 @@ public class ConversationFragment extends Fragment implements ChatListener {
     }
 
     private int searchJID(JID jid){
-        for(int i=0; i<conversations.size(); i++){
+        for(int i=0; i< conversations.size(); i++){
             if(StringUtils.safeEquals(jid.getBareJID(), conversations.get(i).getPeerJid())) {
                 return i;
             }
         }
+
         return -1;
     }
 }

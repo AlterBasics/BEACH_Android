@@ -22,7 +22,7 @@ public class CustomTypingEditText extends EditText implements TextWatcher {
     private Runnable stoppedTypingNotifier = new Runnable() {
         @Override
         public void run() {
-            if (null != typingChangedListener) {
+            if (typingChangedListener != null) {
                 typingChangedListener.onIsTypingModified(CustomTypingEditText.this, false);
                 currentTypingState = false;
             }

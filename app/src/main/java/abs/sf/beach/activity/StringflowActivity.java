@@ -11,6 +11,7 @@ import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.TaskExecutor;
 import abs.sf.beach.utils.ApplicationProps;
 import abs.sf.beach.utils.SharedPrefs;
+import abs.sf.client.android.managers.AndroidUserManager;
 import abs.sf.client.android.utils.ContextProvider;
 import abs.sf.client.android.utils.SDKLoader;
 
@@ -86,6 +87,21 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
+    }
+
+    protected void logout() {
+        final AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+
+        TaskExecutor.getInstance().submit(new Runnable() {
+            @Override
+            public void run() {
+                userManager.logoutUser();
+            }
+        });
+
+        SharedPrefs.getInstance().clear();
+        startActivity(new Intent(this, LoginActivity.class));
+        this.finish();
     }
 
     /**

@@ -78,19 +78,29 @@ public class CreateGroupActivity extends StringflowActivity{
             @Override
             public void onClick(View view) {
                 String groupName = etGroupName.getText().toString();
+
+                //TODO : Start taking group members list at he time of group creation.
+
                 if(StringUtils.isNullOrEmpty(groupName)){
                     AndroidUtils.showToast(CreateGroupActivity.this, "Please enter group name");
 
                 }else{
-                    boolean isCreated = userManager.createRoom(groupName);
+                    boolean created = false;
 
-                    if(isCreated){
-                        ChatRoom.AccessMode accessMode = ChatRoom.AccessMode.PUBLIC;
-                        if(StringUtils.safeEquals(selectedGroupType, ChatRoom.AccessMode.PRIVATE.val(), false)){
-                            accessMode = ChatRoom.AccessMode.PRIVATE;
-                        }
-                        userManager.updateRoomAccessMode(groupName, accessMode);
+                    if(StringUtils.safeEquals(selectedGroupType, ChatRoom.AccessMode.PUBLIC.val(), false)){
+                       userManager.createPublicGroup(groupName, null);
+
+                    } else if(StringUtils.safeEquals(selectedGroupType, ChatRoom.AccessMode.PRIVATE.val(), false)){
+                        userManager.createPrivateGroup(groupName, null);
+                    }
+
+                    if(created) {
+                        //TODO : Show popup group created successfully
+
                         CreateGroupActivity.this.finish();
+
+                    } else {
+                        //TODO : Show popup group error pouup
                     }
                 }
             }

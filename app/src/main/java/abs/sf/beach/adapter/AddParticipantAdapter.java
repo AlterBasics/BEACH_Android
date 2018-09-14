@@ -82,7 +82,9 @@ public class AddParticipantAdapter extends RecyclerView.Adapter<AddParticipantAd
             public void onClick(DialogInterface dialog, int which) {
                 AndroidUserManager chatManager = (AndroidUserManager) Platform.getInstance().getUserManager();
 
-                chatManager.sendAddChatRoomMemberRequest(UUIDGenerator.secureId(), roomJID, item.getJid());
+                //TODO: need to re handle this
+                boolean added = chatManager.addChatRoomMember(roomJID, item.getJid());
+
                 listener.add("requestAddParticipant", item);
                 dialog.dismiss();
             }

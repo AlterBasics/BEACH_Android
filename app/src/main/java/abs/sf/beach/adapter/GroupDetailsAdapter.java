@@ -107,7 +107,10 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-                userManager.removeChatRoomMemberRequest(UUIDGenerator.secureId(), roomJID, jid);
+
+                //TODO: neeed to re handle it
+                boolean removed = userManager.removeChatRoomMember(roomJID, jid);
+
                 memberList.remove(pos);
                 notifyDataSetChanged();
                 dialog.dismiss();

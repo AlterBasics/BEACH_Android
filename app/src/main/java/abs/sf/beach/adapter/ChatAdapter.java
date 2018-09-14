@@ -149,15 +149,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 holder.fromQuestion.setText(content.getQuestion());
                 holder.fromMsgTime.setText(chatLine.getDisplayTime());
                 holder.fromExpiryTime.setText("Poll expires on" + DateUtils.getDisplayTime(content.getExpiryTime()));
-                if(chatLine.getDeliveryStatus()==0){
+
+                if(chatLine.getMessageStatus() == ChatLine.MessageStatus.NOT_DELIVERED_TO_SERVER){
                     holder.ivStatus.setImageResource(R.mipmap.tick_unsent);
-                }else if(chatLine.getDeliveryStatus()==1){
+
+                }else if(chatLine.getMessageStatus() == ChatLine.MessageStatus.DELIVERED_TO_SERVER){
                     holder.ivStatus.setImageResource(R.mipmap.tick_sent);
-                }else if(chatLine.getDeliveryStatus()==2){
+
+                }else if(chatLine.getMessageStatus() == ChatLine.MessageStatus.DELIVERED_TO_RECEIVER){
                     holder.ivStatus.setImageResource(R.mipmap.tick_delivered);
-                }else if(chatLine.getDeliveryStatus()==3){
+
+                }else if(chatLine.getMessageStatus() == ChatLine.MessageStatus.RECEIVER_IS_ACKNOWLEDGED){
                     holder.ivStatus.setImageResource(R.mipmap.tick_delivered);
-                } else if(chatLine.getDeliveryStatus()==4){
+
+                } else if(chatLine.getMessageStatus() == ChatLine.MessageStatus.RECEIVER_HAS_VIEWED){
                     holder.ivStatus.setImageResource(R.mipmap.tick_read);
                 }
                 if(content.getStatus().name().equalsIgnoreCase(PollContent.PollStatus.RESPONDED.name())){
@@ -191,15 +196,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 holder.fromLayout.setVisibility(View.VISIBLE);
                 holder.fromMsg.setText(chatLine.getText());
                 holder.fromMsgTime.setText(chatLine.getDisplayTime());
-                if(chatLine.getDeliveryStatus()==0){
+
+                if(chatLine.getMessageStatus() == ChatLine.MessageStatus.NOT_DELIVERED_TO_SERVER){
                     holder.ivStatus.setImageResource(R.mipmap.tick_unsent);
-                }else if(chatLine.getDeliveryStatus()==1){
+
+                }else if(chatLine.getMessageStatus() == ChatLine.MessageStatus.DELIVERED_TO_SERVER){
                     holder.ivStatus.setImageResource(R.mipmap.tick_sent);
-                }else if(chatLine.getDeliveryStatus()==2){
+
+                }else if(chatLine.getMessageStatus() == ChatLine.MessageStatus.DELIVERED_TO_RECEIVER){
                     holder.ivStatus.setImageResource(R.mipmap.tick_delivered);
-                } else if(chatLine.getDeliveryStatus()==3){
+
+                }else if(chatLine.getMessageStatus() == ChatLine.MessageStatus.RECEIVER_IS_ACKNOWLEDGED){
                     holder.ivStatus.setImageResource(R.mipmap.tick_delivered);
-                } else if(chatLine.getDeliveryStatus()==4){
+
+                } else if(chatLine.getMessageStatus() == ChatLine.MessageStatus.RECEIVER_HAS_VIEWED){
                     holder.ivStatus.setImageResource(R.mipmap.tick_read);
                 }
                 break;

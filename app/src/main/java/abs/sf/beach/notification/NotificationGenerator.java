@@ -25,12 +25,7 @@ public class NotificationGenerator extends BroadcastReceiver {
 
         ChatLine chatLine = (ChatLine) intent.getSerializableExtra(SFConstants.CHATLINE_OBJECT);
 
-        if (chatActivity == null) {
-
-            new NotificationCaller(chatLine).execute();
-            sendCMAcknowledgeReceipt(chatLine);
-
-        } else if (!StringUtils.safeEquals(chatActivity.getJID().getBareJID(), chatLine.getPeerBareJid())) {
+        if (chatActivity == null || !StringUtils.safeEquals(chatActivity.getJID().getBareJID(), chatLine.getPeerBareJid())) {
 
             new NotificationCaller(chatLine).execute();
             sendCMAcknowledgeReceipt(chatLine);
@@ -39,21 +34,18 @@ public class NotificationGenerator extends BroadcastReceiver {
     }
 
     public void sendCMAcknowledgeReceipt(ChatLine chatLine) {
-        try {
-            if (chatLine.isMarkable()) {
-                AndroidChatManager chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
+        AndroidChatManager chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
 
-                if (chatManager != null) {
-                    chatManager.sendMsgCMAcknowledgedReceipt(chatLine.getMessageId(),
-                            new JID(chatLine.getPeerBareJid()),
-                            DbManager.getInstance().isRosterGroup(chatLine.getPeerBareJid()));
-                }
-            }
-        } catch (InvalidJabberId e) {
-            //Swallow exception
+        if(chatManager != null) {
+            chatManager.sendMessageAcknowledgementReceipt(chatLine);
         }
     }
 
+    /**
+     * SET currently open {@link ChatActivity}
+     *
+     * @param cActivity
+     */
     public static synchronized void setChatActivity(ChatActivity cActivity) {
         chatActivity = cActivity;
     }

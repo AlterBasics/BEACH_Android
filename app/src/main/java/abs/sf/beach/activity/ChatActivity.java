@@ -38,7 +38,6 @@ import abs.ixi.client.core.Session;
 import abs.ixi.client.util.DateUtils;
 import abs.ixi.client.util.StringUtils;
 import abs.ixi.client.util.UUIDGenerator;
-import abs.ixi.client.xmpp.InvalidJabberId;
 import abs.ixi.client.xmpp.JID;
 import abs.sf.beach.adapter.ChatAdapter;
 import abs.sf.beach.android.R;
@@ -57,6 +56,12 @@ import eu.janmuller.android.simplecropimage.CropImage;
 
 
 public class ChatActivity extends StringflowActivity implements ChatListener, FragmentListeners {
+    private static final String CONTACT_JID = "contactJID";
+    private static final String NAME = "name";
+    private static final String FROM = "from";
+    private static final String NOTIFICATION_UTILS = "NotificationUtils";
+    private static final String CONVERSATION_ID = "conversationId";
+
     private RecyclerView recyclerView;
     private ChatAdapter adapter;
     private CustomTypingEditText etMessage;
@@ -69,7 +74,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     private Boolean isAttachOpen;
     private Fragment fragment;
     private boolean isFragmentOpen;
-    private JID jid, mJid;
+    private JID contactJID, userJID;
     private FrameLayout displayPictureContainer;
 
     private String conversationId;
@@ -77,9 +82,10 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     private boolean isCSNActive;
 
     private boolean isGroup;
-    private final static int GROUP_DETAILS = 1;
 
     private AndroidChatManager chatManager;
+
+    private final static int GROUP_DETAILS = 1;
 
     private static int REQUEST_IMAGE_CAPTURE = 2;
     private static int REQUEST_IMAGE_SELECT = 3;
@@ -105,9 +111,9 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         tvHeader = (TextView) findViewById(R.id.tvHeader);
         tvHeader.setGravity(Gravity.LEFT);
         ivNext.setVisibility(View.INVISIBLE);
-        jid = (JID) getIntent().getSerializableExtra("jid");
+        contactJID = (JID) getIntent().getSerializableExtra(CONTACT_JID);
         conversationId = UUIDGenerator.secureId();
-        tvHeader.setText(getIntent().getStringExtra("name"));
+        tvHeader.setText(getIntent().getStringExtra(NAME));
         tvTyping = (TextView) findViewById(R.id.tvTyping);
         llAttach = (LinearLayout) findViewById(R.id.llAttach);
         llCamera = (LinearLayout) findViewById(R.id.llCamera);
@@ -127,20 +133,24 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     protected void onResume() {
         super.onResume();
         System.out.println("Chat activity on resume");
-        String from = getIntent().getStringExtra("from");
+        String from = getIntent().getStringExtra(FROM);
 
         loadSDK();
 
         if (!StringUtils.isNullOrEmpty(from) &&
-                StringUtils.safeEquals(from, "NotificationUtils", false)) {
-            jid = (JID) getIntent().getSerializableExtra("jid");
-            conversationId = (String) getIntent().getSerializableExtra("conversationId");
-            tvHeader.setText(jid.getNode());
+                StringUtils.safeEquals(from, NOTIFICATION_UTILS, false)) {
+
+            contactJID = (JID) getIntent().getSerializableExtra(CONTACT_JID);
+
+            conversationId = (String) getIntent().getSerializableExtra(CONVERSATION_ID);
+
+            tvHeader.setText(contactJID.getNode());
 
             loginBackground();
         }
 
         this.chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
+
         subscribeForChatline();
 
         NotificationGenerator.setChatActivity(this);
@@ -159,13 +169,14 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         super.onPause();
 
         unsubscibeForChatLine();
+
         NotificationGenerator.removeChatActivity();
 
         if (isCSNActive) {
-            this.chatManager.sendInactiveCSN(this.jid);
+            this.chatManager.sendChatInactivity(this.contactJID);
         }
 
-        DbManager.getInstance().updateUnreadCount(jid.getBareJID());
+        DbManager.getInstance().updateUnreadCount(contactJID.getBareJID());
 
         System.out.println("Chat activity on pause");
     }
@@ -187,30 +198,36 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     }
 
     public JID getJID() {
-        return this.jid;
+        return this.contactJID;
     }
 
 
     private void setChatAdapter() {
-        isGroup = DbManager.getInstance().isRosterGroup(jid.getBareJID());
-        mJid = (JID) Platform.getInstance().getSession().get(Session.KEY_USER_JID);
+        isGroup = DbManager.getInstance().isRosterGroup(contactJID.getBareJID());
+        userJID = (JID) Platform.getInstance().getSession().get(Session.KEY_USER_JID);
+
         if (isGroup) {
-            boolean isGroupMember = DbManager.getInstance().isChatRoomMember(jid, mJid);
-            String from = getIntent().getStringExtra("from");
+            boolean isGroupMember = DbManager.getInstance().isChatRoomMember(contactJID, userJID);
+
+            String from = getIntent().getStringExtra(FROM);
+
+            //TODO: understand it
             if (!StringUtils.isNullOrEmpty(from) &&
                     StringUtils.safeEquals(from, "UserSearch", false)) {
                 isGroupMember = true;
             }
+
             ivNext.setImageResource(R.mipmap.ic_info);
             ivNext.setVisibility(View.VISIBLE);
             chatMemberViewsHideShowOperation(isGroupMember);
             llPoll.setVisibility(View.VISIBLE);
+
         } else {
             ivNext.setVisibility(View.INVISIBLE);
             llPoll.setVisibility(View.GONE);
         }
 
-        this.chatLines = DbManager.getInstance().fetchConversationChatlines(jid.getBareJID(), isGroup);
+        this.chatLines = DbManager.getInstance().fetchConversationChatlines(contactJID, isGroup);
 
         adapter = new ChatAdapter(ChatActivity.this, chatLines, isGroup);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(ChatActivity.this);
@@ -219,13 +236,15 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         recyclerView.addItemDecoration(new VerticalSpaceDecorator(5));
         recyclerView.setAdapter(adapter);
 
+
         if (chatLines.size() > 0) {
             recyclerView.scrollToPosition(chatLines.size() - 1);
-
-            for (ChatLine chatLine : chatLines) {
-                this.sendReadReceipt(chatLine);
-            }
+            sendAllUnReadMessageReadReceipt();
         }
+    }
+
+    private void sendAllUnReadMessageReadReceipt() {
+        this.chatManager.sendAllUnReadMessageReadReceipt(this.contactJID);
     }
 
     private void initOnclickListener() {
@@ -244,9 +263,9 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
             @Override
             public void onClick(View v) {
                 if (isGroup) {
-                    boolean isGroupMember = DbManager.getInstance().isChatRoomMember(jid, mJid);
+                    boolean isGroupMember = DbManager.getInstance().isChatRoomMember(contactJID, userJID);
                     Intent intent = new Intent(ChatActivity.this, GroupDetailsActivity.class);
-                    intent.putExtra("jid", jid);
+                    intent.putExtra("contactJID", contactJID);
                     intent.putExtra("name", getIntent().getStringExtra("name"));
                     intent.putExtra("isGroupMember", isGroupMember);
                     startActivityForResult(intent, GROUP_DETAILS);
@@ -303,11 +322,11 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
                     if(isGroup) {
                         chatLine = chatManager.sendTextMessage(conversationId,
-                                etMessage.getText().toString(), jid.getBareJID(), isGroup, false, true);
+                                etMessage.getText().toString(), contactJID, isGroup);
 
                     } else {
                         chatLine = chatManager.sendTextMessage(conversationId,
-                                etMessage.getText().toString(), jid.getBareJID(), isGroup, true, true);
+                                etMessage.getText().toString(), contactJID, isGroup);
                     }
 
                     chatLines.add(chatLine);
@@ -315,13 +334,14 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
                     etMessage.setText("");
                     adapter.notifyItemInserted(chatLines.size() - 1);
                     recyclerView.scrollToPosition(chatLines.size() - 1);
-                   // chatManager.sendComposingCSN(jid);
+                   // chatManager.sendComposingCSN(contactJID);
                 } catch (Exception e) {
                     //swallow
                 }
             }
         });
 
+        //TODO : need to verify this mechanism.
         etMessage.setOnTypingModified(new CustomTypingEditText.OnTypingModified() {
 
             @Override
@@ -330,9 +350,10 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
                     return;
                 }
                 if (isTyping) {
-                    chatManager.sendComposingCSN(jid);
+                    chatManager.sendMessageTypingStarted(contactJID);
+
                 } else {
-                    chatManager.sendPausedCSN(jid);
+                    chatManager.sendMessageTypingStopped(contactJID);
                 }
             }
         });
@@ -351,8 +372,8 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     }
 
     @Override
-    public void onChatLine(ChatLine chatLine) {
-        if (StringUtils.safeEquals(chatLine.getPeerBareJid(), this.jid.getBareJID(), false)) {
+    public void onNewMessageReceived(ChatLine chatLine) {
+        if (StringUtils.safeEquals(chatLine.getPeerBareJid(), this.contactJID.getBareJID(), false)) {
             chatLines.add(chatLine);
 
             isCSNActive = chatLine.isCsnActive();
@@ -372,13 +393,13 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     }
 
     @Override
-    public void onServerAck(final String messageId, final JID contactJID) {
-        if (StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
+    public void onMessageSent(final String messageId, final JID contactJID) {
+        if (StringUtils.safeEquals(this.contactJID.getBareJID(), contactJID.getBareJID())) {
             for (int position = chatLines.size() - 1; position >= 0; position--) {
                 ChatLine line = chatLines.get(position);
 
                 if (StringUtils.safeEquals(line.getMessageId(), messageId)) {
-                    line.setDeliveryStatus(1);
+                    line.setMessageStatus(ChatLine.MessageStatus.DELIVERED_TO_SERVER);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -393,13 +414,13 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     }
 
     @Override
-    public void onCMDeliveryReceipt(final String messageId, final JID contactJID) {
-        if (StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
+    public void onMessageDeliveredToReceiver(final String messageId, final JID contactJID) {
+        if (StringUtils.safeEquals(this.contactJID.getBareJID(), contactJID.getBareJID())) {
             for (int position = chatLines.size() - 1; position >= 0; position--) {
                 ChatLine line = chatLines.get(position);
 
                 if (StringUtils.safeEquals(line.getMessageId(), messageId)) {
-                    line.setDeliveryStatus(2);
+                    line.setMessageStatus(ChatLine.MessageStatus.DELIVERED_TO_RECEIVER);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -413,13 +434,13 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     }
 
     @Override
-    public void onCMAcknowledgeReceipt(final String messageId, final JID contactJID) {
-        if (StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
+    public void onMessageAcknowledgedToReceiver(final String messageId, final JID contactJID) {
+        if (StringUtils.safeEquals(this.contactJID.getBareJID(), contactJID.getBareJID())) {
             for (int position = chatLines.size() - 1; position >= 0; position--) {
                 ChatLine line = chatLines.get(position);
 
                 if (StringUtils.safeEquals(line.getMessageId(), messageId)) {
-                    line.setDeliveryStatus(3);
+                    line.setMessageStatus(ChatLine.MessageStatus.RECEIVER_IS_ACKNOWLEDGED);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -433,13 +454,13 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     }
 
     @Override
-    public void onCMDisplayedReceipt(final String messageId, final JID contactJID) {
-        if (StringUtils.safeEquals(this.jid.getBareJID(), contactJID.getBareJID())) {
+    public void onMessageViewedByReceiver(final String messageId, final JID contactJID) {
+        if (StringUtils.safeEquals(this.contactJID.getBareJID(), contactJID.getBareJID())) {
             for (int position = chatLines.size() - 1; position >= 0; position--) {
                 ChatLine line = chatLines.get(position);
 
                 if (StringUtils.safeEquals(line.getMessageId(), messageId)) {
-                    line.setDeliveryStatus(4);
+                    line.setMessageStatus(ChatLine.MessageStatus.RECEIVER_HAS_VIEWED);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -453,8 +474,8 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     }
 
     @Override
-    public void onComposingCSN(JID contactJId) {
-        if (StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
+    public void onContactTypingStarted(JID contactJId) {
+        if (StringUtils.safeEquals(this.contactJID.getBareJID(), contactJId.getBareJID())) {
 
             runOnUiThread(new Runnable() {
                 @Override
@@ -466,8 +487,8 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     }
 
     @Override
-    public void onPausedCSN(JID contactJId) {
-        if (StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
+    public void onContactTypingPaused(JID contactJId) {
+        if (StringUtils.safeEquals(this.contactJID.getBareJID(), contactJId.getBareJID())) {
 
             runOnUiThread(new Runnable() {
                 @Override
@@ -479,8 +500,8 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     }
 
     @Override
-    public void onInactiveCSN(JID contactJId) {
-        if (StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
+    public void onContactInactivityInUserChat(JID contactJId) {
+        if (StringUtils.safeEquals(this.contactJID.getBareJID(), contactJId.getBareJID())) {
             isCSNActive = false;
 
             runOnUiThread(new Runnable() {
@@ -493,8 +514,8 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     }
 
     @Override
-    public void onGoneCSN(JID contactJId) {
-        if (StringUtils.safeEquals(this.jid.getBareJID(), contactJId.getBareJID())) {
+    public void onContactGoneFromUserChat(JID contactJId) {
+        if (StringUtils.safeEquals(this.contactJID.getBareJID(), contactJId.getBareJID())) {
             isCSNActive = false;
 
             runOnUiThread(new Runnable() {
@@ -521,13 +542,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     }
 
     public void sendReadReceipt(ChatLine chatLine) {
-        try {
-            if (chatLine.isMarkable() && !chatLine.isMarked()) {
-                this.chatManager.sendCMReadReceipt(chatLine.getMessageId(), new JID(chatLine.getPeerBareJid()), isGroup);
-            }
-        } catch (InvalidJabberId e) {
-            //Swallow exception
-        }
+        this.chatManager.sendMessageReadReceipt(chatLine);
     }
 
     private void camera() {
@@ -735,15 +750,16 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
     private void sendImage() {
         try {
-            ChatLine chatLine = chatManager.sendTextMessage(conversationId,
-                    etMessage.getText().toString(), jid.getBareJID(), isGroup, true, true);
-
-            chatLines.add(chatLine);
-
-            etMessage.setText("");
-            adapter.notifyItemInserted(chatLines.size() - 1);
-            recyclerView.scrollToPosition(chatLines.size() - 1);
-            chatManager.sendComposingCSN(jid);
+            //TODO: handle it later
+//            ChatLine chatLine = chatManager.sendTextMessage(conversationId,
+//                    etMessage.getText().toString(), contactJID.getBareJID(), isGroup, true, true);
+//
+//            chatLines.add(chatLine);
+//
+//            etMessage.setText("");
+//            adapter.notifyItemInserted(chatLines.size() - 1);
+//            recyclerView.scrollToPosition(chatLines.size() - 1);
+//            chatManager.sendComposingCSN(contactJID);
         } catch (Exception e) {
             //swallow
         }
