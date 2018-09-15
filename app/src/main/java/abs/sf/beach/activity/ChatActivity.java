@@ -58,10 +58,11 @@ import eu.janmuller.android.simplecropimage.CropImage;
 public class ChatActivity extends StringflowActivity implements ChatListener, FragmentListeners {
     private static final String CONTACT_JID = "jid";
     private static final String NAME = "name";
-    
+
     private static final String FROM = "from";
     private static final String NOTIFICATION_UTILS = "NotificationUtils";
     private static final String CONVERSATION_ID = "conversationId";
+    private static final String IS_GROUP_MEMBER = "isGroupMember";
 
     private RecyclerView recyclerView;
     private ChatAdapter adapter;
@@ -266,9 +267,9 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
                 if (isGroup) {
                     boolean isGroupMember = DbManager.getInstance().isChatRoomMember(contactJID, userJID);
                     Intent intent = new Intent(ChatActivity.this, GroupDetailsActivity.class);
-                    intent.putExtra("contactJID", contactJID);
-                    intent.putExtra("name", getIntent().getStringExtra("name"));
-                    intent.putExtra("isGroupMember", isGroupMember);
+                    intent.putExtra(CONTACT_JID, contactJID);
+                    intent.putExtra(NAME, getIntent().getStringExtra("name"));
+                    intent.putExtra(IS_GROUP_MEMBER, isGroupMember);
                     startActivityForResult(intent, GROUP_DETAILS);
                 }
             }

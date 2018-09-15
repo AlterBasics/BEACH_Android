@@ -22,6 +22,7 @@ import abs.sf.beach.adapter.ConversationAdapter;
 import abs.sf.beach.android.R;
 import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidChatManager;
+import abs.sf.client.android.managers.AndroidUserManager;
 import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.messaging.ChatListener;
 import abs.sf.client.android.messaging.Conversation;
@@ -35,7 +36,6 @@ public class ConversationFragment extends Fragment implements ChatListener {
     private RecyclerView recyclerViewConversation;
     private List<Conversation> conversations;
     private ConversationAdapter adapter;
-    private AndroidChatManager chatManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,7 +43,6 @@ public class ConversationFragment extends Fragment implements ChatListener {
         View view = inflater.inflate(R.layout.fragment_conversation, container, false);
         initView(view);
 
-        this.chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
         subscribeForChatline();
 
         return view;
@@ -77,12 +76,14 @@ public class ConversationFragment extends Fragment implements ChatListener {
     }
 
     private void subscribeForChatline() {
-        this.chatManager.addChatListener(this);
+        AndroidChatManager chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
+        chatManager.addChatListener(this);
         SFFcmService.addChatListener(this);
     }
 
     private void unsubscibeForChatLine() {
-        this.chatManager.removeChatListener(this);
+        AndroidChatManager chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
+        chatManager.removeChatListener(this);
         SFFcmService.removeChatListener(this);
     }
 
