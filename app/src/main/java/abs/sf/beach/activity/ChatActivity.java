@@ -56,8 +56,9 @@ import eu.janmuller.android.simplecropimage.CropImage;
 
 
 public class ChatActivity extends StringflowActivity implements ChatListener, FragmentListeners {
-    private static final String CONTACT_JID = "contactJID";
+    private static final String CONTACT_JID = "jid";
     private static final String NAME = "name";
+    
     private static final String FROM = "from";
     private static final String NOTIFICATION_UTILS = "NotificationUtils";
     private static final String CONVERSATION_ID = "conversationId";
