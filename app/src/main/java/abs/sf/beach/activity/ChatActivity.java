@@ -46,7 +46,6 @@ import abs.sf.beach.notification.NotificationGenerator;
 import abs.sf.beach.utils.ApplicationProps;
 import abs.sf.beach.utils.CustomTypingEditText;
 import abs.sf.beach.utils.FragmentListeners;
-import abs.sf.beach.utils.NotificationUtils;
 import abs.sf.beach.utils.VerticalSpaceDecorator;
 import abs.sf.client.android.managers.AndroidChatManager;
 import abs.sf.client.android.managers.AndroidUserManager;
@@ -177,10 +176,6 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
         NotificationGenerator.removeChatActivity();
 
-        if (isCSNActive) {
-            this.chatManager.sendChatInactivity(this.contactJID);
-        }
-
         this.chatManager.markNoUnreadConversation(contactJID);
 
         System.out.println("Chat activity on pause");
@@ -244,8 +239,27 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
         if (chatLines.size() > 0) {
             recyclerView.scrollToPosition(chatLines.size() - 1);
+
+            //TODO: need to think that we should make csn active by watching last inactive chatline or not at this level.
+            ChatLine lastReceivedChatLine = getLastReceivedChatLine();
+            if(lastReceivedChatLine != null && lastReceivedChatLine.isCsnActive()) {
+                this.isCSNActive = true;
+            }
+
             sendAllUnReadMessageReadReceipt();
         }
+    }
+
+    private ChatLine getLastReceivedChatLine() {
+        for(int i = this.chatLines.size() - 1; i >= 0; i-- ) {
+            ChatLine chatLine = this.chatLines.get(i);
+
+            if(chatLine.getDirection() == ChatLine.Direction.RECEIVE) {
+                return chatLine;
+            }
+        }
+
+        return null;
     }
 
     private void sendAllUnReadMessageReadReceipt() {
@@ -381,7 +395,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         if (StringUtils.safeEquals(chatLine.getPeerBareJid(), this.contactJID.getBareJID(), false)) {
             chatLines.add(chatLine);
 
-            isCSNActive = chatLine.isCsnActive();
+            this.isCSNActive = chatLine.isCsnActive();
 
             conversationId = chatLine.getConversationId();
 
