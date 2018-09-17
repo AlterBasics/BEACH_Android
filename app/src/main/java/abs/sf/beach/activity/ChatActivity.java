@@ -151,8 +151,6 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
             tvHeader.setText(contactJID.getNode());
 
             loginBackground();
-
-            NotificationUtils.clearAllNotifications(ChatActivity.this);
         }
 
         this.chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();

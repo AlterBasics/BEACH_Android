@@ -25,11 +25,17 @@ public class NotificationGenerator extends BroadcastReceiver {
 
         ChatLine chatLine = (ChatLine) intent.getSerializableExtra(SFConstants.CHATLINE_OBJECT);
 
-        if (chatActivity == null || !StringUtils.safeEquals(chatActivity.getJID().getBareJID(), chatLine.getPeerBareJid())) {
-
+        if (chatActivity == null) {
             new NotificationCaller(chatLine).execute();
             sendCMAcknowledgeReceipt(chatLine);
 
+        } else {
+            synchronized (chatActivity) {
+                if (!StringUtils.safeEquals(chatActivity.getJID().getBareJID(), chatLine.getPeerBareJid())) {
+                    new NotificationCaller(chatLine).execute();
+                    sendCMAcknowledgeReceipt(chatLine);
+                }
+            }
         }
     }
 
