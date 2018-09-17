@@ -53,19 +53,6 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
         }
     }
 
-    protected void shutDownSDK() {
-        Platform.getInstance().shutdown();
-    }
-
-    protected void shutdownSdkAsync() {
-        TaskExecutor.getInstance().submit(new Runnable() {
-            @Override
-            public void run() {
-                shutDownSDK();
-            }
-        });
-    }
-
     protected void loadSDK() {
         SDKLoader.loadSDK(ApplicationProps.SERVER, 5222, this);
     }

@@ -31,7 +31,6 @@ import abs.sf.beach.android.R;
 import abs.sf.beach.fragment.AddParticipantFragment;
 import abs.sf.beach.utils.AddParticipantsListner;
 import abs.sf.beach.utils.AndroidUtils;
-import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidUserManager;
 
 
@@ -106,7 +105,8 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
     }
 
     private void setChatAdapter() {
-        chatRoom = DbManager.getInstance().getChatRoomDetails(roomJID.getBareJID());
+        AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+        chatRoom = userManager.getChatRoomDetails(roomJID);
         tvGroupType.setText(chatRoom.getAccessMode().val());
         Set<ChatRoom.ChatRoomMember> members = chatRoom.getMembers();
         tvParticipants.setText(members.size() + " Participants");
@@ -179,8 +179,8 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
 
     private List<Roster.RosterItem> getAddRecipients() {
         List<Roster.RosterItem> items = new ArrayList<>();
-
-        List<Roster.RosterItem> rosterItems = DbManager.getInstance().getRosterList();
+        AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+        List<Roster.RosterItem> rosterItems = userManager.getRosterItemList();
         if (rosterItems != null && rosterItems.size() > 0 && memberList.size() > 0) {
             for (Roster.RosterItem rItem : rosterItems) {
                 boolean isExist = false;

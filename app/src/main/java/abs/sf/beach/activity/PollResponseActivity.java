@@ -156,7 +156,7 @@ public class PollResponseActivity extends StringflowActivity {
     private void savePollResponse(String pollResponse){
         AndroidUserManager chatManager = (AndroidUserManager) Platform.getInstance().getUserManager();
 
-        chatManager.storePollResponse(pollId, pollResponse);
+      //  chatManager.storePollResponse(pollId, pollResponse);
         DbManager.getInstance().updatePollStatus(pollId, PollContent.PollStatus.RESPONDED);
         DbManager.getInstance().storePollResponse(pollId, pollResponse, Platform.getInstance().getUserJID());
         PollResponseActivity.this.finish();

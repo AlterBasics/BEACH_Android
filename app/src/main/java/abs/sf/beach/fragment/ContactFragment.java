@@ -15,12 +15,14 @@ import android.widget.EditText;
 
 import java.util.List;
 
+import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.CollectionUtils;
 import abs.ixi.client.xmpp.packet.Roster.RosterItem;
 import abs.sf.beach.activity.CreateGroupActivity;
 import abs.sf.beach.adapter.ContactAdapter;
 import abs.sf.beach.android.R;
 import abs.sf.client.android.db.DbManager;
+import abs.sf.client.android.managers.AndroidUserManager;
 
 public class ContactFragment extends Fragment {
     private RecyclerView recyclerViewContacts;
@@ -77,7 +79,8 @@ public class ContactFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            rosterItems = DbManager.getInstance().getRosterList();
+            AndroidUserManager userManager =  (AndroidUserManager) Platform.getInstance().getUserManager();
+            rosterItems = userManager.getRosterItemList();
             setContactAdapter();
         }
     }

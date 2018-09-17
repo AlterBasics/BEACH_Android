@@ -16,14 +16,10 @@ import java.util.List;
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.core.Session;
 import abs.ixi.client.util.StringUtils;
-import abs.ixi.client.util.UUIDGenerator;
 import abs.ixi.client.xmpp.JID;
 import abs.ixi.client.xmpp.packet.ChatRoom;
 import abs.sf.beach.android.R;
-import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidUserManager;
-
-import static abs.sf.beach.android.R.id.userName;
 
 public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapter.ViewHolder> {
 
@@ -88,7 +84,8 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
                 myJID.getBareJID())){
             userName = "you";
         }else {
-            userName = DbManager.getInstance().getUserName(member.getUserJID().getBareJID());
+            AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+            userName = userManager.getRosterItemName(member.getUserJID());
         }
         holder.tvContactName.setText(userName);
         holder.tvAffiliation.setText(member.getAffiliation().val());

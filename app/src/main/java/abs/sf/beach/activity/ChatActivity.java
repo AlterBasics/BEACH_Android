@@ -46,9 +46,10 @@ import abs.sf.beach.notification.NotificationGenerator;
 import abs.sf.beach.utils.ApplicationProps;
 import abs.sf.beach.utils.CustomTypingEditText;
 import abs.sf.beach.utils.FragmentListeners;
+import abs.sf.beach.utils.NotificationUtils;
 import abs.sf.beach.utils.VerticalSpaceDecorator;
-import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidChatManager;
+import abs.sf.client.android.managers.AndroidUserManager;
 import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.messaging.ChatListener;
 import abs.sf.client.android.notification.fcm.SFFcmService;
@@ -86,6 +87,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     private boolean isGroup;
 
     private AndroidChatManager chatManager;
+    private AndroidUserManager userManager;
 
     private final static int GROUP_DETAILS = 1;
 
@@ -149,9 +151,12 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
             tvHeader.setText(contactJID.getNode());
 
             loginBackground();
+
+            NotificationUtils.clearAllNotifications(ChatActivity.this);
         }
 
         this.chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
+        this.userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
 
         subscribeForChatline();
 
@@ -178,7 +183,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
             this.chatManager.sendChatInactivity(this.contactJID);
         }
 
-        DbManager.getInstance().updateUnreadCount(contactJID.getBareJID());
+        this.chatManager.markNoUnreadConversation(contactJID);
 
         System.out.println("Chat activity on pause");
     }
@@ -205,11 +210,11 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
 
     private void setChatAdapter() {
-        isGroup = DbManager.getInstance().isRosterGroup(contactJID.getBareJID());
+        isGroup = this.userManager.checkIsChatRoom(contactJID);
         userJID = (JID) Platform.getInstance().getSession().get(Session.KEY_USER_JID);
 
         if (isGroup) {
-            boolean isGroupMember = DbManager.getInstance().isChatRoomMember(contactJID, userJID);
+            boolean isGroupMember = this.userManager.checkIsChatRoomMember(userJID, contactJID);
 
             String from = getIntent().getStringExtra(FROM);
 
@@ -229,7 +234,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
             llPoll.setVisibility(View.GONE);
         }
 
-        this.chatLines = DbManager.getInstance().fetchConversationChatlines(contactJID, isGroup);
+        this.chatLines = this.chatManager.getAllConversationChatLines(contactJID, isGroup);
 
         adapter = new ChatAdapter(ChatActivity.this, chatLines, isGroup);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(ChatActivity.this);
@@ -265,10 +270,10 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
             @Override
             public void onClick(View v) {
                 if (isGroup) {
-                    boolean isGroupMember = DbManager.getInstance().isChatRoomMember(contactJID, userJID);
+                    boolean isGroupMember = userManager.checkIsChatRoomMember(contactJID, userJID);
                     Intent intent = new Intent(ChatActivity.this, GroupDetailsActivity.class);
                     intent.putExtra(CONTACT_JID, contactJID);
-                    intent.putExtra(NAME, getIntent().getStringExtra("name"));
+                    intent.putExtra(NAME, getIntent().getStringExtra(NAME));
                     intent.putExtra(IS_GROUP_MEMBER, isGroupMember);
                     startActivityForResult(intent, GROUP_DETAILS);
                 }
