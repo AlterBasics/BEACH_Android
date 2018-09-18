@@ -22,6 +22,7 @@ import abs.sf.beach.adapter.ConversationAdapter;
 import abs.sf.beach.android.R;
 import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidChatManager;
+import abs.sf.client.android.managers.AndroidUserManager;
 import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.messaging.ChatListener;
 import abs.sf.client.android.messaging.Conversation;
@@ -51,7 +52,8 @@ public class ConversationFragment extends Fragment implements ChatListener {
     public void onResume() {
         super.onResume();
         System.out.println("Conersation fragment on resume");
-        this.conversations = DbManager.getInstance().fetchConversations();
+        AndroidChatManager chatManager = (AndroidChatManager) Platform.getInstance().getChatManager();
+        this.conversations = chatManager.getAllConversations();
         setConversationAdapter();
     }
 
