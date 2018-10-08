@@ -1,8 +1,11 @@
 package abs.sf.beach.utils;
 
 public class ApplicationProps {
+    public static final String XMPP_SERVER = "alterbasics.com";
+    public static final int XMPP_SERVER_PORT = 5222;
+    public static final String MEDIA_SERVER="alterbasics.com";
+    public static final int MEDIA_SERVER_PORT = 5234;
     public static final String DOMAIN = "alterbasics.com";
-    public static final String SERVER = "alterbasics.com";
     public static final String APP_NAME = "Beach";
     public static final String REGID = "registration_id";
     public static final String USERNAME = "username";

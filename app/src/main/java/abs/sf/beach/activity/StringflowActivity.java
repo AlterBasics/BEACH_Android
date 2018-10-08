@@ -1,10 +1,8 @@
 package abs.sf.beach.activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 
 import abs.ixi.client.core.Platform;
@@ -54,7 +52,8 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
     }
 
     protected void loadSDK() {
-        SDKLoader.loadSDK(ApplicationProps.SERVER, 5222, this);
+        SDKLoader.loadSDK(ApplicationProps.XMPP_SERVER, ApplicationProps.XMPP_SERVER_PORT,
+                ApplicationProps.MEDIA_SERVER, ApplicationProps.MEDIA_SERVER_PORT, this);
     }
 
     protected void loginBackground() {
