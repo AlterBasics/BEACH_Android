@@ -71,7 +71,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
     private ImageView ivBack, ivNext;
     private TextView tvHeader, tvTyping;
     private List<ChatLine> chatLines;
-    private LinearLayout llAttach, llCamera, llGallery, llPoll;
+    private LinearLayout llAttach, llCamera, llGallery;
     private RelativeLayout rlMainChat;
     private Boolean isAttachOpen;
     private Fragment fragment;
@@ -121,7 +121,6 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         llAttach = (LinearLayout) findViewById(R.id.llAttach);
         llCamera = (LinearLayout) findViewById(R.id.llCamera);
         llGallery = (LinearLayout) findViewById(R.id.llGallery);
-        llPoll = (LinearLayout) findViewById(R.id.llPoll);
         rlMainChat = (RelativeLayout) findViewById(R.id.rlMainChat);
         displayPictureContainer = (FrameLayout) findViewById(R.id.displayPictureContainer);
         ActionBar actionBar = getSupportActionBar();
@@ -220,11 +219,9 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
             ivNext.setImageResource(R.mipmap.ic_info);
             ivNext.setVisibility(View.VISIBLE);
             chatMemberViewsHideShowOperation(isGroupMember);
-            llPoll.setVisibility(View.VISIBLE);
 
         } else {
             ivNext.setVisibility(View.INVISIBLE);
-            llPoll.setVisibility(View.GONE);
         }
 
         this.chatLines = this.chatManager.getAllConversationChatLines(contactJID, isGroup);
@@ -303,15 +300,6 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
             @Override
             public void onClick(View view) {
                 actionOnAttachLayout();
-            }
-        });
-
-        llPoll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ChatActivity.this, PollActivity.class);
-                intent.putExtra("poll", "create");
-                startActivity(intent);
             }
         });
 

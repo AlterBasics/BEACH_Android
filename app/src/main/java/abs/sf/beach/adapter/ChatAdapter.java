@@ -43,25 +43,18 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     public class PollViewHolder extends ViewHolder {
 
         public LinearLayout toLayout, fromLayout;
-        public TextView toQuestion, toMsgTime, fromQuestion, fromMsgTime, toName, toExpiryTime, fromExpiryTime;
+        public TextView toMsgTime, fromMsgTime, toName;
         public ImageView ivStatus;
-        public Button btnToRespond, btnFromRespond;
 
         public PollViewHolder(View itemView, Context c) {
             super(itemView);
 
             toLayout = (LinearLayout) itemView.findViewById(R.id.toLayout);
             fromLayout = (LinearLayout) itemView.findViewById(R.id.fromLayout);
-            toQuestion = (TextView) itemView.findViewById(R.id.toQuestion);
             toMsgTime = (TextView) itemView.findViewById(R.id.toMsgTime);
-            fromQuestion = (TextView) itemView.findViewById(R.id.fromQuestion);
             fromMsgTime = (TextView) itemView.findViewById(R.id.fromMsgTime);
             toName = (TextView) itemView.findViewById(R.id.toName);
-            toExpiryTime = (TextView) itemView.findViewById(R.id.toExpiryTime);
-            fromExpiryTime = (TextView) itemView.findViewById(R.id.fromExpiryTime);
             ivStatus = (ImageView) itemView.findViewById(R.id.ivStatus);
-            btnToRespond = (Button) itemView.findViewById(R.id.btnToRespond);
-            btnFromRespond = (Button) itemView.findViewById(R.id.btnFromRespond);
         }
     }
 
@@ -87,10 +80,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if(viewType == POLL){
-            return new PollViewHolder(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.adapter_poll, parent, false), context);
-        }
         return new TextViewHolder(LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.adapter_chat, parent, false), context);
     }
@@ -163,9 +152,5 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 }
                 break;
         }
-    }
-
-    private void openResponseActivity(long pollId){
-
     }
 }

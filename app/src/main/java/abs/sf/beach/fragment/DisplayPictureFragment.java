@@ -18,10 +18,7 @@ import android.widget.ImageView;
 import abs.ixi.client.util.CollectionUtils;
 import abs.sf.beach.android.R;
 import abs.sf.beach.utils.FragmentListeners;
-import abs.sf.beach.utils.PollActionPerformedListener;
 
-import static abs.sf.beach.android.R.id.etMessage;
-import static abs.sf.beach.android.R.id.recyclerViewPolls;
 
 
 public class DisplayPictureFragment extends Fragment {
