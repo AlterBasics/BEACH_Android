@@ -14,11 +14,10 @@ import android.widget.TextView;
 import java.util.List;
 
 import abs.ixi.client.util.DateUtils;
-import abs.sf.beach.activity.PollResponseActivity;
 import abs.sf.beach.android.R;
 import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.messaging.ChatLine;
-import abs.sf.client.android.messaging.PollContent;
+
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     private static final int POLL=1;
@@ -102,10 +101,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         ChatLine chatLine = this.chatLines.get(position);
 
         switch (chatLine.getContentType()){
-            case POLL:
-                PollViewHolder pollViewHolder = (PollViewHolder) holder;
-                setPollViews(chatLine, pollViewHolder);
-                break;
             default:
                 TextViewHolder textViewHolder = (TextViewHolder) holder;
                 setTextViews(chatLine, textViewHolder);
@@ -128,66 +123,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         return chatLines.size();
     }
 
-    private void setPollViews(final ChatLine chatLine, PollViewHolder holder){
-        final PollContent content = DbManager.getInstance().getPollDetails(chatLine.getContentId());
-        holder.btnToRespond.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openResponseActivity(chatLine.getContentId());
-            }
-        });
-        holder.btnFromRespond.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openResponseActivity(chatLine.getContentId());
-            }
-        });
-        switch (chatLine.getDirection()) {
-            case SEND:
-                holder.toLayout.setVisibility(View.GONE);
-                holder.fromLayout.setVisibility(View.VISIBLE);
-                holder.fromQuestion.setText(content.getQuestion());
-                holder.fromMsgTime.setText(chatLine.getDisplayTime());
-                holder.fromExpiryTime.setText("Poll expires on" + DateUtils.getDisplayTime(content.getExpiryTime()));
 
-                if(chatLine.getMessageStatus() == ChatLine.MessageStatus.NOT_DELIVERED_TO_SERVER){
-                    holder.ivStatus.setImageResource(R.mipmap.tick_unsent);
-
-                }else if(chatLine.getMessageStatus() == ChatLine.MessageStatus.DELIVERED_TO_SERVER){
-                    holder.ivStatus.setImageResource(R.mipmap.tick_sent);
-
-                }else if(chatLine.getMessageStatus() == ChatLine.MessageStatus.DELIVERED_TO_RECEIVER){
-                    holder.ivStatus.setImageResource(R.mipmap.tick_delivered);
-
-                }else if(chatLine.getMessageStatus() == ChatLine.MessageStatus.RECEIVER_IS_ACKNOWLEDGED){
-                    holder.ivStatus.setImageResource(R.mipmap.tick_delivered);
-
-                } else if(chatLine.getMessageStatus() == ChatLine.MessageStatus.RECEIVER_HAS_VIEWED){
-                    holder.ivStatus.setImageResource(R.mipmap.tick_read);
-                }
-                if(content.getStatus().name().equalsIgnoreCase(PollContent.PollStatus.RESPONDED.name())){
-                    holder.btnFromRespond.setText("You responded");
-                }
-                break;
-
-            case RECEIVE:
-                holder.fromLayout.setVisibility(View.GONE);
-                holder.toLayout.setVisibility(View.VISIBLE);
-                holder.toQuestion.setText(content.getQuestion());
-                holder.toMsgTime.setText(chatLine.getDisplayTime());
-                holder.toExpiryTime.setText("Poll expires on" + DateUtils.getDisplayTime(content.getExpiryTime()));
-                if (isGroup) {
-                    holder.toName.setVisibility(View.VISIBLE);
-                    holder.toName.setText(chatLine.getPeerName());
-                } else {
-                    holder.toName.setVisibility(View.GONE);
-                }
-                if(content.getStatus().name().equalsIgnoreCase(PollContent.PollStatus.RESPONDED.name())){
-                    holder.btnToRespond.setText("You responded");
-                }
-                break;
-        }
-    }
 
     private void setTextViews(ChatLine chatLine, TextViewHolder holder){
         switch (chatLine.getDirection()) {
@@ -230,8 +166,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     }
 
     private void openResponseActivity(long pollId){
-        Intent intent = new Intent(context, PollResponseActivity.class);
-        intent.putExtra("pollId", pollId);
-        context.startActivity(intent);
+
     }
 }
