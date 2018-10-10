@@ -54,7 +54,7 @@
             android:hint="Enter group name" />
 
         <Button
-            android:id="@+id/btnCreateGroup"
+            android:id="@+id/btnAddParticipant"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_below="@+id/etGroupName"
@@ -63,10 +63,16 @@
             android:background="@drawable/blue_corner"
             android:paddingLeft="@dimen/dimen_size_5"
             android:paddingRight="@dimen/dimen_size_5"
-            android:text="@string/create_group"
+            android:text="@string/add_participant"
             android:textAllCaps="false"
             android:textColor="@color/white" />
 
     </RelativeLayout>
+    <FrameLayout
+        android:id="@+id/addParticipantContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        android:visibility="gone" />
 
 </RelativeLayout>
