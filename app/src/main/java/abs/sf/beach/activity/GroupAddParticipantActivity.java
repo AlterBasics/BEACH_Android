@@ -16,13 +16,10 @@ import java.util.List;
 
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.CollectionUtils;
-import abs.ixi.client.util.StringUtils;
-import abs.ixi.client.xmpp.JID;
-import abs.ixi.client.xmpp.packet.ChatRoom;
 import abs.ixi.client.xmpp.packet.Roster;
 import abs.sf.beach.adapter.AddParticipantAdapter;
+import abs.sf.beach.adapter.GroupAddParticipantAdapter;
 import abs.sf.beach.android.R;
-import abs.sf.beach.utils.AddParticipantsListner;
 import abs.sf.client.android.managers.AndroidUserManager;
 
 public class GroupAddParticipantActivity extends StringflowActivity {
@@ -30,12 +27,10 @@ public class GroupAddParticipantActivity extends StringflowActivity {
     private TextView tvHeader;
     private EditText etMessage;
     private RecyclerView rvAddParticipant;
-    private AddParticipantAdapter adapter;
+    private GroupAddParticipantAdapter adapter;
     private  List<Roster.RosterItem> itemList;
-    private static JID roomJID;
     private  String groupName;
     private  String groupType;
-    private AddParticipantsListner participantsListner;
 
     @Override
     protected void onCreate( Bundle savedInstanceState) {
@@ -43,11 +38,7 @@ public class GroupAddParticipantActivity extends StringflowActivity {
         setContentView(R.layout.activity_add_member);
         initView();
         initClickListener();
-
-
-
-
-        adapter = new AddParticipantAdapter(itemList, participantsListner, null, groupName,context());
+        adapter = new GroupAddParticipantAdapter(itemList, null, groupName,context());
         rvAddParticipant.setLayoutManager(new LinearLayoutManager(context()));
         rvAddParticipant.setAdapter(adapter);
 
@@ -62,21 +53,32 @@ public class GroupAddParticipantActivity extends StringflowActivity {
         ivNext.setVisibility(View.INVISIBLE);
         etMessage = (EditText)findViewById(R.id.etMessage);
         rvAddParticipant = (RecyclerView)findViewById(R.id.rvAddParticipant);
-        participantsListner = (AddParticipantsListner) getApplication();
         this.itemList = getUserRosterItems();
         groupName = getIntent().getStringExtra("group_name");
         groupType = getIntent().getStringExtra("group_type");
     }
 
     private void initClickListener(){
-        ivBack.setOnClickListener(new View.OnClickListener() {
+
+        etMessage.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                participantsListner.add("backPress", null);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!CollectionUtils.isNullOrEmpty(itemList) && adapter!=null) {
+                    adapter.filterData(s);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
-
     }
+
     private List<Roster.RosterItem> getUserRosterItems() {
         AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
         return userManager.getRosterItemList();
