@@ -3,6 +3,7 @@ package abs.sf.beach.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -19,6 +20,7 @@ import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.client.android.managers.AndroidUserManager;
 
 public class CreateGroupActivity extends StringflowActivity{
+    private static final String TAG = "CreateGroupActivity";
     private Spinner spGroupType;
     private ImageView ivGroup;
     private Button btnAddParticipant;
@@ -78,6 +80,7 @@ public class CreateGroupActivity extends StringflowActivity{
         btnAddParticipant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+            Log.d(TAG,"ADD");
                 String groupName = etGroupName.getText().toString();
 
                 //TODO : Start taking group members list at he time of group creation.
@@ -86,12 +89,13 @@ public class CreateGroupActivity extends StringflowActivity{
                     AndroidUtils.showToast(CreateGroupActivity.this, "Please enter group name");
 
                 }else{
-                    Intent i1 = new Intent(CreateGroupActivity.this,AddMember.class);
+                    Intent i1 = new Intent(CreateGroupActivity.this,GroupAddParticipantActivity.class);
                     i1.putExtra("group name ", etGroupName.getText().toString());
+                    i1.putExtra("group type",spGroupType.getBaseline());
                     startActivity(i1);
 
 
-                   /* boolean created = false;
+                    boolean created = false;
 
                     if(StringUtils.safeEquals(selectedGroupType, ChatRoom.AccessMode.PUBLIC.val(), false)){
                        userManager.createPublicGroup(groupName, null);
@@ -102,16 +106,12 @@ public class CreateGroupActivity extends StringflowActivity{
 
                     if(created) {
                         //TODO : Show popup group created successfully
-                        Intent i1 = new Intent(CreateGroupActivity.this,AddMember.class);
-                        i1.putExtra("group name ", etGroupName.getText().toString());
-                        i1.putExtra("grp Type",spGroupType.getBaseline());
-                        startActivity(i1);
 
-                        CreateGroupActivity.this.finish();
+                     CreateGroupActivity.this.finish();
 
                     } else {
                         //TODO : Show popup group error pouup
-                    }*/
+                    }
                 }
             }
         });

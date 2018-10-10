@@ -25,15 +25,16 @@ import abs.sf.beach.android.R;
 import abs.sf.beach.utils.AddParticipantsListner;
 import abs.sf.client.android.managers.AndroidUserManager;
 
-public class AddMember extends StringflowActivity {
+public class GroupAddParticipantActivity extends StringflowActivity {
     private ImageView ivBack, ivNext;
     private TextView tvHeader;
     private EditText etMessage;
     private RecyclerView rvAddParticipant;
     private AddParticipantAdapter adapter;
-    private static List<Roster.RosterItem> itemList;
+    private  List<Roster.RosterItem> itemList;
     private static JID roomJID;
-    private static String groupName;
+    private  String groupName;
+    private  String groupType;
     private AddParticipantsListner participantsListner;
 
     @Override
@@ -42,14 +43,14 @@ public class AddMember extends StringflowActivity {
         setContentView(R.layout.activity_add_member);
         initView();
         initClickListener();
-        String grpName = getIntent().getStringExtra("group name");
+
 
 
 
         adapter = new AddParticipantAdapter(itemList, participantsListner, null, groupName,context());
         rvAddParticipant.setLayoutManager(new LinearLayoutManager(context()));
         rvAddParticipant.setAdapter(adapter);
-        getAddRecipients();
+
 
     }
 
@@ -62,6 +63,9 @@ public class AddMember extends StringflowActivity {
         etMessage = (EditText)findViewById(R.id.etMessage);
         rvAddParticipant = (RecyclerView)findViewById(R.id.rvAddParticipant);
         participantsListner = (AddParticipantsListner) getApplication();
+        this.itemList = getUserRosterItems();
+        this.groupName = "group name";
+        this.groupType = "group type";
     }
 
     private void initClickListener(){
@@ -73,7 +77,7 @@ public class AddMember extends StringflowActivity {
         });
 
     }
-    private List<Roster.RosterItem> getAddRecipients() {
+    private List<Roster.RosterItem> getUserRosterItems() {
         AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
         return userManager.getRosterItemList();
 
