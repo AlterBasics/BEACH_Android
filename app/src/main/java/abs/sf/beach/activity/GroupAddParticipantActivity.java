@@ -64,8 +64,8 @@ public class GroupAddParticipantActivity extends StringflowActivity {
         rvAddParticipant = (RecyclerView)findViewById(R.id.rvAddParticipant);
         participantsListner = (AddParticipantsListner) getApplication();
         this.itemList = getUserRosterItems();
-        this.groupName = "group name";
-        this.groupType = "group type";
+        groupName = getIntent().getStringExtra("group_name");
+        groupType = getIntent().getStringExtra("group_type");
     }
 
     private void initClickListener(){

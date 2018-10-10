@@ -90,8 +90,8 @@ public class CreateGroupActivity extends StringflowActivity{
 
                 }else{
                     Intent i1 = new Intent(CreateGroupActivity.this,GroupAddParticipantActivity.class);
-                    i1.putExtra("group name ", etGroupName.getText().toString());
-                    i1.putExtra("group type",spGroupType.getBaseline());
+                    i1.putExtra("group_name ", etGroupName.getText().toString());
+                    i1.putExtra("group_type",spGroupType.getBaseline());
                     startActivity(i1);
 
 
