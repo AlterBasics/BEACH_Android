@@ -5,58 +5,70 @@
     android:layout_height="60dp">
 
     <RelativeLayout
-        android:id="@+id/imageRelLayout"
-        android:layout_width="@dimen/dimen_size_40"
-        android:layout_height="@dimen/dimen_size_40"
-        android:layout_centerVertical="true">
+        android:id="@+id/rlSelectUSer"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:paddingLeft="@dimen/dimen_size_10"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:background="@color/white">
+
+        <RelativeLayout
+            android:id="@+id/imageRelLayout"
+            android:layout_width="@dimen/dimen_size_40"
+            android:layout_height="@dimen/dimen_size_40"
+            android:layout_centerVertical="true">
+
+            <ImageView
+                android:id="@+id/ivContactImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:background="@mipmap/user_placeholder" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/llContent"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dimen_size_10"
+            android:gravity="center_vertical"
+            android:layout_toRightOf="@+id/imageRelLayout"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvContactName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/dimen_size_10"
+                android:text="Mr. XYZ"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textview_size_14" />
+
+        </LinearLayout>
 
         <ImageView
-            android:id="@+id/ivContactImage"
+            android:id="@+id/ivTick"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:src="@mipmap/tick_sent"/>
+
+        <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:background="@mipmap/user_placeholder" />
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/imageRelLayout"
+            android:layout_marginLeft="@dimen/dimen_size_50"
+            android:layout_marginTop="@dimen/dimen_size_2"
+            android:layout_marginBottom="@dimen/dimen_size_2"
+            android:background="@color/grey_light"/>
+
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/llContent"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginRight="@dimen/dimen_size_10"
-        android:gravity="center_vertical"
-        android:layout_toRightOf="@+id/imageRelLayout"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tvContactName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:maxLines="1"
-            android:paddingLeft="@dimen/dimen_size_10"
-            android:text="Mr. XYZ"
-            android:textColor="@color/black"
-            android:textSize="@dimen/textview_size_14" />
-
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/ivTick"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:padding="10dp"
-        android:src="@mipmap/tick_sent"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@+id/imageRelLayout"
-        android:layout_marginLeft="@dimen/dimen_size_50"
-        android:layout_marginTop="@dimen/dimen_size_2"
-        android:layout_marginBottom="@dimen/dimen_size_2"
-        android:background="@color/grey_light"/>
 
 </RelativeLayout>

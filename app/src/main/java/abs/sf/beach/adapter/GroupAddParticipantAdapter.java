@@ -22,7 +22,6 @@ public class GroupAddParticipantAdapter extends RecyclerView.Adapter<GroupAddPar
     private String groupName;
     private String grouptype;
 
-
     private  int selectedPos = RecyclerView.NO_POSITION;
     private  List<JID> selectedContacts;
 
@@ -46,13 +45,15 @@ public class GroupAddParticipantAdapter extends RecyclerView.Adapter<GroupAddPar
             super(itemView);
             ivContactImage = (ImageView) itemView.findViewById(R.id.ivContactImage);
             tvContactName = (TextView) itemView.findViewById(R.id.tvContactName);
-            contactRow = (RelativeLayout)itemView.findViewById(R.id.rlContactRow);
+            contactRow = (RelativeLayout)itemView.findViewById(R.id.rlSelectUSer);
             tick = (ImageView)itemView.findViewById(R.id.ivTick);
 
 
             contactRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+
                     Roster.RosterItem item = items.get(getAdapterPosition());
                     if (selectedContacts.contains(item.getJid())){
                         selectedContacts.remove(item.getJid());
