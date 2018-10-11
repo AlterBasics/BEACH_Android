@@ -14,11 +14,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.CollectionUtils;
 import abs.ixi.client.util.StringUtils;
+import abs.ixi.client.xmpp.JID;
 import abs.ixi.client.xmpp.packet.ChatRoom;
 import abs.ixi.client.xmpp.packet.Roster;
 import abs.sf.beach.adapter.GroupAddParticipantAdapter;
@@ -35,6 +37,7 @@ public class GroupAddParticipantActivity extends StringflowActivity {
     private List<Roster.RosterItem> allRosterItems;
     private String groupName;
     private String groupType;
+    private  List<JID> selectedGroupMembers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +45,7 @@ public class GroupAddParticipantActivity extends StringflowActivity {
         setContentView(R.layout.activity_group_add_participant);
         initView();
         initClickListener();
-        adapter = new GroupAddParticipantAdapter(allRosterItems, context());
+        adapter = new GroupAddParticipantAdapter(allRosterItems, selectedGroupMembers, context());
         rvAddParticipant.setLayoutManager(new LinearLayoutManager(context()));
         rvAddParticipant.setAdapter(adapter);
 
@@ -63,8 +66,10 @@ public class GroupAddParticipantActivity extends StringflowActivity {
         this.allRosterItems = getUserRosterItems();
         this.groupName = getIntent().getStringExtra("group_name");
         this.groupType = getIntent().getStringExtra("group_type");
+        this.selectedGroupMembers = new ArrayList<>();
 
         ActionBar actionBar = getSupportActionBar();
+
         if (actionBar != null) {
             actionBar.hide();
         }
@@ -104,10 +109,10 @@ public class GroupAddParticipantActivity extends StringflowActivity {
                 AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
 
                 if (StringUtils.safeEquals(groupType, ChatRoom.AccessMode.PUBLIC.val(), false)) {
-                    created = userManager.createPublicGroup(groupName, null);
+                    created = userManager.createPublicGroup(groupName, selectedGroupMembers);
 
                 } else if (StringUtils.safeEquals(groupType, ChatRoom.AccessMode.PRIVATE.val(), false)) {
-                    created = userManager.createPrivateGroup(groupName, null);
+                    created = userManager.createPrivateGroup(groupName, selectedGroupMembers);
                 }
 
                 if (created) {
@@ -126,7 +131,6 @@ public class GroupAddParticipantActivity extends StringflowActivity {
     private List<Roster.RosterItem> getUserRosterItems() {
         AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
         return userManager.getRosterItemList();
-
     }
 
 }

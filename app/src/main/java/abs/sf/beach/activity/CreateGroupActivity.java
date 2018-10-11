@@ -77,16 +77,16 @@ public class CreateGroupActivity extends StringflowActivity{
             @Override
             public void onClick(View view) {
             Log.d(TAG,"ADD");
-                String groupName = etGroupName.getText().toString();
+                final String groupName = etGroupName.getText().toString();
 
                 if(StringUtils.isNullOrEmpty(groupName)){
                     AndroidUtils.showToast(CreateGroupActivity.this, "Please enter group name");
 
-                }else{
-                    Intent i1 = new Intent(CreateGroupActivity.this,GroupAddParticipantActivity.class);
-                    i1.putExtra("group_name ", groupName);
-                    i1.putExtra("group_type",selectedGroupType);  //spGroupType.getBaseline());
-                    startActivity(i1);
+                } else {
+                    Intent intent = new Intent(CreateGroupActivity.this, GroupAddParticipantActivity.class);
+                    intent.putExtra("group_name", groupName);
+                    intent.putExtra("group_type", selectedGroupType);  //spGroupType.getBaseline());
+                    startActivity(intent);
                 }
             }
         });
