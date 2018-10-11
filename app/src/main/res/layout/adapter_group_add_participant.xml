@@ -41,6 +41,15 @@
 
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/ivTick"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:padding="10dp"
+        android:src="@mipmap/tick_sent"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"

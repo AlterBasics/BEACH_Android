@@ -38,7 +38,7 @@ public class GroupAddParticipantActivity extends StringflowActivity {
         setContentView(R.layout.activity_group_add_participant);
         initView();
         initClickListener();
-        adapter = new GroupAddParticipantAdapter(itemList, null, groupName,context());
+        adapter = new GroupAddParticipantAdapter(itemList, groupType, groupName,context());
         rvAddParticipant.setLayoutManager(new LinearLayoutManager(context()));
         rvAddParticipant.setAdapter(adapter);
 
