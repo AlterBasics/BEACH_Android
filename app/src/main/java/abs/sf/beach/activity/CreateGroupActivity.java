@@ -29,16 +29,12 @@ public class CreateGroupActivity extends StringflowActivity{
     private ImageView ivBack, ivNext;
     private TextView tvHeader;
 
-    private AndroidUserManager userManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
         initView();
         initOnclickListener();
-
-        this.userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
     }
 
     private void initView(){
@@ -83,35 +79,14 @@ public class CreateGroupActivity extends StringflowActivity{
             Log.d(TAG,"ADD");
                 String groupName = etGroupName.getText().toString();
 
-                //TODO : Start taking group members list at he time of group creation.
-
                 if(StringUtils.isNullOrEmpty(groupName)){
                     AndroidUtils.showToast(CreateGroupActivity.this, "Please enter group name");
 
                 }else{
                     Intent i1 = new Intent(CreateGroupActivity.this,GroupAddParticipantActivity.class);
-                    i1.putExtra("group_name ","Add Participant");
+                    i1.putExtra("group_name ", groupName);
                     i1.putExtra("group_type",spGroupType.getBaseline());
                     startActivity(i1);
-
-
-                    boolean created = false;
-
-                    if(StringUtils.safeEquals(selectedGroupType, ChatRoom.AccessMode.PUBLIC.val(), false)){
-                       userManager.createPublicGroup(groupName, null);
-
-                    } else if(StringUtils.safeEquals(selectedGroupType, ChatRoom.AccessMode.PRIVATE.val(), false)){
-                        userManager.createPrivateGroup(groupName, null);
-                    }
-
-                    if(created) {
-                        //TODO : Show popup group created successfully
-
-                     CreateGroupActivity.this.finish();
-
-                    } else {
-                        //TODO : Show popup group error pouup
-                    }
                 }
             }
         });
