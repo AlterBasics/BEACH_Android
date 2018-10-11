@@ -43,7 +43,7 @@ public class GroupAddParticipantAdapter extends RecyclerView.Adapter<GroupAddPar
 
     @Override
     public  GroupAddParticipantAdapter.ParticipantViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_group_add_participant,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_group_add_participant,parent,false);
         return  new ParticipantViewHolder(view);
 
     }

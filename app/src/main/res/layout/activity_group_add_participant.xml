@@ -1,53 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rlContactRow"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="60dp">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/imageRelLayout"
-        android:layout_width="@dimen/dimen_size_40"
-        android:layout_height="@dimen/dimen_size_40"
-        android:layout_centerVertical="true">
-
-        <ImageView
-            android:id="@+id/ivContactImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:background="@mipmap/user_placeholder" />
-
-    </RelativeLayout>
+    <include
+        android:id="@+id/headerLayout"
+        layout="@layout/headers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <LinearLayout
-        android:id="@+id/llContent"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginRight="@dimen/dimen_size_10"
-        android:gravity="center_vertical"
-        android:layout_toRightOf="@+id/imageRelLayout"
-        android:orientation="vertical">
+        android:id="@+id/searchLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@drawable/chatedt_corner">
 
-        <TextView
-            android:id="@+id/tvContactName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+        <EditText
+            android:id="@+id/etMessage"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:maxLines="1"
-            android:paddingLeft="@dimen/dimen_size_10"
-            android:text="Mr. XYZ"
+            android:singleLine="true"
+            android:hint="@string/search"
+            android:layout_margin="@dimen/dimen_size_3"
+            android:background="@drawable/rect_send_layout"
+            android:paddingLeft="@dimen/dimen_size_2"
+            android:paddingRight="@dimen/dimen_size_2"
+            android:textSize="@dimen/textview_size_16"
             android:textColor="@color/black"
-            android:textSize="@dimen/textview_size_14" />
+            android:clickable="true"/>
 
     </LinearLayout>
 
-    <View
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvAddParticipant"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@+id/imageRelLayout"
-        android:layout_marginLeft="@dimen/dimen_size_50"
-        android:layout_marginTop="@dimen/dimen_size_2"
-        android:layout_marginBottom="@dimen/dimen_size_2"
-        android:background="@color/grey_light"/>
+        android:layout_height="match_parent"
+        android:padding="@dimen/dimen_size_5"
+        android:clipToPadding="false"/>
 
-</RelativeLayout>
+</LinearLayout>

@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:paddingLeft="5dp"
     android:paddingRight="5dp">
-    <!-- receive activity_group_add_participant starts here -->
+    <!-- receive adapter_group_add_participant starts here -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -82,8 +82,8 @@
             android:layout_weight="0.20"
             android:visibility="invisible" />
     </LinearLayout>
-    <!-- receive activity_group_add_participant ends here -->
-    <!-- send activity_group_add_participant starts here -->
+    <!-- receive adapter_group_add_participant ends here -->
+    <!-- send adapter_group_add_participant starts here -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -162,5 +162,5 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-    <!-- send activity_group_add_participant ends here -->
+    <!-- send adapter_group_add_participant ends here -->
 </LinearLayout>
