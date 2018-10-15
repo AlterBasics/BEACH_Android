@@ -38,7 +38,7 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
     private RecyclerView recyclerView;
     private ImageView ivBack, ivNext, ivContactImage;
     private TextView tvHeader, tvParticipants, tvAddParticipants, tvGroupName, tvGroupType;
-    private CardView cvExitGroup, cvReportSpam;
+    private CardView cvExitGroup, cvReportSpam,cvDeleteGroup;
     private FrameLayout addParticipantContainer;
     private ChatRoom chatRoom;
     private List<ChatRoom.ChatRoomMember> memberList;
@@ -94,8 +94,9 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         tvHeader.setVisibility(View.GONE);
         isGroupMember = getIntent().getBooleanExtra("isGroupMember", false);
         isFragmentOpen = false;
+        cvDeleteGroup = (CardView)findViewById(R.id.cvDeleteGroup);
         if (!isGroupMember) {
-            ((TextView) findViewById(R.id.tvExitGroup)).setText("Delete Group");
+           // ((TextView) findViewById(R.id.tvExitGroup)).setText("Delete Group");
         }
 
         ActionBar actionBar = getSupportActionBar();
@@ -158,6 +159,39 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
                 showReportSpamAlert();
             }
         });
+
+        cvDeleteGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(GroupDetailsActivity.this);
+                dialog.setMessage(" Are you sure want to delete this group?");
+                dialog.setCancelable(true);
+                dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        AndroidUtils.showToast(GroupDetailsActivity.this, " Delete this group.");
+
+                        AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                        //TODO: Only leave group remove delete call
+                        //userManager.destroyChatRoom(roomJID,"No reason");
+
+                        userManager.sendLeaveChatRoomRequest(roomJID);
+
+                        goBack(true, false);
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+            }
+        });
+
         tvAddParticipants.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

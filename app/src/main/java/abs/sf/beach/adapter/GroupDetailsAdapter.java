@@ -1,13 +1,19 @@
 package abs.sf.beach.adapter;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,7 +29,7 @@ import abs.sf.client.android.managers.AndroidUserManager;
 
 public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapter.ViewHolder> {
 
-    private Context context;
+    private  Context context;
     private List<ChatRoom.ChatRoomMember> memberList;
     private JID roomJID, myJID;
     private ChatRoom.ChatRoomMember member;
@@ -40,7 +46,8 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
 
         public RelativeLayout rlContactRow;
         public ImageView ivContactImage, ivRemoveParticipants;
-        public TextView tvContactName, tvAffiliation;
+        public TextView  tvContactName,tvAffiliation;
+
 
         public ViewHolder(View itemView, Context c) {
             super(itemView);
@@ -96,9 +103,58 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
         return memberList.size();
     }
 
-    private void showRemoveParticipantAlert(final JID jid, final int pos){
+    private void showRemoveParticipantAlert(final JID jid, final int pos) {
+        LayoutInflater myLayout = LayoutInflater.from(context);
+        final  View dialogView = myLayout.inflate(R.layout.dialog_layout,null);
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setMessage("Are you sure wanna remove this member from group?" );
+        AlertDialog dialog1 = dialog.create();
+        dialog.setView(dialogView);
+        dialog1.show();
+       final Button btn = (Button)dialogView.findViewById(R.id.tvRemove);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+
+                //TODO: neeed to re handle it
+                boolean removed = userManager.removeChatRoomMember(roomJID, jid);
+
+                memberList.remove(pos);
+                notifyDataSetChanged();
+                //dialog.dismiss();
+            }
+        });
+
+
+        Button btn2 = (Button)dialogView.findViewById(R.id.tvOwner);
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+
+                //TODO: neeed to re handle it
+                boolean removed = userManager.removeChatRoomMember(roomJID, jid);
+
+                memberList.remove(pos);
+                notifyDataSetChanged();
+               // dialog.dismiss();
+            }
+        });
+        Button btn3 = (Button)dialogView.findViewById(R.id.tvAdmin);
+        btn3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+
+                //TODO: neeed to re handle it
+                boolean removed = userManager.removeChatRoomMember(roomJID, jid);
+
+                memberList.remove(pos);
+                notifyDataSetChanged();
+               // dialog.dismiss();
+            }
+        });
+        //dialog.setMessage("remove");
         dialog.setCancelable(true);
         dialog.setPositiveButton("EXIT", new DialogInterface.OnClickListener() {
             @Override
@@ -120,5 +176,10 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
             }
         });
         dialog.show();
+
     }
+
 }
+
+
+

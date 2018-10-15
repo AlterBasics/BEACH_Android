@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/tvRemove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="Remove"
+        android:textSize="10sp"
+        android:gravity="center"/>
+
+    <Button
+        android:id="@+id/tvOwner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="Make Group Owner"
+        android:layout_marginTop="10dp"
+        android:textSize="10sp"
+        android:gravity="center"/>
+
+    <Button
+        android:id="@+id/tvAdmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="Make Group Admin"
+        android:layout_marginTop="10dp"
+        android:textSize="10sp"
+        android:gravity="center"/>
+
+</LinearLayout>
