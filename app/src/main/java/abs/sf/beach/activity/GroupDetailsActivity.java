@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ import abs.sf.client.android.managers.AndroidUserManager;
 
 public class GroupDetailsActivity extends StringflowActivity implements AddParticipantsListner {
     private RecyclerView recyclerView;
-    private ImageView ivBack, ivNext, ivContactImage;
+    private ImageView ivBack, ivNext, ivContactImage,ivEdit;
     private TextView tvHeader, tvParticipants, tvAddParticipants, tvGroupName, tvGroupType;
     private CardView cvExitGroup, cvReportSpam,cvDeleteGroup;
     private FrameLayout addParticipantContainer;
@@ -47,6 +48,7 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
     private boolean isFragmentOpen;
     private boolean isGroupMember;
     private GroupDetailsAdapter adapter;
+    String subject;
 
 
     @Override
@@ -78,6 +80,7 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
     private void initView() {
         ivBack = (ImageView) findViewById(R.id.ivBack);
         ivNext = (ImageView) findViewById(R.id.ivNext);
+        ivEdit = (ImageView) findViewById(R.id.ivEditName);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         tvHeader = (TextView) findViewById(R.id.tvHeader);
         tvParticipants = (TextView) findViewById(R.id.tvParticipants);
@@ -90,7 +93,8 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         tvGroupType = (TextView) findViewById(R.id.tvGroupType);
         ivContactImage = (ImageView) findViewById(R.id.ivContactImage);
         roomJID = (JID) getIntent().getSerializableExtra("jid");
-        tvGroupName.setText(getIntent().getStringExtra("name"));
+        tvGroupName.setText(getIntent().getStringExtra("subject"));
+        subject = tvGroupName.getText().toString();
         tvHeader.setVisibility(View.GONE);
         isGroupMember = getIntent().getBooleanExtra("isGroupMember", false);
         isFragmentOpen = false;
@@ -174,9 +178,9 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
 
                         AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
                         //TODO: Only leave group remove delete call
-                        //userManager.destroyChatRoom(roomJID,"No reason");
+                        userManager.destroyChatRoom(roomJID,"No reason");
 
-                        userManager.sendLeaveChatRoomRequest(roomJID);
+                       // userManager.sendLeaveChatRoomRequest(roomJID);
 
                         goBack(true, false);
                         dialog.dismiss();
@@ -197,6 +201,20 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
             public void onClick(View v) {
                 List<Roster.RosterItem> items = getAddRecipients();
                 openFragment(AddParticipantFragment.newInstance(items, roomJID, getIntent().getStringExtra("name")));
+            }
+        });
+        ivEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AndroidUserManager userManager = (AndroidUserManager)Platform.getInstance().getUserManager();
+                boolean edit = userManager.updateRoomSubject(roomJID,subject);
+
+                if (edit){
+                    Toast.makeText(GroupDetailsActivity.this,"Group Name changed",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(GroupDetailsActivity.this,"Something went wrong",Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

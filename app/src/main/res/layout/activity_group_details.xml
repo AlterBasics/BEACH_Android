@@ -64,7 +64,6 @@
                             android:layout_gravity="center_vertical"
                             android:maxLines="1"
                             android:paddingLeft="@dimen/dimen_size_10"
-                            android:text="Group Name"
                             android:textColor="@color/black"
                             android:textSize="@dimen/textview_size_14" />
 
@@ -79,32 +78,14 @@
                             android:textSize="12sp" />
 
                     </LinearLayout>
-
-                    <android.support.v7.widget.CardView
-                        android:id="@+id/cvDeleteGroup"
-                        android:layout_width="120dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginEnd="10dp"
+                    <ImageView
+                        android:id="@+id/ivEditName"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_marginTop="4dp"
-                        card_view:cardBackgroundColor="@color/colorPrimary"
-                        >
-
-                        <TextView
-                            android:id="@+id/btnDeleteGroup"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Delete Group"
-                            android:gravity="center"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="5dp"
-                            android:textColor="@color/white"
-                            android:textSize="14sp"
-                            android:textStyle="bold"/>
-
-                    </android.support.v7.widget.CardView>
-
+                        android:background="@drawable/ic_pencil_blue"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="@dimen/dimen_size_5"/>
 
                 </RelativeLayout>
 
@@ -173,6 +154,28 @@
             android:layout_alignParentBottom="true"
             android:layout_margin="@dimen/dimen_size_5"
             android:orientation="horizontal">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cvDeleteGroup"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="2.5dp"
+                android:layout_weight="0.5"
+                card_view:cardBackgroundColor="@color/colorPrimary"
+                card_view:cardCornerRadius="@dimen/dimen_size_1">
+
+                <TextView
+                    android:id="@+id/tvDeleteGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="Delete group"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
                 android:id="@+id/cvExitGroup"

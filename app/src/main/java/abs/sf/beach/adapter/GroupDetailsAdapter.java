@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ import abs.ixi.client.core.Session;
 import abs.ixi.client.util.StringUtils;
 import abs.ixi.client.xmpp.JID;
 import abs.ixi.client.xmpp.packet.ChatRoom;
+import abs.sf.beach.activity.GroupDetailsActivity;
 import abs.sf.beach.android.R;
 import abs.sf.client.android.managers.AndroidUserManager;
 
@@ -106,57 +108,67 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
     private void showRemoveParticipantAlert(final JID jid, final int pos) {
         LayoutInflater myLayout = LayoutInflater.from(context);
         final  View dialogView = myLayout.inflate(R.layout.dialog_layout,null);
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        AlertDialog dialog1 = dialog.create();
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+       // final AlertDialog dialog1 = dialog.create();
         dialog.setView(dialogView);
-        dialog1.show();
-       final Button btn = (Button)dialogView.findViewById(R.id.tvRemove);
-        btn.setOnClickListener(new View.OnClickListener() {
+
+       final TextView tv1 = (TextView) dialogView.findViewById(R.id.tvRemove);
+        tv1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                //TODO: neeed to re handle it
+                 boolean removed =  userManager.removeChatRoomMember(roomJID, jid);
+                 if (removed){
+                    memberList.remove(pos);
+                    notifyDataSetChanged();
+                    //dialog.dismiss();
+                }
+                 else{
+                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        TextView tv2 = (TextView) dialogView.findViewById(R.id.tvOwner);
+        tv2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                //TODO: neeed to re handle it
+                boolean success = userManager.addChatRoomOwner(roomJID, jid);
+                 if (success){
+                     memberList.get(pos);
+                     notifyDataSetChanged();
+                     // dialog.dismiss();
+                 }
+                 else {
+                     Toast.makeText(context,"Something went wrong",Toast.LENGTH_LONG).show();
+                 }
+
+            }
+        });
+        TextView tv3 = (TextView) dialogView.findViewById(R.id.tvAdmin);
+        tv3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
 
                 //TODO: neeed to re handle it
-                boolean removed = userManager.removeChatRoomMember(roomJID, jid);
+                boolean makeAdmin = userManager.addChatRoomAdmin(roomJID, jid);
+                if (makeAdmin){
+                    memberList.get(pos);
+                    notifyDataSetChanged();
+                    //dialog1.dismiss();
+                }
+                else{
+                    Toast.makeText(context,"Sommething went wrong",Toast.LENGTH_SHORT).show();
+                }
 
-                memberList.remove(pos);
-                notifyDataSetChanged();
-                //dialog.dismiss();
             }
         });
-
-
-        Button btn2 = (Button)dialogView.findViewById(R.id.tvOwner);
-        btn2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-
-                //TODO: neeed to re handle it
-                boolean removed = userManager.removeChatRoomMember(roomJID, jid);
-
-                memberList.remove(pos);
-                notifyDataSetChanged();
-               // dialog.dismiss();
-            }
-        });
-        Button btn3 = (Button)dialogView.findViewById(R.id.tvAdmin);
-        btn3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-
-                //TODO: neeed to re handle it
-                boolean removed = userManager.removeChatRoomMember(roomJID, jid);
-
-                memberList.remove(pos);
-                notifyDataSetChanged();
-               // dialog.dismiss();
-            }
-        });
-        //dialog.setMessage("remove");
-        dialog.setCancelable(true);
-        dialog.setPositiveButton("EXIT", new DialogInterface.OnClickListener() {
+        dialog.show();
+       /* dialog.setPositiveButton("EXIT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
@@ -172,10 +184,10 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
         dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+                dialog1.dismiss();
             }
-        });
-        dialog.show();
+        }); */
+
 
     }
 
