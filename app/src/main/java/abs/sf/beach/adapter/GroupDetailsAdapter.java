@@ -109,8 +109,9 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
         LayoutInflater myLayout = LayoutInflater.from(context);
         final  View dialogView = myLayout.inflate(R.layout.dialog_layout,null);
         final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-       // final AlertDialog dialog1 = dialog.create();
-        dialog.setView(dialogView);
+        final AlertDialog dialog1 = dialog.create();
+        dialog1.setView(dialogView);
+        dialog1.show();
 
        final TextView tv1 = (TextView) dialogView.findViewById(R.id.tvRemove);
         tv1.setOnClickListener(new View.OnClickListener() {
@@ -119,10 +120,11 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
                 AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
                 //TODO: neeed to re handle it
                  boolean removed =  userManager.removeChatRoomMember(roomJID, jid);
+                memberList.remove(pos);
+                notifyDataSetChanged();
+                dialog1.dismiss();
                  if (removed){
-                    memberList.remove(pos);
-                    notifyDataSetChanged();
-                    //dialog.dismiss();
+
                 }
                  else{
                     Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
@@ -137,10 +139,11 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
                 AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
                 //TODO: neeed to re handle it
                 boolean success = userManager.addChatRoomOwner(roomJID, jid);
-                 if (success){
-                     memberList.get(pos);
-                     notifyDataSetChanged();
-                     // dialog.dismiss();
+                memberList.get(pos);
+                notifyDataSetChanged();
+                dialog1.dismiss();
+                if (success){
+
                  }
                  else {
                      Toast.makeText(context,"Something went wrong",Toast.LENGTH_LONG).show();
@@ -156,10 +159,11 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
 
                 //TODO: neeed to re handle it
                 boolean makeAdmin = userManager.addChatRoomAdmin(roomJID, jid);
+                memberList.get(pos);
+                notifyDataSetChanged();
+                dialog1.dismiss();
                 if (makeAdmin){
-                    memberList.get(pos);
-                    notifyDataSetChanged();
-                    //dialog1.dismiss();
+
                 }
                 else{
                     Toast.makeText(context,"Sommething went wrong",Toast.LENGTH_SHORT).show();
@@ -167,7 +171,6 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
 
             }
         });
-        dialog.show();
        /* dialog.setPositiveButton("EXIT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

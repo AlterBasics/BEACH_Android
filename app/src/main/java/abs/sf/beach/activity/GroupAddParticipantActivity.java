@@ -26,6 +26,7 @@ import abs.ixi.client.xmpp.packet.Roster;
 import abs.sf.beach.adapter.GroupAddParticipantAdapter;
 import abs.sf.beach.android.R;
 import abs.sf.beach.utils.AndroidUtils;
+import abs.sf.beach.utils.CommonConstants;
 import abs.sf.client.android.managers.AndroidUserManager;
 
 public class GroupAddParticipantActivity extends StringflowActivity {
@@ -45,11 +46,16 @@ public class GroupAddParticipantActivity extends StringflowActivity {
         setContentView(R.layout.activity_group_add_participant);
         initView();
         initClickListener();
-        adapter = new GroupAddParticipantAdapter(allRosterItems, selectedGroupMembers, context());
-        rvAddParticipant.setLayoutManager(new LinearLayoutManager(context()));
-        rvAddParticipant.setAdapter(adapter);
+    }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.allRosterItems = getUserRosterItems();
+        this.groupName = getIntent().getStringExtra("group_name");
+        this.groupType = getIntent().getStringExtra("group_type");
+        this.selectedGroupMembers = new ArrayList<>();
+        setAdapter();
     }
 
     private void initView() {
@@ -63,10 +69,6 @@ public class GroupAddParticipantActivity extends StringflowActivity {
         ivNext.setVisibility(View.INVISIBLE);
         etMessage = (EditText) findViewById(R.id.etMessage);
         rvAddParticipant = (RecyclerView) findViewById(R.id.rvAddParticipant);
-        this.allRosterItems = getUserRosterItems();
-        this.groupName = getIntent().getStringExtra("group_name");
-        this.groupType = getIntent().getStringExtra("group_type");
-        this.selectedGroupMembers = new ArrayList<>();
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -127,6 +129,13 @@ public class GroupAddParticipantActivity extends StringflowActivity {
             }
         });
     }
+
+    private void setAdapter() {
+        adapter = new GroupAddParticipantAdapter(allRosterItems, selectedGroupMembers, context());
+        rvAddParticipant.setLayoutManager(new LinearLayoutManager(context()));
+        rvAddParticipant.setAdapter(adapter);
+    }
+
 
     private List<Roster.RosterItem> getUserRosterItems() {
         AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();

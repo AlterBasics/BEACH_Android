@@ -32,6 +32,7 @@ import abs.sf.beach.android.R;
 import abs.sf.beach.fragment.AddParticipantFragment;
 import abs.sf.beach.utils.AddParticipantsListner;
 import abs.sf.beach.utils.AndroidUtils;
+import abs.sf.beach.utils.CommonConstants;
 import abs.sf.client.android.managers.AndroidUserManager;
 
 
@@ -56,8 +57,17 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_details);
         initView();
-        setChatAdapter();
         initOnclickListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        roomJID = (JID) getIntent().getSerializableExtra("jid");
+        tvGroupName.setText(getIntent().getStringExtra("name"));
+        subject = tvGroupName.getText().toString();
+        isGroupMember = getIntent().getBooleanExtra("isGroupMember", false);
+        setChatAdapter();
     }
 
     @Override
@@ -92,11 +102,7 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         tvGroupName = (TextView) findViewById(R.id.tvGroupName);
         tvGroupType = (TextView) findViewById(R.id.tvGroupType);
         ivContactImage = (ImageView) findViewById(R.id.ivContactImage);
-        roomJID = (JID) getIntent().getSerializableExtra("jid");
-        tvGroupName.setText(getIntent().getStringExtra("subject"));
-        subject = tvGroupName.getText().toString();
         tvHeader.setVisibility(View.GONE);
-        isGroupMember = getIntent().getBooleanExtra("isGroupMember", false);
         isFragmentOpen = false;
         cvDeleteGroup = (CardView)findViewById(R.id.cvDeleteGroup);
         if (!isGroupMember) {
@@ -108,6 +114,7 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
             actionBar.hide();
         }
     }
+
 
     private void setChatAdapter() {
         AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();

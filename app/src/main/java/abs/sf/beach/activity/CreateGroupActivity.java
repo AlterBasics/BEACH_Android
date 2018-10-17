@@ -46,7 +46,7 @@ public class CreateGroupActivity extends StringflowActivity{
         ivNext = (ImageView) findViewById(R.id.ivNext);
         ivNext.setVisibility(View.INVISIBLE);
         tvHeader = (TextView) findViewById(R.id.tvHeader);
-        tvHeader.setText(getIntent().getStringExtra("name"));
+        tvHeader.setText("Create Group");//getIntent().getStringExtra("name"));
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar!=null){
