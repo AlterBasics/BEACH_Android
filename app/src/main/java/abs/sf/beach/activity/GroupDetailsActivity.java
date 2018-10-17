@@ -33,6 +33,7 @@ import abs.sf.beach.fragment.AddParticipantFragment;
 import abs.sf.beach.utils.AddParticipantsListner;
 import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.beach.utils.CommonConstants;
+import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidUserManager;
 
 
@@ -49,7 +50,6 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
     private boolean isFragmentOpen;
     private boolean isGroupMember;
     private GroupDetailsAdapter adapter;
-    String subject;
 
 
     @Override
@@ -63,16 +63,22 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
     @Override
     protected void onResume() {
         super.onResume();
-        roomJID = (JID) getIntent().getSerializableExtra("jid");
-        tvGroupName.setText(getIntent().getStringExtra("name"));
-        subject = tvGroupName.getText().toString();
-        isGroupMember = getIntent().getBooleanExtra("isGroupMember", false);
+
+        loadSDK();
+
+        this.roomJID = (JID) getIntent().getSerializableExtra(CommonConstants.JID);
+        AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+        this.chatRoom = userManager.getChatRoomDetails(this.roomJID);
+        this.memberList = new ArrayList<>(this.chatRoom.getMembers());
+        this.isGroupMember = userManager.checkIsChatRoomMember(Platform.getInstance().getUserJID(), this.roomJID);
+
         setChatAdapter();
     }
 
     @Override
     public void add(String action, Roster.RosterItem item) {
         if(StringUtils.safeEquals(action, "requestAddParticipant")){
+
             ChatRoom.ChatRoomMember member =  chatRoom.new ChatRoomMember(item.getJid(),item.getJid().getNode());
             memberList.add(member);
             if(adapter!=null){
@@ -105,10 +111,7 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         tvHeader.setVisibility(View.GONE);
         isFragmentOpen = false;
         cvDeleteGroup = (CardView)findViewById(R.id.cvDeleteGroup);
-        if (!isGroupMember) {
-           // ((TextView) findViewById(R.id.tvExitGroup)).setText("Delete Group");
-        }
-
+        //TODO: show only for owner
         ActionBar actionBar = getSupportActionBar();
         if(actionBar!=null){
             actionBar.hide();
@@ -117,12 +120,11 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
 
 
     private void setChatAdapter() {
-        AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-        chatRoom = userManager.getChatRoomDetails(roomJID);
         tvGroupType.setText(chatRoom.getAccessMode().val());
-        Set<ChatRoom.ChatRoomMember> members = chatRoom.getMembers();
-        tvParticipants.setText(members.size() + " Participants");
-        memberList = new ArrayList<>(members);
+        tvParticipants.setText(memberList.size() + " Participants");
+
+        tvGroupName.setText(this.chatRoom.getSubject());
+
         ChatRoom.ChatRoomMember cm = getChatRoomMember(memberList);
         if (cm != null) {
             if (!StringUtils.isNullOrEmpty(cm.getAffiliation().val()) && StringUtils.safeEquals(cm.getAffiliation().val(), ChatRoom.Affiliation.ADMIN.val()) ||
@@ -213,15 +215,7 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         ivEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AndroidUserManager userManager = (AndroidUserManager)Platform.getInstance().getUserManager();
-                boolean edit = userManager.updateRoomSubject(roomJID,subject);
 
-                if (edit){
-                    Toast.makeText(GroupDetailsActivity.this,"Group Name changed",Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(GroupDetailsActivity.this,"Something went wrong",Toast.LENGTH_SHORT).show();
-                }
             }
         });
     }

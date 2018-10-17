@@ -45,6 +45,7 @@ import abs.sf.beach.android.R;
 import abs.sf.beach.fragment.DisplayPictureFragment;
 import abs.sf.beach.notification.NotificationGenerator;
 import abs.sf.beach.utils.ApplicationProps;
+import abs.sf.beach.utils.CommonConstants;
 import abs.sf.beach.utils.CustomTypingEditText;
 import abs.sf.beach.utils.FragmentListeners;
 import abs.sf.beach.utils.VerticalSpaceDecorator;
@@ -280,11 +281,8 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
             @Override
             public void onClick(View v) {
                 if (isGroup) {
-                    boolean isGroupMember = userManager.checkIsChatRoomMember(contactJID, userJID);
                     Intent intent = new Intent(ChatActivity.this, GroupDetailsActivity.class);
-                    intent.putExtra(CONTACT_JID, contactJID);
-                    intent.putExtra(NAME, getIntent().getStringExtra(NAME));
-                    intent.putExtra(IS_GROUP_MEMBER, isGroupMember);
+                    intent.putExtra(CommonConstants.JID, contactJID);
                     startActivityForResult(intent, GROUP_DETAILS);
                 }
             }
