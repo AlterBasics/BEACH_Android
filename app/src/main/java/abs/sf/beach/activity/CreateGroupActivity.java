@@ -17,6 +17,7 @@ import abs.ixi.client.util.StringUtils;
 import abs.ixi.client.xmpp.packet.ChatRoom;
 import abs.sf.beach.android.R;
 import abs.sf.beach.utils.AndroidUtils;
+import abs.sf.beach.utils.CommonConstants;
 import abs.sf.client.android.managers.AndroidUserManager;
 
 public class CreateGroupActivity extends StringflowActivity{
@@ -84,7 +85,7 @@ public class CreateGroupActivity extends StringflowActivity{
 
                 } else {
                     Intent intent = new Intent(CreateGroupActivity.this, GroupAddParticipantActivity.class);
-                    intent.putExtra("group_name", groupName);
+                    intent.putExtra(CommonConstants.GROUP_NAME, groupName);
                     intent.putExtra("group_type", selectedGroupType);  //spGroupType.getBaseline());
                     startActivity(intent);
                 }
