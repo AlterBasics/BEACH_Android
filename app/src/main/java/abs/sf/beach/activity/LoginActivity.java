@@ -29,7 +29,7 @@ public class LoginActivity extends StringflowActivity {
 
     private EditText password;
     private EditText userName;
-    private Button login;
+    private Button login,Signup;
 
     static {
         //TODO We may not configure loggers in production
@@ -63,6 +63,16 @@ public class LoginActivity extends StringflowActivity {
                     }
                 }
             });
+
+            Signup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent =new Intent(LoginActivity.this,SignUp.class);
+                    startActivity(intent);
+                }
+            });
+
+
 
         } else {
             loginBackground();
@@ -134,6 +144,7 @@ public class LoginActivity extends StringflowActivity {
         userName = (EditText) findViewById(R.id.edt_email);
         password = (EditText) findViewById(R.id.edt_password);
         login = (Button) findViewById(R.id.btn_login);
+        Signup = (Button) findViewById(R.id.btn_SignUp);
     }
 
     /**

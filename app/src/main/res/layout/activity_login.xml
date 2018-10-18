@@ -46,8 +46,8 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            >
 
             <Button
                 android:id="@+id/btn_login"
@@ -58,6 +58,17 @@
                 android:textSize="14sp"
                 android:textColor="@color/black"
                 android:background="@drawable/corner"/>
+
+            <Button
+                android:id="@+id/btn_SignUp"
+                android:layout_width="140dp"
+                android:layout_height="45dp"
+                android:layout_margin="5dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/corner"
+                android:text="Signup"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
 
