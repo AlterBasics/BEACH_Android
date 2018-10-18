@@ -53,7 +53,7 @@ public class GroupAddParticipantActivity extends StringflowActivity {
         super.onResume();
         this.allRosterItems = getUserRosterItems();
         this.groupName = getIntent().getStringExtra(CommonConstants.GROUP_NAME);
-        this.groupType = getIntent().getStringExtra("group_type");
+        this.groupType = getIntent().getStringExtra(CommonConstants.GROUP_TYPE);
         this.selectedGroupMembers = new ArrayList<>();
         setAdapter();
     }

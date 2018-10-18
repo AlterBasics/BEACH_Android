@@ -40,7 +40,8 @@ import abs.sf.client.android.managers.AndroidUserManager;
 public class GroupDetailsActivity extends StringflowActivity implements AddParticipantsListner {
     private RecyclerView recyclerView;
     private ImageView ivBack, ivNext, ivContactImage,ivEdit;
-    private TextView tvHeader, tvParticipants, tvAddParticipants, tvGroupName, tvGroupType;
+    private TextView tvHeader, tvParticipants, tvAddParticipants, tvGroupType;
+    public TextView  tvGroupName;
     private CardView cvExitGroup, cvReportSpam,cvDeleteGroup;
     private FrameLayout addParticipantContainer;
     private ChatRoom chatRoom;
@@ -122,7 +123,6 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
     private void setChatAdapter() {
         tvGroupType.setText(chatRoom.getAccessMode().val());
         tvParticipants.setText(memberList.size() + " Participants");
-
         tvGroupName.setText(this.chatRoom.getSubject());
 
         ChatRoom.ChatRoomMember cm = getChatRoomMember(memberList);
@@ -136,6 +136,7 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(GroupDetailsActivity.this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
+
     }
 
     private void initOnclickListener() {
@@ -215,7 +216,8 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         ivEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                       Intent intent = new Intent(GroupDetailsActivity.this,EditGroupName.class);
+                       startActivity(intent);
             }
         });
     }
@@ -340,6 +342,10 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
             return;
         }
         this.finish();
+    }
+
+    public void refresh(){
+      GroupDetailsActivity.this.refresh();
     }
 }
 

@@ -129,6 +129,7 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
                  else{
                     Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
@@ -171,27 +172,6 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
 
             }
         });
-       /* dialog.setPositiveButton("EXIT", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-
-                //TODO: neeed to re handle it
-                boolean removed = userManager.removeChatRoomMember(roomJID, jid);
-
-                memberList.remove(pos);
-                notifyDataSetChanged();
-                dialog.dismiss();
-            }
-        });
-        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog1.dismiss();
-            }
-        }); */
-
-
     }
 
 }

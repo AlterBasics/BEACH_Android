@@ -97,14 +97,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         }
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        ChatLine chatLine = this.chatLines.get(position);
-        if(chatLine.getContentType().equals(ChatLine.ContentType.POLL)){
-            return POLL;
-        }
-        return TEXT;
-    }
+//    @Override
+//    public int getItemViewType(int position) {
+//        ChatLine chatLine = this.chatLines.get(position);
+//        //if(chatLine.getContentType().equals(ChatLine.ContentType.POLL)){
+//            return POLL;
+//        }
+//        return TEXT;
+//    }
 
 
     @Override

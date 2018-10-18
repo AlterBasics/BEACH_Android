@@ -86,7 +86,7 @@ public class CreateGroupActivity extends StringflowActivity{
                 } else {
                     Intent intent = new Intent(CreateGroupActivity.this, GroupAddParticipantActivity.class);
                     intent.putExtra(CommonConstants.GROUP_NAME, groupName);
-                    intent.putExtra("group_type", selectedGroupType);  //spGroupType.getBaseline());
+                    intent.putExtra(CommonConstants.GROUP_TYPE, selectedGroupType);  //spGroupType.getBaseline());
                     startActivity(intent);
                 }
             }

@@ -29,6 +29,8 @@
         <activity android:name="abs.sf.beach.activity.GroupDetailsActivity" />
         <activity android:name="abs.sf.beach.activity.CreateGroupActivity" />
         <activity android:name="abs.sf.beach.activity.GroupAddParticipantActivity" />
+        <activity android:name="abs.sf.beach.activity.EditGroupName" />
+
         <activity
             android:name="eu.janmuller.android.simplecropimage.CropImage"
             android:screenOrientation="portrait" >
