@@ -41,7 +41,7 @@ import abs.sf.client.android.managers.AndroidUserManager;
 public class GroupDetailsActivity extends StringflowActivity implements AddParticipantsListner, OnRefreshViewListener {
     private RecyclerView recyclerView;
     private ImageView ivBack, ivNext, ivContactImage, ivEdit;
-    private TextView tvHeader, tvParticipants, tvAddParticipants, tvGroupType;
+    private TextView tvHeader, tvParticipants, tvAddParticipants, tvNoLongerMember, tvGroupType;
     public TextView tvGroupName;
     private CardView cvExitGroup, cvReportSpam, cvDeleteGroup;
     private FrameLayout addParticipantContainer;
@@ -100,12 +100,13 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
     private void initView() {
         ivBack = (ImageView) findViewById(R.id.ivBack);
         ivNext = (ImageView) findViewById(R.id.ivNext);
+
         ivEdit = (ImageView) findViewById(R.id.ivEditName);
+        ivEdit.setVisibility(View.GONE);
+
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         tvHeader = (TextView) findViewById(R.id.tvHeader);
         tvParticipants = (TextView) findViewById(R.id.tvParticipants);
-        tvAddParticipants = (TextView) findViewById(R.id.tvAddParticipants);
-
         cvReportSpam = (CardView) findViewById(R.id.cvReportSpam);
         addParticipantContainer = (FrameLayout) findViewById(R.id.addParticipantContainer);
         ivNext.setVisibility(View.INVISIBLE);
@@ -114,6 +115,13 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         ivContactImage = (ImageView) findViewById(R.id.ivContactImage);
         tvHeader.setVisibility(View.GONE);
         isFragmentOpen = false;
+
+        //TODO: You are no longer a participant in this group
+        tvNoLongerMember = (TextView) findViewById(R.id.tvAddParticipants);
+        tvNoLongerMember.setVisibility(View.GONE);
+
+        tvAddParticipants = (TextView) findViewById(R.id.tvAddParticipants);
+        tvAddParticipants.setVisibility(View.GONE);
 
         cvExitGroup = (CardView) findViewById(R.id.cvExitGroup);
         cvExitGroup.setVisibility(View.GONE);
@@ -146,8 +154,18 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
             if (loggedInMember.getAffiliation() == ChatRoom.Affiliation.OWNER) {
                 cvDeleteGroup.setVisibility(View.VISIBLE);
             }
+            ivEdit.setVisibility(View.VISIBLE);
 
             cvExitGroup.setVisibility(View.VISIBLE);
+
+            tvNoLongerMember.setVisibility(View.GONE);
+
+        } else {
+            tvAddParticipants.setVisibility(View.GONE);
+            cvDeleteGroup.setVisibility(View.GONE);
+            cvExitGroup.setVisibility(View.GONE);
+            ivEdit.setVisibility(View.GONE);
+            tvNoLongerMember.setVisibility(View.VISIBLE);
         }
 
         this.adapter = new GroupDetailsAdapter(this, this.memberList, this.roomJID, this.chatRoom.getSubject(), loggedInMember);
