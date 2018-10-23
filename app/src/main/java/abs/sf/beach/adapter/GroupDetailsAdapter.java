@@ -313,7 +313,7 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
                 }
             });
 
-            tv3.setText(selectMemberName + " " + "Dissmis as Admin");
+            tv3.setText("Dissmis as Admin");
             tv3.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -352,7 +352,7 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
             });
 
         } else if (selectedMember.getAffiliation() == ChatRoom.Affiliation.OWNER) {
-            tv2.setText(selectMemberName + " " + "Dissmis as owner");
+            tv2.setText("Dissmis as owner");
             tv2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

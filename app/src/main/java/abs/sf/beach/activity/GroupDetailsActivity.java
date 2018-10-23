@@ -116,7 +116,6 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         tvHeader.setVisibility(View.GONE);
         isFragmentOpen = false;
 
-        //TODO: You are no longer a participant in this group
         tvNoLongerMember = (TextView) findViewById(R.id.tvNoLonger);
         tvNoLongerMember.setVisibility(View.GONE);
 
