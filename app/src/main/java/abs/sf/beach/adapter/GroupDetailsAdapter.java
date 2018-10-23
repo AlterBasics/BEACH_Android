@@ -1,6 +1,8 @@
 package abs.sf.beach.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,10 +16,14 @@ import android.widget.Toast;
 import java.util.List;
 
 import abs.ixi.client.core.Platform;
+import abs.ixi.client.core.Session;
 import abs.ixi.client.util.StringUtils;
 import abs.ixi.client.xmpp.JID;
 import abs.ixi.client.xmpp.packet.ChatRoom;
+import abs.sf.beach.activity.ChatActivity;
+import abs.sf.beach.activity.GroupDetailsActivity;
 import abs.sf.beach.android.R;
+import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.beach.utils.OnRefreshViewListener;
 import abs.sf.client.android.managers.AndroidUserManager;
 
@@ -25,7 +31,7 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
     private Context context;
     private OnRefreshViewListener refreshViewListener;
     private List<ChatRoom.ChatRoomMember> memberList;
-    private JID roomJID;
+    private JID roomJID,myJid;
     private String groupName;
     private ChatRoom.ChatRoomMember loggedInMember;
 
@@ -36,6 +42,7 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
         this.roomJID = roomJID;
         this.groupName = groupName;
         this.loggedInMember = loggedInMember;
+        this.myJid = (JID)Platform.getInstance().getSession().get(Session.KEY_USER_JID);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -61,7 +68,7 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
                             ChatRoom.ChatRoomMember selectMember = memberList.get(getAdapterPosition());
 
                             if (!loggedInMember.equals(selectMember)) {
-                                showOnClickDialog(selectMember);
+                                showOnClickDialog(selectMember,myJid,getAdapterPosition());
                             }
 
                         }
@@ -112,11 +119,157 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
         return memberList.size();
     }
 
-    private void showOnClickDialog(final ChatRoom.ChatRoomMember selectedMember) {
-        String selectMemberName = getMemberName(selectedMember);
+    private void showOnClickDialog(final ChatRoom.ChatRoomMember selectedMember, final JID jid,final int pos) {
+        final String selectMemberName = getMemberName(selectedMember);
+        LayoutInflater myLayout = LayoutInflater.from(context);
+        final View dialogView = myLayout.inflate(R.layout.dialog_layout, null);
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        final AlertDialog dialog1 = dialog.create();
+        dialog1.setView(dialogView);
+        dialog1.show();
+        final TextView tv4 = (TextView) dialogView.findViewById(R.id.tvMessage);
+        final TextView tv5 = (TextView) dialogView.findViewById(R.id.tvView);
+        final TextView tv1 = (TextView) dialogView.findViewById(R.id.tvRemove);
+        TextView tv2 = (TextView) dialogView.findViewById(R.id.tvOwner);
+        TextView tv3 = (TextView) dialogView.findViewById(R.id.tvAdmin);
 
         if (selectedMember.getAffiliation() == ChatRoom.Affiliation.MEMBER) {
             //TODO: these actions should be on dialog
+            tv4.append("Message" + " " + selectMemberName);
+            tv4.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    intent.putExtra("jid", memberList.get(pos).getUserJID());
+                    intent.putExtra("name", memberList.get(pos).getUserJID());
+                    intent.putExtra("from", "Contact");
+                    context.startActivity(intent);
+                }
+            });
+            tv5.append("View" + " " + selectMemberName);
+            tv5.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                }
+            });
+
+            tv1.append("Remove" + " " + selectMemberName );
+            tv1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                    dialog.setMessage("Are you sure wanna remove this member from group?");
+                    dialog.setCancelable(true);
+
+                    dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                            boolean removed  = userManager.removeChatRoomMember(roomJID,jid);
+                            if (removed){
+                                memberList.remove(pos);
+                                notifyDataSetChanged();
+                                Toast.makeText(context, "Successfully Removed ", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                            }
+
+                            //goBack(true, false);
+                            refreshViewListener.refreshView();
+
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.show();
+                }
+            });
+
+            tv2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                    dialog.setMessage("Are you sure wanna make this member owner of group?");
+                    dialog.setCancelable(true);
+
+                    dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                            boolean success  = userManager.addChatRoomOwner(roomJID,jid);
+                            if (success){
+                                memberList.get(pos);
+                                notifyDataSetChanged();
+                                Toast.makeText(context, "Successfully Added ", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                            }
+
+                            //goBack(true, false);
+                            refreshViewListener.refreshView();
+
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.show();
+                }
+            });
+            tv3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                    dialog.setMessage("Are you sure wanna make this member admin of group?");
+                    dialog.setCancelable(true);
+
+                    dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                            boolean admin  = userManager.addChatRoomAdmin(roomJID,jid);
+                            if (admin){
+                                memberList.get(pos);
+                                notifyDataSetChanged();
+                                Toast.makeText(context, "Successfully Added ", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                            }
+
+                            //goBack(true, false);
+                            refreshViewListener.refreshView();
+
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.show();
+                }
+            });
             //1)  message selectMemberName
             //2) view selectMemberName
             //3) remove selectMemberName
@@ -125,6 +278,140 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
 
         } else if (selectedMember.getAffiliation() == ChatRoom.Affiliation.ADMIN) {
             //TODO: these actions should be on dialog
+            tv4.append("Message" + " " + selectMemberName );
+            tv4.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    intent.putExtra("jid", memberList.get(pos).getUserJID());
+                    intent.putExtra("name", memberList.get(pos).getUserJID());
+                    intent.putExtra("from", "Contact");
+                    context.startActivity(intent);
+                }
+            });
+            tv5.append("View" + " " + selectMemberName);
+            tv5.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                }
+            });
+
+            tv1.append("Remove" + " " +  selectMemberName );
+            tv1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                    dialog.setMessage("Are you sure wanna remove this member from group?");
+                    dialog.setCancelable(true);
+
+                    dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                            boolean removed  = userManager.removeChatRoomMember(roomJID,jid);
+                            if (removed){
+                                memberList.remove(pos);
+                                notifyDataSetChanged();
+                                Toast.makeText(context, "Successfully Removed ", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                            }
+
+                            //goBack(true, false);
+                            refreshViewListener.refreshView();
+
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.show();
+                }
+            });
+
+            tv2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                    dialog.setMessage("Are you sure wanna make this member owner of group?");
+                    dialog.setCancelable(true);
+
+                    dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                            boolean success  = userManager.addChatRoomOwner(roomJID,jid);
+                            if (success){
+                                memberList.get(pos);
+                                notifyDataSetChanged();
+                                Toast.makeText(context, "Successfully Added ", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                            }
+
+                            //goBack(true, false);
+                            refreshViewListener.refreshView();
+
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.show();
+                }
+            });
+            tv3.append(selectMemberName + " " + "Dissmis as Admin" );
+            tv3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                    dialog.setMessage("Are you sure wanna dismiss this member as admin of group?");
+                    dialog.setCancelable(true);
+
+                    dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                            boolean admin  = userManager.addChatRoomAdmin(roomJID,jid);
+                            if (admin){
+                                Toast.makeText(context, "Successfully Dismiss ", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                            }
+
+                            //goBack(true, false);
+                            refreshViewListener.refreshView();
+
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.show();
+                }
+            });
             //1)  message selectMemberName
             //2) view selectMemberName
             //3) remove selectMemberName
@@ -133,6 +420,139 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
 
         } else if (selectedMember.getAffiliation() == ChatRoom.Affiliation.OWNER) {
             //TODO: these actions should be on dialog
+            tv4.append("Message" + " " +  selectMemberName );
+            tv4.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    intent.putExtra("jid", memberList.get(pos).getUserJID());
+                    intent.putExtra("name", memberList.get(pos).getUserJID());
+                    intent.putExtra("from", "Contact");
+                    context.startActivity(intent);
+                }
+            });
+            tv5.append("View" + " "  + selectMemberName);
+            tv5.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                }
+            });
+
+            tv1.append("Remove" +" " +  selectMemberName );
+            /*tv1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                    dialog.setMessage("Are you sure wanna remove this member from group?");
+                    dialog.setCancelable(true);
+
+                    dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                            boolean removed  = userManager.removeChatRoomMember(roomJID,myJid);
+                            if (removed){
+                                memberList.remove(pos);
+                                notifyDataSetChanged();
+                                Toast.makeText(context, "Successfully Removed ", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                            }
+
+                            //goBack(true, false);
+                            refreshViewListener.refreshView();
+
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.show();
+                }
+            }); */
+
+            tv2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                    dialog.setMessage("Are you sure wanna Dismiss this member as a owner from group?");
+                    dialog.setCancelable(true);
+
+                    dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                            boolean success  = userManager.addChatRoomOwner(roomJID,jid);
+                            if (success){
+                                Toast.makeText(context, "Successfully Dismiss ", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                            }
+
+                            //goBack(true, false);
+                            refreshViewListener.refreshView();
+
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.show();
+                }
+            });
+            tv3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                    dialog.setMessage("Are you sure wanna make this member admin of group?");
+                    dialog.setCancelable(true);
+
+                    dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                            boolean admin  = userManager.addChatRoomAdmin(roomJID,jid);
+                            if (admin){
+                                memberList.get(pos);
+                                notifyDataSetChanged();
+                                Toast.makeText(context, "Successfully Added ", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                            }
+
+                            //goBack(true, false);
+                            refreshViewListener.refreshView();
+
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog1.dismiss();
+                        }
+                    });
+
+                    dialog.show();
+                }
+            });
             //1)  message selectMemberName
             //2) view selectMemberName
             //3) remove selectMemberName
@@ -210,26 +630,6 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
 
             }
         });
-       /* dialog.setPositiveButton("EXIT", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-
-                //TODO: neeed to re handle it
-                boolean removed = userManager.removeChatRoomMember(roomJID, jid);
-
-                memberList.remove(pos);
-                notifyDataSetChanged();
-                dialog.dismiss();
-            }
-        });
-        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog1.dismiss();
-            }
-        }); */
-
 
     }
 

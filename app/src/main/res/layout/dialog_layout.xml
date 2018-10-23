@@ -5,11 +5,27 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginLeft="9dp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tvView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginLeft="9dp"
+        android:gravity="center"/>
+
+    <TextView
         android:id="@+id/tvRemove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:text="Remove"
         android:textSize="15dp"
         android:layout_marginTop="9dp"
         android:layout_marginLeft="9dp"
@@ -19,7 +35,6 @@
         android:id="@+id/tvOwner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
         android:text="Make Group Owner"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="9dp"
@@ -30,7 +45,6 @@
         android:id="@+id/tvAdmin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
         android:text="Make Group Admin"
         android:layout_marginTop="10dp"
         android:textSize="15dp"

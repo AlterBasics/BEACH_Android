@@ -117,8 +117,9 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         isFragmentOpen = false;
 
         //TODO: You are no longer a participant in this group
-        tvNoLongerMember = (TextView) findViewById(R.id.tvAddParticipants);
-        tvNoLongerMember.setVisibility(View.GONE);
+        //tvNoLongerMember = (TextView) findViewById(R.id.tvAddParticipants);
+        //tvNoLongerMember.setVisibility(View.GONE);
+        //tvNoLongerMember.setText("You are no longer a participant in this group");
 
         tvAddParticipants = (TextView) findViewById(R.id.tvAddParticipants);
         tvAddParticipants.setVisibility(View.GONE);
@@ -150,6 +151,9 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
             if (loggedInMember.getAffiliation() == ChatRoom.Affiliation.OWNER || loggedInMember.getAffiliation() == ChatRoom.Affiliation.ADMIN ) {
                 tvAddParticipants.setVisibility(View.VISIBLE);
             }
+            else{
+                tvAddParticipants.setVisibility(View.GONE);
+            }
 
             if (loggedInMember.getAffiliation() == ChatRoom.Affiliation.OWNER) {
                 cvDeleteGroup.setVisibility(View.VISIBLE);
@@ -158,14 +162,16 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
 
             cvExitGroup.setVisibility(View.VISIBLE);
 
-            tvNoLongerMember.setVisibility(View.GONE);
+            //tvNoLongerMember.setVisibility(View.GONE);
+
 
         } else {
-            tvAddParticipants.setVisibility(View.GONE);
+            tvAddParticipants.setVisibility(View.VISIBLE);
+            tvAddParticipants.setText("you are no longer participant in this group" );
             cvDeleteGroup.setVisibility(View.GONE);
             cvExitGroup.setVisibility(View.GONE);
             ivEdit.setVisibility(View.GONE);
-            tvNoLongerMember.setVisibility(View.VISIBLE);
+           // tvNoLongerMember.setVisibility(View.VISIBLE);
         }
 
         this.adapter = new GroupDetailsAdapter(this, this.memberList, this.roomJID, this.chatRoom.getSubject(), loggedInMember);
