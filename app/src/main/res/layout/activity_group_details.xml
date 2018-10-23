@@ -96,7 +96,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="35dp"
+                    android:layout_height="45dp"
                     android:background="@color/white"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/dimen_size_10"
@@ -123,6 +123,21 @@
                         android:gravity="center_vertical"
                         android:maxLines="1"
                         android:text="@string/add_participants"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/tvNoLonger"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_vertical"
+                         android:layout_below="@+id/tvAddParticipants"
+                        android:maxLines="1"
+                        android:text="No longer Participant"
                         android:textColor="@color/black"
                         android:textSize="14sp"
                         android:textStyle="bold"
