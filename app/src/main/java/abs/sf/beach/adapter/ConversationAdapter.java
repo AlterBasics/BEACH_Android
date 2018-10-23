@@ -109,7 +109,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                     Intent intent = new Intent(context, ChatActivity.class);
                     try {
                         intent.putExtra("jid", new JID(conversations.get(getAdapterPosition()).getPeerJid()));
-                        intent.putExtra("subject", conversations.get(getAdapterPosition()).getPeerName());
+                        intent.putExtra("name", conversations.get(getAdapterPosition()).getPeerName());
                         intent.putExtra("from", "Conversation");
                         context.startActivity(intent);
                     } catch (InvalidJabberId invalidJabberId) {
