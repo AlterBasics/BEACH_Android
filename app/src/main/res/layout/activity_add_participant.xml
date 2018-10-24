@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/headerLayout"
+        layout="@layout/header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_50" />
+
+    <LinearLayout
+        android:id="@+id/searchLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@drawable/chatedt_corner">
+
+        <EditText
+            android:id="@+id/etMessage"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:hint="@string/search"
+            android:layout_margin="@dimen/dimen_size_3"
+            android:background="@drawable/rect_send_layout"
+            android:paddingLeft="@dimen/dimen_size_2"
+            android:paddingRight="@dimen/dimen_size_2"
+            android:textSize="@dimen/textview_size_16"
+            android:textColor="@color/black"
+            android:clickable="true"/>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvAddParticipant"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/searchLayout"
+        android:layout_above="@+id/btnAdd"
+        android:paddingTop="@dimen/dimen_size_5"
+        android:background="@color/white"
+        android:clipToPadding="false"/>
+
+
+    <Button
+        android:id="@+id/btnAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add in Group"
+        android:layout_alignParentBottom="true"
+        />
+
+
+</RelativeLayout>

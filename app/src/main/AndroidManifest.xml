@@ -31,6 +31,7 @@
         <activity android:name="abs.sf.beach.activity.GroupAddParticipantActivity" />
         <activity android:name="abs.sf.beach.activity.EditGroupName" />
         <activity android:name="abs.sf.beach.activity.SignUp" />
+        <activity android:name="abs.sf.beach.activity.AddParticipantActivity" />
 
         <activity
             android:name="eu.janmuller.android.simplecropimage.CropImage"

@@ -53,6 +53,9 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
     private boolean isGroupMember;
     private GroupDetailsAdapter adapter;
 
+    private String groupName;
+    private String groupType;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,7 +180,6 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(GroupDetailsActivity.this);
         recyclerView.setLayoutManager(mLayoutManager);
-
         recyclerView.setAdapter(adapter);
     }
 
@@ -214,8 +216,12 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         tvAddParticipants.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<Roster.RosterItem> items = getAddRecipients();
-                openFragment(AddParticipantFragment.newInstance(items, roomJID, chatRoom.getSubject()));
+                Intent intent  = new Intent(GroupDetailsActivity.this,AddParticipantActivity.class);
+                intent.putExtra(CommonConstants.GROUP_NAME, groupName);
+                //intent.putExtra(CommonConstants.GROUP_TYPE, selectedGroupType);
+                startActivity(intent);
+//                List<Roster.RosterItem> items = getAddRecipients();
+//                openFragment(AddParticipantFragment.newInstance(items, roomJID, chatRoom.getSubject()));
             }
         });
 
