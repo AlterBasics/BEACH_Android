@@ -1,11 +1,13 @@
 package abs.sf.beach.activity;
 
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -28,6 +30,7 @@ import abs.sf.beach.utils.CommonConstants;
 import abs.sf.client.android.managers.AndroidUserManager;
 
 public class AddParticipantActivity extends StringflowActivity {
+    private static final String TAG = "CreateGroupActivity";
     private List<Roster.RosterItem> allRosterItems;
     private JID roomJID;
     private ChatRoom chatRoom;
@@ -36,7 +39,7 @@ public class AddParticipantActivity extends StringflowActivity {
     private ImageView ivBack, ivNext;
     private TextView tvHeaders;
     private EditText etMessage;
-    private Button btnAdd;
+    private TextView tvAdd;
     private  List<JID> selectedGroupMembers;
 
     @Override
@@ -49,6 +52,7 @@ public class AddParticipantActivity extends StringflowActivity {
 
     @Override
     protected void onResume() {
+        Log.d(TAG,"check");
         super.onResume();
 
         this.roomJID = (JID)getIntent().getSerializableExtra(CommonConstants.JID);
@@ -72,7 +76,8 @@ public class AddParticipantActivity extends StringflowActivity {
         tvHeaders.setGravity(Gravity.CENTER);
         ivNext.setVisibility(View.INVISIBLE);
         etMessage = (EditText) findViewById(R.id.etMessage);
-        btnAdd = (Button)findViewById(R.id.btnAdd);
+        tvAdd = (TextView)findViewById(R.id.tvCreateGroup);
+        tvAdd.setText("Add in Group");
 
         tvAddParticipant = (RecyclerView) findViewById(R.id.rvAddParticipant);
 
@@ -109,7 +114,7 @@ public class AddParticipantActivity extends StringflowActivity {
             }
         });
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
+        tvAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <include
         android:id="@+id/headerLayout"
-        layout="@layout/header"
+        layout="@layout/headers"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_size_50" />
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:id="@+id/searchLayout"
@@ -46,13 +46,13 @@
         android:clipToPadding="false"/>
 
 
-    <Button
-        android:id="@+id/btnAdd"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add in Group"
-        android:layout_alignParentBottom="true"
-        />
+    <!--<Button-->
+        <!--android:id="@+id/btnAdd"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Add in Group"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--/>-->
 
 
-</RelativeLayout>
+</LinearLayout>
