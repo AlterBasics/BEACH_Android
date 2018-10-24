@@ -41,7 +41,6 @@ public class AddParticipantActivity extends StringflowActivity {
     private Button btnAdd;
     private  List<JID> selectedGroupMembers;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
