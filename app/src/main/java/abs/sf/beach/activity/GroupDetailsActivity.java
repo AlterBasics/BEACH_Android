@@ -15,30 +15,24 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import abs.ixi.client.core.Platform;
-import abs.ixi.client.core.Session;
 import abs.ixi.client.util.StringUtils;
 import abs.ixi.client.xmpp.JID;
 import abs.ixi.client.xmpp.packet.ChatRoom;
 import abs.ixi.client.xmpp.packet.Roster;
 import abs.sf.beach.adapter.GroupDetailsAdapter;
 import abs.sf.beach.android.R;
-import abs.sf.beach.fragment.AddParticipantFragment;
-import abs.sf.beach.utils.AddParticipantsListner;
 import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.beach.utils.CommonConstants;
 import abs.sf.beach.utils.OnRefreshViewListener;
-import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidUserManager;
 
 
-public class GroupDetailsActivity extends StringflowActivity implements AddParticipantsListner, OnRefreshViewListener {
+public class GroupDetailsActivity extends StringflowActivity implements OnRefreshViewListener {
     private RecyclerView recyclerView;
     private ImageView ivBack, ivNext, ivContactImage, ivEdit;
     private TextView tvHeader, tvParticipants, tvAddParticipants, tvNoLongerMember, tvGroupType;
@@ -48,13 +42,9 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
     private ChatRoom chatRoom;
     private List<ChatRoom.ChatRoomMember> memberList;
     private JID roomJID;
-    private Fragment fragment;
-    private boolean isFragmentOpen;
     private boolean isGroupMember;
     private GroupDetailsAdapter adapter;
 
-    private String groupName;
-    private String groupType;
 
 
     @Override
@@ -80,26 +70,6 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         setChatAdapter();
     }
 
-    @Override
-    public void add(String action, Roster.RosterItem item) {
-        if (StringUtils.safeEquals(action, "requestAddParticipant")) {
-
-            ChatRoom.ChatRoomMember member = chatRoom.new ChatRoomMember(item.getJid(), item.getJid().getNode());
-            memberList.add(member);
-
-            if (adapter != null) {
-                adapter.notifyDataSetChanged();
-            }
-        }
-
-        closeFragment();
-    }
-
-    @Override
-    public void remove(int pos) {
-        memberList.remove(pos);
-    }
-
     private void initView() {
         ivBack = (ImageView) findViewById(R.id.ivBack);
         ivNext = (ImageView) findViewById(R.id.ivNext);
@@ -117,7 +87,6 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         tvGroupType = (TextView) findViewById(R.id.tvGroupType);
         ivContactImage = (ImageView) findViewById(R.id.ivContactImage);
         tvHeader.setVisibility(View.GONE);
-        isFragmentOpen = false;
 
         tvNoLongerMember = (TextView) findViewById(R.id.tvNoLonger);
         tvNoLongerMember.setVisibility(View.GONE);
@@ -169,7 +138,6 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
 
         } else {
             tvAddParticipants.setVisibility(View.GONE);
-            //tvAddParticipants.setText("you are no longer participant in this group" );
             cvDeleteGroup.setVisibility(View.GONE);
             cvExitGroup.setVisibility(View.GONE);
             ivEdit.setVisibility(View.GONE);
@@ -218,7 +186,6 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
             public void onClick(View v) {
                 Intent intent  = new Intent(GroupDetailsActivity.this,AddParticipantActivity.class);
                 intent.putExtra(CommonConstants.JID, roomJID);
-
                 startActivity(intent);
          }
         });
@@ -227,51 +194,12 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(GroupDetailsActivity.this, EditGroupName.class);
+                intent.putExtra(CommonConstants.JID,roomJID);
                 startActivity(intent);
             }
         });
     }
 
-    private List<Roster.RosterItem> getAddRecipients() {
-        List<Roster.RosterItem> items = new ArrayList<>();
-        AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-        List<Roster.RosterItem> rosterItems = userManager.getRosterItemList();
-        if (rosterItems != null && rosterItems.size() > 0 && memberList.size() > 0) {
-            for (Roster.RosterItem rItem : rosterItems) {
-                boolean isExist = false;
-                for (ChatRoom.ChatRoomMember cm : memberList) {
-                    if (StringUtils.safeEquals(rItem.getJid().getBareJID(), cm.getUserJID().getBareJID())) {
-                        isExist = true;
-                        break;
-                    }
-                }
-                if (!isExist) {
-                    items.add(rItem);
-                }
-            }
-        }
-        return items;
-    }
-
-    private void openFragment(Fragment fragment) {
-        this.fragment = fragment;
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.addParticipantContainer, fragment);
-        fragmentTransaction.commit();
-        addParticipantContainer.setVisibility(View.VISIBLE);
-        isFragmentOpen = true;
-    }
-
-    private void closeFragment() {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.remove(fragment);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
-        ft.commit();
-        addParticipantContainer.setVisibility(View.GONE);
-        isFragmentOpen = false;
-    }
 
     private void showDeleteGroupAlert() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(GroupDetailsActivity.this);
@@ -351,10 +279,7 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
             public void onClick(DialogInterface dialog, int which) {
                 AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
                 userManager.sendLeaveChatRoomRequest(roomJID);
-
-                // goBack(false, false);
                 refreshView();
-
                 dialog.dismiss();
             }
         });
@@ -367,25 +292,6 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
         });
 
         dialog.show();
-    }
-
-    //TODO: need to understand what is happening here
-    private void goBack(boolean isGroupDeleted, boolean isGroupMember) {
-        Intent intent = new Intent();
-        intent.putExtra("isGroupDeleted", isGroupDeleted);
-        intent.putExtra("isGroupMember", isGroupMember);
-        setResult(RESULT_OK, intent);
-        GroupDetailsActivity.this.finish();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (isFragmentOpen) {
-            closeFragment();
-            return;
-        }
-
-        this.finish();
     }
 
     @Override

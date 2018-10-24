@@ -25,7 +25,7 @@ public class EditGroupName extends StringflowActivity {
     private CardView cvCancel,cvOk;
     private ImageView ivBack, ivNext;
     private JID roomJID;
-    String subject;
+    private String subject;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +46,7 @@ public class EditGroupName extends StringflowActivity {
         cvCancel = (CardView)findViewById(R.id.cvCancel);
         cvOk = (CardView)findViewById(R.id.cvOk);
         this.roomJID = (JID) getIntent().getSerializableExtra(CommonConstants.JID);
+
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar!=null){
@@ -73,7 +74,7 @@ public class EditGroupName extends StringflowActivity {
             @Override
             public void onClick(View view) {
                 if(etgroupName == null ){
-                    Toast.makeText(EditGroupName.this,"Group Name changed",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditGroupName.this,"Please enter the group name",Toast.LENGTH_SHORT).show();
                 }
                 else{
                     AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
@@ -82,6 +83,7 @@ public class EditGroupName extends StringflowActivity {
                          Toast.makeText(EditGroupName.this,"Group Name changed",Toast.LENGTH_SHORT).show();
 
                     }
+                    EditGroupName.this.finish();
                 }
             }
         });

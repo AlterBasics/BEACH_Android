@@ -30,7 +30,7 @@ import abs.sf.beach.utils.CommonConstants;
 import abs.sf.client.android.managers.AndroidUserManager;
 
 public class AddParticipantActivity extends StringflowActivity {
-    private static final String TAG = "CreateGroupActivity";
+    private static final String TAG = "AddParticipantActivity";
     private List<Roster.RosterItem> allRosterItems;
     private JID roomJID;
     private ChatRoom chatRoom;
@@ -79,7 +79,7 @@ public class AddParticipantActivity extends StringflowActivity {
         tvAdd = (TextView)findViewById(R.id.tvCreateGroup);
         tvAdd.setText("Add in Group");
 
-        tvAddParticipant = (RecyclerView) findViewById(R.id.rvAddParticipant);
+        tvAddParticipant = (RecyclerView) findViewById(R.id.rvAddParticipants);
 
         ActionBar actionBar = getSupportActionBar();
 

@@ -36,23 +36,13 @@
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvAddParticipant"
+        android:id="@+id/rvAddParticipants"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/searchLayout"
-        android:layout_above="@+id/btnAdd"
         android:paddingTop="@dimen/dimen_size_5"
         android:background="@color/white"
         android:clipToPadding="false"/>
 
-
-    <!--<Button-->
-        <!--android:id="@+id/btnAdd"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Add in Group"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--/>-->
 
 
 </LinearLayout>
