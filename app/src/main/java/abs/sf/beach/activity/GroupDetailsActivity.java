@@ -217,12 +217,10 @@ public class GroupDetailsActivity extends StringflowActivity implements AddParti
             @Override
             public void onClick(View v) {
                 Intent intent  = new Intent(GroupDetailsActivity.this,AddParticipantActivity.class);
-                intent.putExtra(CommonConstants.GROUP_NAME, groupName);
-                //intent.putExtra(CommonConstants.GROUP_TYPE, selectedGroupType);
+                intent.putExtra(CommonConstants.JID, roomJID);
+
                 startActivity(intent);
-//                List<Roster.RosterItem> items = getAddRecipients();
-//                openFragment(AddParticipantFragment.newInstance(items, roomJID, chatRoom.getSubject()));
-            }
+         }
         });
 
         ivEdit.setOnClickListener(new View.OnClickListener() {

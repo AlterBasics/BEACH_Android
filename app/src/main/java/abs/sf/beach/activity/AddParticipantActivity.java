@@ -36,8 +36,6 @@ public class AddParticipantActivity extends StringflowActivity {
     private ImageView ivBack, ivNext;
     private TextView tvHeaders;
     private EditText etMessage;
-    private String groupName;
-    private String groupType;
     private Button btnAdd;
     private  List<JID> selectedGroupMembers;
 
@@ -49,29 +47,33 @@ public class AddParticipantActivity extends StringflowActivity {
         initOnClickListener();
     }
 
-
-
-
     @Override
     protected void onResume() {
         super.onResume();
-        this.allRosterItems = getUserRosterItems();
-        this.groupName = getIntent().getStringExtra(CommonConstants.GROUP_NAME);
-        //this.groupType = getIntent().getStringExtra(CommonConstants.GROUP_TYPE);
+
+        this.roomJID = (JID)getIntent().getSerializableExtra(CommonConstants.JID);
+
+        AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+        this.chatRoom = userManager.getChatRoomDetails(this.roomJID);
+
+        this.allRosterItems = getFilteredRosterItems();
+
         this.selectedGroupMembers = new ArrayList<>();
+
         setAdapter();
     }
 
     private void initView() {
-//        ivBack = (ImageView) findViewById(R.id.ivBack);
-//        ivNext = (ImageView) findViewById(R.id.ivNext);
-//        tvHeaders = (TextView) findViewById(R.id.tvHeaders);
-//       // tvHeaders.setText("Add Participant");
-//        tvHeaders.setVisibility(View.VISIBLE);
-//        tvHeaders.setGravity(Gravity.CENTER);
-//        ivNext.setVisibility(View.INVISIBLE);
+        ivBack = (ImageView) findViewById(R.id.ivBack);
+        ivNext = (ImageView) findViewById(R.id.ivNext);
+        tvHeaders = (TextView) findViewById(R.id.tvHeaders);
+        tvHeaders.setText("Add Participant");
+        tvHeaders.setVisibility(View.VISIBLE);
+        tvHeaders.setGravity(Gravity.CENTER);
+        ivNext.setVisibility(View.INVISIBLE);
         etMessage = (EditText) findViewById(R.id.etMessage);
         btnAdd = (Button)findViewById(R.id.btnAdd);
+
         tvAddParticipant = (RecyclerView) findViewById(R.id.rvAddParticipant);
 
         ActionBar actionBar = getSupportActionBar();
@@ -82,12 +84,12 @@ public class AddParticipantActivity extends StringflowActivity {
     }
 
     private void initOnClickListener() {
-//        ivBack.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                AddParticipantActivity.this.finish();
-//            }
-//        });
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddParticipantActivity.this.finish();
+            }
+        });
 
         etMessage.addTextChangedListener(new TextWatcher() {
             @Override
@@ -110,30 +112,43 @@ public class AddParticipantActivity extends StringflowActivity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AndroidUserManager chatManager = (AndroidUserManager) Platform.getInstance().getUserManager();
 
-                //TODO: need to re handle this
-                boolean added = chatManager.addChatRoomMember(roomJID, (JID) selectedGroupMembers);
-                if (added){
-                    Toast.makeText(AddParticipantActivity.this,"Successfully Added",Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(AddParticipantActivity.this,"Something went wrong",Toast.LENGTH_SHORT).show();
+                if(CollectionUtils.isNullOrEmpty(selectedGroupMembers)) {
+
+                    Toast.makeText(AddParticipantActivity.this,"No participant selected",Toast.LENGTH_SHORT).show();
+
+                } else {
+                    AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+
+                    for(JID memberJID : selectedGroupMembers) {
+                        userManager.addChatRoomMember(roomJID, memberJID);
+                    }
+
                 }
 
+                AddParticipantActivity.this.finish();
             }
         });
     }
 
-    private List<Roster.RosterItem> getUserRosterItems() {
+    private List<Roster.RosterItem> getFilteredRosterItems() {
         AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-        return userManager.getRosterItemList();
+        List<Roster.RosterItem> allRosterItems = userManager.getRosterItemList();
+
+        List<Roster.RosterItem> filteredRosterItems = new ArrayList<>();
+
+        for(Roster.RosterItem item : allRosterItems) {
+            if(!this.chatRoom.isRoomMember(item.getJid())) {
+                filteredRosterItems.add(item);
+            }
+        }
+
+        return filteredRosterItems;
     }
+
     private  void setAdapter(){
-        adapter = new AddParticipantAdapters( allRosterItems,selectedGroupMembers,context());
+        adapter = new AddParticipantAdapters( allRosterItems, selectedGroupMembers, context());
         tvAddParticipant.setLayoutManager(new LinearLayoutManager(context()));
         tvAddParticipant.setAdapter(adapter);
-
-
     }
 }

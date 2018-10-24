@@ -19,7 +19,6 @@ import abs.sf.beach.android.R;
 public class AddParticipantAdapters extends RecyclerView.Adapter<AddParticipantAdapters.ParticipantViewHolder> {
     private List<Roster.RosterItem> allRosterItems,itemsOriginal;;
     private Context context;
-    private JID roomJID;
 
     private  int selectedPos = RecyclerView.NO_POSITION;
     private  List<JID> selectedGroupMembers;
