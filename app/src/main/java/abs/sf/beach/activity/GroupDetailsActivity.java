@@ -194,7 +194,7 @@ public class GroupDetailsActivity extends StringflowActivity implements OnRefres
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(GroupDetailsActivity.this, EditGroupName.class);
-                intent.putExtra(CommonConstants.JID,roomJID);
+                intent.putExtra(CommonConstants.JID, roomJID);
                 startActivity(intent);
             }
         });

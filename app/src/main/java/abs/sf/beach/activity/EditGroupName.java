@@ -1,6 +1,5 @@
 package abs.sf.beach.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -15,17 +14,15 @@ import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.StringUtils;
 import abs.ixi.client.xmpp.JID;
 import abs.sf.beach.android.R;
-import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.beach.utils.CommonConstants;
 import abs.sf.client.android.managers.AndroidUserManager;
 
 public class EditGroupName extends StringflowActivity {
     private EditText etgroupName;
     private TextView tvHeader;
-    private CardView cvCancel,cvOk;
+    private CardView cvCancel, cvOk;
     private ImageView ivBack, ivNext;
     private JID roomJID;
-    private String subject;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,26 +33,25 @@ public class EditGroupName extends StringflowActivity {
     }
 
     private void initView() {
-        etgroupName = (EditText)findViewById(R.id.etgroupName);
-        subject = etgroupName.getText().toString();
+        etgroupName = (EditText) findViewById(R.id.etgroupName);
         ivBack = (ImageView) findViewById(R.id.ivBack);
         ivNext = (ImageView) findViewById(R.id.ivNext);
         ivNext.setVisibility(View.INVISIBLE);
-        tvHeader = (TextView)findViewById(R.id.tvHeader);
+        tvHeader = (TextView) findViewById(R.id.tvHeader);
         tvHeader.setText(CommonConstants.ENTER_NEW_SUBJECT);
-        cvCancel = (CardView)findViewById(R.id.cvCancel);
-        cvOk = (CardView)findViewById(R.id.cvOk);
+        cvCancel = (CardView) findViewById(R.id.cvCancel);
+        cvOk = (CardView) findViewById(R.id.cvOk);
         this.roomJID = (JID) getIntent().getSerializableExtra(CommonConstants.JID);
 
 
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar!=null){
+        if (actionBar != null) {
             actionBar.hide();
         }
 
     }
 
-    private void initOnClickListener(){
+    private void initOnClickListener() {
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,16 +69,18 @@ public class EditGroupName extends StringflowActivity {
         cvOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(etgroupName == null ){
-                    Toast.makeText(EditGroupName.this,"Please enter the group name",Toast.LENGTH_SHORT).show();
-                }
-                else{
+                String newSubject = etgroupName.getText().toString();
+
+                if (StringUtils.isNullOrEmpty(newSubject)) {
+                    Toast.makeText(EditGroupName.this, "Please enter the group name", Toast.LENGTH_SHORT).show();
+                } else {
                     AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-                    boolean nameChanged =  userManager.updateRoomSubject(roomJID,subject);
-                    if (nameChanged){
-                         Toast.makeText(EditGroupName.this,"Group Name changed",Toast.LENGTH_SHORT).show();
+                    boolean nameChanged = userManager.updateRoomSubject(roomJID, newSubject);
+                    if (nameChanged) {
+                        Toast.makeText(EditGroupName.this, "Group Name changed", Toast.LENGTH_SHORT).show();
 
                     }
+
                     EditGroupName.this.finish();
                 }
             }
