@@ -63,31 +63,39 @@ public class SignUp extends StringflowActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username = etUsername.getText().toString();
-                String pwd = etPwd.getText().toString();
-                String email = etEmail.getText().toString();
+
+                final String username = etUsername.getText().toString();
+                final String pwd = etPwd.getText().toString();
+                final String email = etEmail.getText().toString();
 
                 if (StringUtils.isNullOrEmpty(username)) {
                     Toast.makeText(SignUp.this, "please fill the username field", Toast.LENGTH_SHORT).show();
 
-                }
-                else if (StringUtils.isNullOrEmpty(pwd)){
+                } else if (StringUtils.isNullOrEmpty(pwd)) {
                     Toast.makeText(SignUp.this, "please fill the password field", Toast.LENGTH_SHORT).show();
-                }
-                else if (StringUtils.isNullOrEmpty(email)){
+                } else if (StringUtils.isNullOrEmpty(email)) {
                     Toast.makeText(SignUp.this, "please fill the email field", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-                    try {
-                        boolean signup = userManager.registerNewUser(username, email, pwd);
-                        if (signup) {
-                            Toast.makeText(SignUp.this, "Signup Successfully", Toast.LENGTH_SHORT).show();
-                            SignUp.this.finish();
+                } else {
+                    Thread thread = new Thread(new Runnable() {
+                        AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+
+                        @Override
+                        public void run() {
+                            try {
+
+                                boolean signup = userManager.registerNewUser(username, email, pwd);
+                                if (signup) {
+                                    Toast.makeText(SignUp.this, "Signup Successfully", Toast.LENGTH_SHORT).show();
+                                    SignUp.this.finish();
+                                }
+                                //Your code goes here
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-                    } catch (NetworkException e) {
-                        e.printStackTrace();
-                    }
+                    });
+
+                    thread.start();
                 }
                 finish();
             }

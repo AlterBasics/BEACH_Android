@@ -70,25 +70,27 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/llSetting"
+                android:id="@+id/llSearch"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
 
                 <ImageView
-                    android:layout_width="@dimen/dimen_size_40"
-                    android:layout_height="@dimen/dimen_size_40"
-                    android:src="@mipmap/settings_invisible" />
+                    android:id="@+id/ivSearch"
+                    android:layout_width="@dimen/dimen_size_35"
+                    android:layout_height="@dimen/dimen_size_35"
+                    android:src="@mipmap/search_white" />
 
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/settings" />
+                    android:text="Search"
+                    android:visibility="gone"/>
 
 
             </LinearLayout>
