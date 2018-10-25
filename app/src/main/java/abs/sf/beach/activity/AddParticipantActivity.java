@@ -40,7 +40,7 @@ public class AddParticipantActivity extends StringflowActivity {
     private TextView tvHeaders;
     private EditText etMessage;
     private TextView tvAdd;
-    private  List<JID> selectedGroupMembers;
+    private List<JID> selectedGroupMembers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +52,10 @@ public class AddParticipantActivity extends StringflowActivity {
 
     @Override
     protected void onResume() {
-        Log.d(TAG,"check");
+        Log.d(TAG, "check");
         super.onResume();
 
-        this.roomJID = (JID)getIntent().getSerializableExtra(CommonConstants.JID);
+        this.roomJID = (JID) getIntent().getSerializableExtra(CommonConstants.JID);
 
         AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
         this.chatRoom = userManager.getChatRoomDetails(this.roomJID);
@@ -76,7 +76,7 @@ public class AddParticipantActivity extends StringflowActivity {
         tvHeaders.setGravity(Gravity.CENTER);
         ivNext.setVisibility(View.INVISIBLE);
         etMessage = (EditText) findViewById(R.id.etMessage);
-        tvAdd = (TextView)findViewById(R.id.tvCreateGroup);
+        tvAdd = (TextView) findViewById(R.id.tvCreateGroup);
         tvAdd.setText("Add in Group");
 
         tvAddParticipant = (RecyclerView) findViewById(R.id.rvAddParticipants);
@@ -118,14 +118,14 @@ public class AddParticipantActivity extends StringflowActivity {
             @Override
             public void onClick(View view) {
 
-                if(CollectionUtils.isNullOrEmpty(selectedGroupMembers)) {
+                if (CollectionUtils.isNullOrEmpty(selectedGroupMembers)) {
 
-                    Toast.makeText(AddParticipantActivity.this,"No participant selected",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddParticipantActivity.this, "No participant selected", Toast.LENGTH_SHORT).show();
 
                 } else {
                     AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
 
-                    for(JID memberJID : selectedGroupMembers) {
+                    for (JID memberJID : selectedGroupMembers) {
                         userManager.addChatRoomMember(roomJID, memberJID);
                     }
 
@@ -142,8 +142,8 @@ public class AddParticipantActivity extends StringflowActivity {
 
         List<Roster.RosterItem> filteredRosterItems = new ArrayList<>();
 
-        for(Roster.RosterItem item : allRosterItems) {
-            if(!this.chatRoom.isRoomMember(item.getJid())) {
+        for (Roster.RosterItem item : allRosterItems) {
+            if (!this.chatRoom.isRoomMember(item.getJid())) {
                 filteredRosterItems.add(item);
             }
         }
@@ -151,8 +151,8 @@ public class AddParticipantActivity extends StringflowActivity {
         return filteredRosterItems;
     }
 
-    private  void setAdapter(){
-        adapter = new AddParticipantAdapters( allRosterItems, selectedGroupMembers, context());
+    private void setAdapter() {
+        adapter = new AddParticipantAdapters(allRosterItems, selectedGroupMembers, context());
         tvAddParticipant.setLayoutManager(new LinearLayoutManager(context()));
         tvAddParticipant.setAdapter(adapter);
     }

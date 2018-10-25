@@ -20,17 +20,17 @@ public class GroupAddParticipantAdapter extends RecyclerView.Adapter<GroupAddPar
     private List<Roster.RosterItem> allRosterItems, itemsOriginal;
     private Context context;
 
-    private  int selectedPos = RecyclerView.NO_POSITION;
-    private  List<JID> selectedGroupMembers;
+    private int selectedPos = RecyclerView.NO_POSITION;
+    private List<JID> selectedGroupMembers;
 
-    public GroupAddParticipantAdapter(List<Roster.RosterItem> allRosterItems, List<JID> selectedGroupMembers, Context context){
+    public GroupAddParticipantAdapter(List<Roster.RosterItem> allRosterItems, List<JID> selectedGroupMembers, Context context) {
         this.allRosterItems = allRosterItems;
         this.itemsOriginal = allRosterItems;
         this.context = context;
         this.selectedGroupMembers = selectedGroupMembers;
     }
 
-    public class ParticipantViewHolder extends RecyclerView.ViewHolder{
+    public class ParticipantViewHolder extends RecyclerView.ViewHolder {
         public ImageView ivContactImage;
         public TextView tvContactName;
         public ImageView tick;
@@ -40,8 +40,8 @@ public class GroupAddParticipantAdapter extends RecyclerView.Adapter<GroupAddPar
             super(itemView);
             ivContactImage = (ImageView) itemView.findViewById(R.id.ivContactImage);
             tvContactName = (TextView) itemView.findViewById(R.id.tvContactName);
-            contactRow = (RelativeLayout)itemView.findViewById(R.id.rlSelectUSer);
-            tick = (ImageView)itemView.findViewById(R.id.ivTick);
+            contactRow = (RelativeLayout) itemView.findViewById(R.id.rlSelectUSer);
+            tick = (ImageView) itemView.findViewById(R.id.ivTick);
             tick.setVisibility(View.INVISIBLE);
 
             contactRow.setOnClickListener(new View.OnClickListener() {
@@ -49,12 +49,11 @@ public class GroupAddParticipantAdapter extends RecyclerView.Adapter<GroupAddPar
                 public void onClick(View view) {
                     Roster.RosterItem item = allRosterItems.get(getAdapterPosition());
 
-                    if (selectedGroupMembers.contains(item.getJid())){
+                    if (selectedGroupMembers.contains(item.getJid())) {
                         selectedGroupMembers.remove(item.getJid());
                         // disable that tick
                         tick.setVisibility(View.INVISIBLE);
-                    }
-                    else {
+                    } else {
                         selectedGroupMembers.add(item.getJid());
                         // enable that tick
                         tick.setVisibility(View.VISIBLE);
@@ -66,9 +65,9 @@ public class GroupAddParticipantAdapter extends RecyclerView.Adapter<GroupAddPar
     }
 
     @Override
-    public  GroupAddParticipantAdapter.ParticipantViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_group_add_participant,parent,false);
-        return  new ParticipantViewHolder(view);
+    public GroupAddParticipantAdapter.ParticipantViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_group_add_participant, parent, false);
+        return new ParticipantViewHolder(view);
 
     }
 
@@ -84,13 +83,13 @@ public class GroupAddParticipantAdapter extends RecyclerView.Adapter<GroupAddPar
         return allRosterItems.size();
     }
 
-    public void filterData(CharSequence s){
-        if(s.length()==0){
+    public void filterData(CharSequence s) {
+        if (s.length() == 0) {
             this.allRosterItems = itemsOriginal;
         }
         List<Roster.RosterItem> ri = new ArrayList<>();
-        for(Roster.RosterItem data : itemsOriginal){
-            if(data.getName().toLowerCase().contains(s)){
+        for (Roster.RosterItem data : itemsOriginal) {
+            if (data.getName().toLowerCase().contains(s)) {
                 ri.add(data);
             }
         }

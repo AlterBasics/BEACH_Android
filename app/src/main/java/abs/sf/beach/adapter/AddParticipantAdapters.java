@@ -17,13 +17,14 @@ import abs.ixi.client.xmpp.packet.Roster;
 import abs.sf.beach.android.R;
 
 public class AddParticipantAdapters extends RecyclerView.Adapter<AddParticipantAdapters.ParticipantViewHolder> {
-    private List<Roster.RosterItem> allRosterItems,itemsOriginal;;
+    private List<Roster.RosterItem> allRosterItems, itemsOriginal;
+    ;
     private Context context;
 
-    private  int selectedPos = RecyclerView.NO_POSITION;
-    private  List<JID> selectedGroupMembers;
+    private int selectedPos = RecyclerView.NO_POSITION;
+    private List<JID> selectedGroupMembers;
 
-    public AddParticipantAdapters(List<Roster.RosterItem> allRosterItems,List<JID> selectedGroupMembers,Context context){
+    public AddParticipantAdapters(List<Roster.RosterItem> allRosterItems, List<JID> selectedGroupMembers, Context context) {
         this.allRosterItems = allRosterItems;
         this.itemsOriginal = allRosterItems;
         this.context = context;
@@ -33,23 +34,23 @@ public class AddParticipantAdapters extends RecyclerView.Adapter<AddParticipantA
 
     @Override
     public AddParticipantAdapters.ParticipantViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_add_participant,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_add_participant, parent, false);
         return new ParticipantViewHolder(view);
     }
 
-    public class ParticipantViewHolder  extends RecyclerView.ViewHolder {
+    public class ParticipantViewHolder extends RecyclerView.ViewHolder {
         public ImageView ivContactImage;
         public TextView tvContactName;
         public ImageView tick;
         public RelativeLayout contactRow;
 
 
-        public ParticipantViewHolder(View itemView){
+        public ParticipantViewHolder(View itemView) {
             super(itemView);
             ivContactImage = (ImageView) itemView.findViewById(R.id.ivContactImage);
             tvContactName = (TextView) itemView.findViewById(R.id.tvContactName);
-            contactRow = (RelativeLayout)itemView.findViewById(R.id.rlSelectUSer);
-            tick = (ImageView)itemView.findViewById(R.id.ivTick);
+            contactRow = (RelativeLayout) itemView.findViewById(R.id.rlSelectUSer);
+            tick = (ImageView) itemView.findViewById(R.id.ivTick);
             tick.setVisibility(View.INVISIBLE);
 
             contactRow.setOnClickListener(new View.OnClickListener() {
@@ -57,14 +58,11 @@ public class AddParticipantAdapters extends RecyclerView.Adapter<AddParticipantA
                 public void onClick(View view) {
                     Roster.RosterItem item = allRosterItems.get(getAdapterPosition());
 
-                    if (selectedGroupMembers.contains(item.getJid())){
+                    if (selectedGroupMembers.contains(item.getJid())) {
                         selectedGroupMembers.remove(item.getJid());
-                        // disable that tick
                         tick.setVisibility(View.INVISIBLE);
-                    }
-                    else {
+                    } else {
                         selectedGroupMembers.add(item.getJid());
-                        // enable that tick
                         tick.setVisibility(View.VISIBLE);
                     }
                 }
@@ -84,13 +82,13 @@ public class AddParticipantAdapters extends RecyclerView.Adapter<AddParticipantA
         return allRosterItems.size();
     }
 
-    public void filterData(CharSequence s){
-        if(s.length()==0){
+    public void filterData(CharSequence s) {
+        if (s.length() == 0) {
             this.allRosterItems = itemsOriginal;
         }
         List<Roster.RosterItem> ri = new ArrayList<>();
-        for(Roster.RosterItem data : itemsOriginal){
-            if(data.getName().toLowerCase().contains(s)){
+        for (Roster.RosterItem data : itemsOriginal) {
+            if (data.getName().toLowerCase().contains(s)) {
                 ri.add(data);
             }
         }
