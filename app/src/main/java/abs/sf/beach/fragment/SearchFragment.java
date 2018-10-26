@@ -17,6 +17,7 @@ import java.util.List;
 
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.CollectionUtils;
+import abs.ixi.client.util.StringUtils;
 import abs.ixi.client.xmpp.packet.Roster;
 import abs.ixi.client.xmpp.packet.UserSearchData;
 import abs.sf.beach.adapter.SearchAdapter;
@@ -52,25 +53,30 @@ public class SearchFragment extends Fragment {
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String FirstName = etFirstName.getText().toString();
-                String LastName = etLastName.getText().toString();
-                String NickName = etNickName.getText().toString();
-                String Email = et_email.getText().toString();
+                String firstName = etFirstName.getText().toString();
+                String lastName = etLastName.getText().toString();
+                String nickName = etNickName.getText().toString();
+                String email = et_email.getText().toString();
 
-                if (usersList == null){
-                    Toast.makeText(getActivity(),"no result found",Toast.LENGTH_SHORT).show();
-                }
-                else {
+                if (StringUtils.isNullOrEmpty(firstName) && StringUtils.isNullOrEmpty(lastName) && StringUtils.isNullOrEmpty(nickName) && StringUtils.isNullOrEmpty(email)) {
+                    Toast.makeText(getActivity(), "Please fill any search detail", Toast.LENGTH_SHORT).show();
+
+                } else {
                     AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-                    usersList =  userManager.searchUser(FirstName,LastName,NickName,Email);
-                    setSearchAdapter();
-                }
+                    usersList = userManager.searchUser(firstName, lastName, nickName, email);
 
+                    if (usersList == null) {
+                        Toast.makeText(getActivity(), "No result found", Toast.LENGTH_SHORT).show();
+
+                    } else {
+
+                        setSearchAdapter();
+                    }
+                }
             }
         });
 
     }
-
 
     private void setSearchAdapter() {
         if (!CollectionUtils.isNullOrEmpty(this.usersList)) {
