@@ -85,4 +85,5 @@ public class SearchFragment extends Fragment {
             rvSearchlist.setAdapter(adapter);
         }
     }
+
 }

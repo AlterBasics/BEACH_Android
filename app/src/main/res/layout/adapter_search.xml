@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/rlContactRow"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="90dp"
         android:background="@color/white"
         android:paddingLeft="@dimen/dimen_size_10"
         android:paddingRight="@dimen/dimen_size_10">
@@ -35,9 +35,25 @@
             android:layout_toRightOf="@+id/imageRelLayout"
             android:maxLines="1"
             android:paddingLeft="@dimen/dimen_size_10"
+            android:layout_marginTop="2dp"
             android:text="Mr. XYZ"
             android:textColor="@color/black"
             android:textSize="@dimen/textview_size_16" />
+
+        <TextView
+            android:id="@+id/tvSerachEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imageRelLayout"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="2dp"
+            android:text="email"
+            android:layout_below="@+id/tvSearchName"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textview_size_16"
+            android:visibility="gone"/>
 
         <View
             android:layout_width="match_parent"

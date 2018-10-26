@@ -1,6 +1,8 @@
 package abs.sf.beach.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.List;
 
 
@@ -16,6 +20,7 @@ import java.util.List;
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.CollectionUtils;
 import abs.ixi.client.util.StringUtils;
+import abs.ixi.client.xmpp.JID;
 import abs.ixi.client.xmpp.packet.Roster;
 import abs.ixi.client.xmpp.packet.UserSearchData;
 import abs.sf.beach.activity.ChatActivity;
@@ -27,6 +32,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     private List<UserSearchData.Item> searchedUsers;
     private List<UserSearchData.Item> searchUsersOriginal;
     private List<Roster.RosterItem> userRosterItems;
+    private JID roomJID;
 
     public SearchAdapter(Context context, List<UserSearchData.Item> search) {
         this.context = context;
@@ -44,17 +50,109 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        UserSearchData.Item searchModel = searchedUsers.get(position);
+        final UserSearchData.Item searchModel = searchedUsers.get(position);
         holder.ivSearchContactImage.setBackground(context.getResources().getDrawable(R.mipmap.user_placeholder));
-        holder.tvSearchContactName.setText((CharSequence) searchModel);
+        holder.tvSearchContactName.setText(getUserName(searchModel));
+        if (isAlreadyInUserContact(searchModel)){
+            //toDO
+           holder.tvSearchEmail.setText("No Result");
+        }
+        else {
+            holder.tvSearchEmail.setText(searchModel.getEmail());
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, ChatActivity.class);
-                //intent.putExtra("jid", search.get(position).getJid());
-                // intent.putExtra("name", search.get(position).getName());
-                //intent.putExtra("from", "Search");
-                context.startActivity(intent);
+                LayoutInflater myLayout = LayoutInflater.from(context);
+                final View dialogView = myLayout.inflate(R.layout.dialog_search, null);
+               // AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                final AlertDialog dialog1 = dialog.create();
+                dialog1.setView(dialogView);
+                dialog1.show();
+                final TextView tv4 = (TextView) dialogView.findViewById(R.id.tvMessage);
+                final TextView tv5 = (TextView) dialogView.findViewById(R.id.tvView);
+                final TextView tv1 = (TextView) dialogView.findViewById(R.id.tvRemove);
+                TextView tv2 = (TextView) dialogView.findViewById(R.id.tvAddtoContact);
+
+
+                tv4.setText("Message" + " " + getUserName(searchModel) );
+                tv4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, ChatActivity.class);
+                        intent.putExtra("jid", searchModel.getUserJID());
+                        intent.putExtra("name", searchModel);
+                        intent.putExtra("from", "Search");
+                        context.startActivity(intent);
+                    }
+                });
+
+                tv5.setText("View" + " " + getUserName(searchModel) );
+                tv5.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                    }
+                });
+
+                tv1.setText("Remove" + " " + getUserName(searchModel));
+                tv1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                        //dialog.setMessage("Remove " + selectMemberName + " from " + groupName + " group?");
+                        dialog.setCancelable(true);
+
+                        dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+
+                                boolean removed = userManager.removeRosterMember(roomJID);
+
+                                if (removed) {
+                                    Toast.makeText(context, "Successfully Removed ", Toast.LENGTH_SHORT).show();
+
+                                } else {
+                                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                                }
+
+                                //refreshViewListener.refreshView();
+
+                                dialog1.dismiss();
+                            }
+                        });
+                    }
+                });
+                tv2.setText("Add to Contacts");
+                tv2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                        //dialog.setMessage("Remove " + selectMemberName + " from " + groupName + " group?");
+                        dialog.setCancelable(true);
+
+                        dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+
+                                boolean add = userManager.addRosterMember(roomJID,getUserName(searchModel));
+
+                                if (add) {
+                                    Toast.makeText(context, "Successfully Added ", Toast.LENGTH_SHORT).show();
+
+                                } else {
+                                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                                }
+
+                                //refreshViewListener.refreshView();
+
+                                dialog1.dismiss();
+                            }
+                        });
+                    }
+                });
             }
         });
 
@@ -68,12 +166,14 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView ivSearchContactImage;
         public TextView tvSearchContactName;
+        public TextView tvSearchEmail;
 
         public ViewHolder(View itemView, int viewType, Context context) {
             super(itemView);
             itemView.setClickable(true);
             ivSearchContactImage = (ImageView) itemView.findViewById(R.id.ivSearchContactImage);
             tvSearchContactName = (TextView) itemView.findViewById(R.id.tvSearchName);
+            tvSearchEmail = (TextView) itemView.findViewById(R.id.tvSerachEmail);
         }
 
     }
