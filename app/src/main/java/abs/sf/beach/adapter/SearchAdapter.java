@@ -14,14 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import abs.ixi.client.xmpp.packet.Roster;
+import abs.ixi.client.xmpp.packet.UserSearchData;
 import abs.sf.beach.activity.ChatActivity;
 import abs.sf.beach.android.R;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
     private Context context;
-    private List<Roster.RosterItem> search, searchOriginal;
+    private List<UserSearchData.Item> search;
+    private List<UserSearchData.Item> searchOriginal;
 
-    public SearchAdapter(Context context, List<Roster.RosterItem> search) {
+    public SearchAdapter(Context context, List<UserSearchData.Item> search) {
         this.context = context;
         this.search = search;
         this.searchOriginal = search;
@@ -35,16 +37,16 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        Roster.RosterItem searchModel = search.get(position);
+        UserSearchData.Item searchModel = search.get(position);
         holder.ivSearchContactImage.setBackground(context.getResources().getDrawable(R.mipmap.user_placeholder));
-        holder.tvSearchContactName.setText(searchModel.getName());
+        holder.tvSearchContactName.setText((CharSequence) searchModel);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra("jid", search.get(position).getJid());
-                intent.putExtra("name", search.get(position).getName());
-                intent.putExtra("from", "Search");
+                //intent.putExtra("jid", search.get(position).getJid());
+               // intent.putExtra("name", search.get(position).getName());
+                //intent.putExtra("from", "Search");
                 context.startActivity(intent);
             }
         });
@@ -66,6 +68,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             ivSearchContactImage = (ImageView) itemView.findViewById(R.id.ivSearchContactImage);
             tvSearchContactName = (TextView) itemView.findViewById(R.id.tvSearchName);
         }
+
+    }
+
+    private String getUserName(UserSearchData.Item item){
 
     }
 }
