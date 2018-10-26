@@ -1,5 +1,6 @@
 package abs.sf.beach.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import abs.ixi.client.core.Callback;
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.net.NetworkException;
 import abs.ixi.client.util.StringUtils;
@@ -19,10 +24,12 @@ import abs.sf.beach.utils.CommonConstants;
 import abs.sf.client.android.managers.AndroidUserManager;
 
 public class SignUp extends StringflowActivity {
-    private EditText etUsername, etPwd, etEmail;
+    private EditText etUsername, etPwd, etEmail, etConfrmPwd;
     private Button btnSignUp;
     private ImageView ivBack, ivNext;
     private TextView tvHeader;
+    private Pattern regexPattern;
+    private Matcher regMatcher;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,7 +49,8 @@ public class SignUp extends StringflowActivity {
         etUsername = (EditText) findViewById(R.id.etUsername);
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPwd = (EditText) findViewById(R.id.etPwd);
-        btnSignUp = (Button) findViewById(R.id.btnSignup);
+        etConfrmPwd = (EditText) findViewById(R.id.etConfrmPwd);
+        btnSignUp = (Button) findViewById(R.id.btnsignup);
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -67,38 +75,70 @@ public class SignUp extends StringflowActivity {
                 final String username = etUsername.getText().toString();
                 final String pwd = etPwd.getText().toString();
                 final String email = etEmail.getText().toString();
+                final String cnfrmPwd = etConfrmPwd.getText().toString();
 
-                if (StringUtils.isNullOrEmpty(username)) {
+                if ((StringUtils.isNullOrEmpty(email))) {
+                    Toast.makeText(SignUp.this, "please fill the email field", Toast.LENGTH_SHORT).show();
+
+                }else if(!validateEmail(email)){
+                    etEmail.getText().clear();
+                    Toast.makeText(SignUp.this,"email is not valid",Toast.LENGTH_SHORT).show();
+                }
+                else if (StringUtils.isNullOrEmpty(username)) {
                     Toast.makeText(SignUp.this, "please fill the username field", Toast.LENGTH_SHORT).show();
 
                 } else if (StringUtils.isNullOrEmpty(pwd)) {
                     Toast.makeText(SignUp.this, "please fill the password field", Toast.LENGTH_SHORT).show();
-                } else if (StringUtils.isNullOrEmpty(email)) {
-                    Toast.makeText(SignUp.this, "please fill the email field", Toast.LENGTH_SHORT).show();
+
+                } else if (StringUtils.isNullOrEmpty(cnfrmPwd)) {
+                    Toast.makeText(SignUp.this, "please fill the confirm password field", Toast.LENGTH_SHORT).show();
+
+                } else if (!pwd.equals(cnfrmPwd)) {
+                    etPwd.getText().clear();
+                    etConfrmPwd.getText().clear();
+                    Toast.makeText(SignUp.this, "Password doesn't match", Toast.LENGTH_SHORT).show();
                 } else {
-                    Thread thread = new Thread(new Runnable() {
-                        AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
 
-                        @Override
-                        public void run() {
-                            try {
+                    final ProgressDialog progressDialog = getProgressDialog("...");
+                    progressDialog.show();
 
-                                boolean signup = userManager.registerNewUser(username, email, pwd);
-                                if (signup) {
-                                    Toast.makeText(SignUp.this, "Signup Successfully", Toast.LENGTH_SHORT).show();
-                                    SignUp.this.finish();
-                                }
-                                //Your code goes here
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                    AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                    try {
+                        userManager.registerNewUser(username, email, pwd, new Callback<String, String>() {
+                            @Override
+                            public void onSuccess(String success) {
+                                Toast.makeText(SignUp.this, success, Toast.LENGTH_SHORT).show();
+                                closeProgressDialog();
+
                             }
-                        }
-                    });
 
-                    thread.start();
+                            @Override
+                            public void onFailure(String failure) {
+                                etEmail.getText().clear();
+                                etPwd.getText().clear();
+                                etUsername.getText().clear();
+                                Toast.makeText(SignUp.this, failure, Toast.LENGTH_SHORT).show();
+                                closeProgressDialog();
+                            }
+                        });
+                    } catch (NetworkException e) {
+                        e.printStackTrace();
+                    }
+
                 }
-                finish();
+
             }
         });
+    }
+
+    public boolean validateEmail(String email) {
+        regexPattern = Pattern.compile("^[(a-zA-Z-0-9-\\_\\+\\.)]+@[(a-z-A-z)]+\\.[(a-zA-z)]{2,3}$");
+        regMatcher = regexPattern.matcher(email);
+        if(regMatcher.matches()) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 }

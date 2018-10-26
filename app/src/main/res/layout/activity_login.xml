@@ -20,7 +20,7 @@
             android:ems="10"
             android:textSize="14sp"
             android:singleLine="true"
-            android:hint="Email"
+            android:hint=" UserName "
             android:paddingLeft="@dimen/dimen_size_5"
             android:inputType="textEmailAddress"
             android:background="@drawable/corner">

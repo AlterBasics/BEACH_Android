@@ -31,7 +31,7 @@
            android:layout_marginTop="5dp"
            android:background="@drawable/corner"
            android:ems="10"
-           android:hint="Pick a username"
+           android:hint= "  Pick a username"
            />
 
        <TextView
@@ -48,7 +48,7 @@
            android:layout_marginTop="5dp"
            android:background="@drawable/corner"
            android:ems="10"
-           android:hint="you@example.com"
+           android:hint= "   you@example.com"
            />
 
        <TextView
@@ -65,7 +65,26 @@
            android:layout_marginTop="5dp"
            android:background="@drawable/corner"
            android:ems="10"
-           android:hint="Create a Password"
+           android:hint=" Create a Password"
+           android:inputType="textPassword"
+           />
+
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Confirm Password"
+           android:layout_marginTop="15dp"
+           android:textSize="20dp"/>
+
+       <EditText
+           android:id="@+id/etConfrmPwd"
+           android:layout_width="match_parent"
+           android:layout_height="45dp"
+           android:layout_marginTop="5dp"
+           android:background="@drawable/corner"
+           android:ems="10"
+           android:hint=" Confirm Password"
+           android:inputType="textPassword"
            />
 
        <LinearLayout
@@ -78,11 +97,11 @@
            >
 
            <Button
-               android:id="@+id/btnSignup"
+               android:id="@+id/btnsignup"
                android:layout_width="140dp"
                android:layout_height="45dp"
                android:layout_margin="5dp"
-               android:text="Sign up for Beach"
+               android:text="Sign up "
                android:gravity="center"
                android:textSize="14sp"
                android:textColor="@color/black"
