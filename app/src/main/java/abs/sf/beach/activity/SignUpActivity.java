@@ -1,7 +1,6 @@
 package abs.sf.beach.activity;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -23,7 +22,7 @@ import abs.sf.beach.android.R;
 import abs.sf.beach.utils.CommonConstants;
 import abs.sf.client.android.managers.AndroidUserManager;
 
-public class SignUp extends StringflowActivity {
+public class SignUpActivity extends StringflowActivity {
     private EditText etUsername, etPwd, etEmail, etConfrmPwd;
     private Button btnSignUp;
     private ImageView ivBack, ivNext;
@@ -64,7 +63,7 @@ public class SignUp extends StringflowActivity {
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SignUp.this.finish();
+                SignUpActivity.this.finish();
             }
         });
 
@@ -78,25 +77,25 @@ public class SignUp extends StringflowActivity {
                 final String cnfrmPwd = etConfrmPwd.getText().toString();
 
                 if ((StringUtils.isNullOrEmpty(email))) {
-                    Toast.makeText(SignUp.this, "please fill the email field", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "please fill the email field", Toast.LENGTH_SHORT).show();
 
                 }else if(!validateEmail(email)){
                     etEmail.getText().clear();
-                    Toast.makeText(SignUp.this,"email is not valid",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this,"email is not valid",Toast.LENGTH_SHORT).show();
                 }
                 else if (StringUtils.isNullOrEmpty(username)) {
-                    Toast.makeText(SignUp.this, "please fill the username field", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "please fill the username field", Toast.LENGTH_SHORT).show();
 
                 } else if (StringUtils.isNullOrEmpty(pwd)) {
-                    Toast.makeText(SignUp.this, "please fill the password field", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "please fill the password field", Toast.LENGTH_SHORT).show();
 
                 } else if (StringUtils.isNullOrEmpty(cnfrmPwd)) {
-                    Toast.makeText(SignUp.this, "please fill the confirm password field", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "please fill the confirm password field", Toast.LENGTH_SHORT).show();
 
                 } else if (!pwd.equals(cnfrmPwd)) {
                     etPwd.getText().clear();
                     etConfrmPwd.getText().clear();
-                    Toast.makeText(SignUp.this, "Password doesn't match", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "Password doesn't match", Toast.LENGTH_SHORT).show();
                 } else {
 
                     final ProgressDialog progressDialog = getProgressDialog("...");
@@ -107,9 +106,9 @@ public class SignUp extends StringflowActivity {
                         userManager.registerNewUser(username, email, pwd, new Callback<String, String>() {
                             @Override
                             public void onSuccess(String success) {
-                                Toast.makeText(SignUp.this, success, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignUpActivity.this, success, Toast.LENGTH_SHORT).show();
                                 closeProgressDialog();
-
+                                finish();
                             }
 
                             @Override
@@ -117,7 +116,7 @@ public class SignUp extends StringflowActivity {
                                 etEmail.getText().clear();
                                 etPwd.getText().clear();
                                 etUsername.getText().clear();
-                                Toast.makeText(SignUp.this, failure, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignUpActivity.this, failure, Toast.LENGTH_SHORT).show();
                                 closeProgressDialog();
                             }
                         });

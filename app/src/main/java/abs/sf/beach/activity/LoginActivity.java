@@ -21,7 +21,6 @@ import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.beach.utils.ApplicationProps;
 import abs.sf.beach.utils.SharedPrefs;
 import abs.sf.client.android.managers.AndroidUserManager;
-import abs.sf.client.android.utils.SDKLoader;
 
 
 public class LoginActivity extends StringflowActivity {
@@ -67,7 +66,7 @@ public class LoginActivity extends StringflowActivity {
             Signup.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent =new Intent(LoginActivity.this,SignUp.class);
+                    Intent intent =new Intent(LoginActivity.this,SignUpActivity.class);
                     startActivity(intent);
                 }
             });
