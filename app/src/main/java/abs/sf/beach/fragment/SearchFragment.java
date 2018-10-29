@@ -96,19 +96,13 @@ public class SearchFragment extends Fragment implements OnRefreshViewListener {
     private void setSearchAdapter() {
         if (!CollectionUtils.isNullOrEmpty(this.usersList)) {
             rvSearchlist.setLayoutManager(new LinearLayoutManager(getActivity()));
-            adapter = new SearchAdapter(getActivity(), usersList);
+            adapter = new SearchAdapter(getActivity(), usersList,this);
             rvSearchlist.setAdapter(adapter);
         }
     }
 
     @Override
     public void refreshView() {
-        AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-        //this.chatRoom = userManager.getChatRoomDetails(this.roomJID);
-
-        // this.memberList = new ArrayList<>(this.chatRoom.getMembers());
-        // this.isGroupMember = this.chatRoom.isRoomMember(Platform.getInstance().getUserJID());
-
         setSearchAdapter();
     }
 

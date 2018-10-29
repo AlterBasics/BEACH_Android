@@ -36,13 +36,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     private List<Roster.RosterItem> userRosterItems;
     private OnRefreshViewListener refreshViewListener;
 
-    public SearchAdapter(Context context, List<UserSearchData.Item> search) {
+    public SearchAdapter(Context context, List<UserSearchData.Item> search,OnRefreshViewListener refreshViewListener) {
         this.context = context;
         this.searchedUsers = search;
         this.searchUsersOriginal = search;
         AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
         this.userRosterItems = userManager.getRosterItemList();
-        this.refreshViewListener = (OnRefreshViewListener) context;
+        this.refreshViewListener = refreshViewListener;
 
     }
 
@@ -98,46 +98,50 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                     }
                 });
 
-                tv1.setText("Remove" + " " + getUserName(searchModel));
-                tv1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                if (isAlreadyInUserContact(searchModel)){
+                    tv1.setText("Remove" + " " + getUserName(searchModel));
+                    tv1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 
-                        final UserSearchData.Item  item = searchedUsers.get(position);
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-                        dialog.setMessage("Are yos sure waana remove this member from contacts");
-                        dialog.setCancelable(true);
+                            final UserSearchData.Item  item = searchedUsers.get(position);
+                            AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                            dialog.setMessage("Are yos sure waana remove this member from contacts");
+                            dialog.setCancelable(true);
 
-                        dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                            dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
 
-                                boolean removed = userManager.removeRosterMember(item.getUserJID());
+                                    boolean removed = userManager.removeRosterMember(item.getUserJID());
 
-                                if (removed) {
-                                    Toast.makeText(context, "Successfully Removed ", Toast.LENGTH_SHORT).show();
+                                    if (removed) {
+                                        Toast.makeText(context, "Successfully Removed ", Toast.LENGTH_SHORT).show();
 
-                                } else {
-                                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    refreshViewListener.refreshView();
+
+                                    dialog1.dismiss();
                                 }
+                            });
 
-                                refreshViewListener.refreshView();
+                            dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog1.dismiss();
+                                }
+                            });
 
-                                dialog1.dismiss();
-                            }
-                        });
+                            dialog.show();
+                        }
+                    });
+                }
 
-                        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog1.dismiss();
-                            }
-                        });
 
-                        dialog.show();
-                    }
-                });
 
                 if (!isAlreadyInUserContact(searchModel)){
                     tv2.setVisibility(View.VISIBLE);
@@ -159,7 +163,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                                     boolean removed = userManager.addRosterMember(item.getUserJID(),getUserName(searchModel));
 
                                     if (removed) {
-                                        Toast.makeText(context, "Successfully Removed ", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, "Successfully Added ", Toast.LENGTH_SHORT).show();
 
                                     } else {
                                         Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
