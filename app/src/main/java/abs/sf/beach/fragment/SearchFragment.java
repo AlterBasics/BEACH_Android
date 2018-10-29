@@ -1,7 +1,10 @@
 package abs.sf.beach.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,18 +16,22 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.CollectionUtils;
 import abs.ixi.client.util.StringUtils;
+import abs.ixi.client.xmpp.JID;
 import abs.ixi.client.xmpp.packet.Roster;
 import abs.ixi.client.xmpp.packet.UserSearchData;
 import abs.sf.beach.adapter.SearchAdapter;
 import abs.sf.beach.android.R;
+import abs.sf.beach.utils.CommonConstants;
+import abs.sf.beach.utils.OnRefreshViewListener;
 import abs.sf.client.android.managers.AndroidUserManager;
 
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment implements OnRefreshViewListener {
     private EditText etFirstName, etLastName, etNickName, et_email;
     private Button btnSearch;
     private RecyclerView rvSearchlist;
@@ -39,6 +46,12 @@ public class SearchFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
     private void initView(View view) {
         etFirstName = (EditText) view.findViewById(R.id.etFirstName);
         etLastName = (EditText) view.findViewById(R.id.etLastName);
@@ -46,7 +59,9 @@ public class SearchFragment extends Fragment {
         et_email = (EditText) view.findViewById(R.id.et_email);
         btnSearch = (Button) view.findViewById(R.id.btnSearch);
         rvSearchlist = (RecyclerView) view.findViewById(R.id.rvSearchList);
+
     }
+
 
     private void initOnClickListener() {
 
@@ -65,11 +80,11 @@ public class SearchFragment extends Fragment {
                     AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
                     usersList = userManager.searchUser(firstName, lastName, nickName, email);
 
+
                     if (usersList == null) {
                         Toast.makeText(getActivity(), "No result found", Toast.LENGTH_SHORT).show();
 
                     } else {
-
                         setSearchAdapter();
                     }
                 }
@@ -84,6 +99,17 @@ public class SearchFragment extends Fragment {
             adapter = new SearchAdapter(getActivity(), usersList);
             rvSearchlist.setAdapter(adapter);
         }
+    }
+
+    @Override
+    public void refreshView() {
+        AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+        //this.chatRoom = userManager.getChatRoomDetails(this.roomJID);
+
+        // this.memberList = new ArrayList<>(this.chatRoom.getMembers());
+        // this.isGroupMember = this.chatRoom.isRoomMember(Platform.getInstance().getUserJID());
+
+        setSearchAdapter();
     }
 
 }

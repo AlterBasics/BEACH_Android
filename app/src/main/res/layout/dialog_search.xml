@@ -12,7 +12,8 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="9dp"
         android:textSize="15dp"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:visibility="gone"/>
     <TextView
         android:id="@+id/tvMessage"
         android:layout_width="wrap_content"
@@ -32,7 +33,7 @@
         android:gravity="center"/>
 
     <TextView
-        android:id="@+id/tvRemove"
+        android:id="@+id/tvremove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="15dp"

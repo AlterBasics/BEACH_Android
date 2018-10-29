@@ -25,6 +25,8 @@ import abs.ixi.client.xmpp.packet.Roster;
 import abs.ixi.client.xmpp.packet.UserSearchData;
 import abs.sf.beach.activity.ChatActivity;
 import abs.sf.beach.android.R;
+import abs.sf.beach.utils.CommonConstants;
+import abs.sf.beach.utils.OnRefreshViewListener;
 import abs.sf.client.android.managers.AndroidUserManager;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
@@ -32,7 +34,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     private List<UserSearchData.Item> searchedUsers;
     private List<UserSearchData.Item> searchUsersOriginal;
     private List<Roster.RosterItem> userRosterItems;
-    private JID roomJID;
+    private OnRefreshViewListener refreshViewListener;
 
     public SearchAdapter(Context context, List<UserSearchData.Item> search) {
         this.context = context;
@@ -40,6 +42,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         this.searchUsersOriginal = search;
         AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
         this.userRosterItems = userManager.getRosterItemList();
+        this.refreshViewListener = (OnRefreshViewListener) context;
+
     }
 
     @Override
@@ -65,14 +69,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             public void onClick(View view) {
                 LayoutInflater myLayout = LayoutInflater.from(context);
                 final View dialogView = myLayout.inflate(R.layout.dialog_search, null);
-               // AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                 final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                 final AlertDialog dialog1 = dialog.create();
                 dialog1.setView(dialogView);
                 dialog1.show();
                 final TextView tv4 = (TextView) dialogView.findViewById(R.id.tvMessage);
                 final TextView tv5 = (TextView) dialogView.findViewById(R.id.tvView);
-                final TextView tv1 = (TextView) dialogView.findViewById(R.id.tvRemove);
+                TextView tv1 = (TextView) dialogView.findViewById(R.id.tvremove);
                 TextView tv2 = (TextView) dialogView.findViewById(R.id.tvAddtoContact);
 
 
@@ -99,8 +102,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                 tv1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
+                        final UserSearchData.Item  item = searchedUsers.get(position);
                         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-                        //dialog.setMessage("Remove " + selectMemberName + " from " + groupName + " group?");
+                        dialog.setMessage("Are yos sure waana remove this member from contacts");
                         dialog.setCancelable(true);
 
                         dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
@@ -108,7 +113,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                             public void onClick(DialogInterface dialog, int which) {
                                 AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
 
-                                boolean removed = userManager.removeRosterMember(roomJID);
+                                boolean removed = userManager.removeRosterMember(item.getUserJID());
 
                                 if (removed) {
                                     Toast.makeText(context, "Successfully Removed ", Toast.LENGTH_SHORT).show();
@@ -117,42 +122,68 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                                     Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
                                 }
 
-                                //refreshViewListener.refreshView();
+                                refreshViewListener.refreshView();
 
                                 dialog1.dismiss();
                             }
                         });
-                    }
-                });
-                tv2.setText("Add to Contacts");
-                tv2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-                        //dialog.setMessage("Remove " + selectMemberName + " from " + groupName + " group?");
-                        dialog.setCancelable(true);
 
-                        dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
+                        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-
-                                boolean add = userManager.addRosterMember(roomJID,getUserName(searchModel));
-
-                                if (add) {
-                                    Toast.makeText(context, "Successfully Added ", Toast.LENGTH_SHORT).show();
-
-                                } else {
-                                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-                                }
-
-                                //refreshViewListener.refreshView();
-
                                 dialog1.dismiss();
                             }
                         });
+
+                        dialog.show();
                     }
                 });
+
+                if (!isAlreadyInUserContact(searchModel)){
+                    tv2.setVisibility(View.VISIBLE);
+                    tv2.setText("Add to contacts" + " " + getUserName(searchModel));
+                    tv2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            final UserSearchData.Item  item = searchedUsers.get(position);
+
+                            AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                            dialog.setMessage("Are yos sure waana add this member in contacts");
+                            dialog.setCancelable(true);
+
+                            dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+
+                                    boolean removed = userManager.addRosterMember(item.getUserJID(),getUserName(searchModel));
+
+                                    if (removed) {
+                                        Toast.makeText(context, "Successfully Removed ", Toast.LENGTH_SHORT).show();
+
+                                    } else {
+                                        Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                      refreshViewListener.refreshView();
+
+                                    dialog1.dismiss();
+                                }
+                            });
+
+                            dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog1.dismiss();
+                                }
+                            });
+
+                            dialog.show();
+                        }
+                    });
+                }
+
+
             }
         });
 
