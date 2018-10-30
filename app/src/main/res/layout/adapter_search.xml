@@ -53,7 +53,7 @@
             android:layout_below="@+id/tvSearchName"
             android:textColor="@color/black"
             android:textSize="@dimen/textview_size_16"
-            android:visibility="gone"/>
+            android:visibility="visible"/>
 
         <View
             android:layout_width="match_parent"

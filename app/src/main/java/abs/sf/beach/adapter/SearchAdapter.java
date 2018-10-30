@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
+import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +20,11 @@ import java.util.List;
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.CollectionUtils;
 import abs.ixi.client.util.StringUtils;
-import abs.ixi.client.xmpp.JID;
 import abs.ixi.client.xmpp.packet.Roster;
 import abs.ixi.client.xmpp.packet.UserSearchData;
 import abs.sf.beach.activity.ChatActivity;
+import abs.sf.beach.activity.ProfileActivity;
 import abs.sf.beach.android.R;
-import abs.sf.beach.utils.CommonConstants;
 import abs.sf.beach.utils.OnRefreshViewListener;
 import abs.sf.client.android.managers.AndroidUserManager;
 
@@ -59,9 +58,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         holder.tvSearchContactName.setText(getUserName(searchModel));
         if (isAlreadyInUserContact(searchModel)){
             //toDO
+
            holder.tvSearchEmail.setText("No Result");
         }
         else {
+            holder.tvSearchEmail.setVisibility(View.VISIBLE);
             holder.tvSearchEmail.setText(searchModel.getEmail());
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +89,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                         intent.putExtra("name", searchModel);
                         intent.putExtra("from", "Search");
                         context.startActivity(intent);
+                        refreshViewListener.refreshView();
+                        dialog1.dismiss();
                     }
                 });
 
@@ -95,6 +98,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                 tv5.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Intent intent = new Intent(context,ProfileActivity.class);
+                        intent.putExtra("jid", searchModel.getUserJID());
+                        intent.putExtra("name", searchModel);
+                        intent.putExtra("from", "Search");
+                        context.startActivity(intent);
+                        dialog1.dismiss();
+                        refreshViewListener.refreshView();
                     }
                 });
 
@@ -209,6 +219,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             ivSearchContactImage = (ImageView) itemView.findViewById(R.id.ivSearchContactImage);
             tvSearchContactName = (TextView) itemView.findViewById(R.id.tvSearchName);
             tvSearchEmail = (TextView) itemView.findViewById(R.id.tvSerachEmail);
+            tvSearchEmail.setVisibility(View.INVISIBLE);
         }
 
     }

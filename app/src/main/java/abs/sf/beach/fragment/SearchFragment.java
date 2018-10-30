@@ -86,6 +86,10 @@ public class SearchFragment extends Fragment implements OnRefreshViewListener {
 
                     } else {
                         setSearchAdapter();
+                        etFirstName.getText().clear();
+                        etLastName.getText().clear();
+                        etNickName.getText().clear();
+                        et_email.getText().clear();
                     }
                 }
             }

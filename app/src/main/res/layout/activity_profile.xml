@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical">
+
+    <include
+        android:id="@+id/headerLayout"
+        layout="@layout/headers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button1">
+
+        <LinearLayout
+            android:id="@+id/rlUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical"
+            android:layout_below="@+id/rlPhone"
+            android:scrollbars="vertical"
+
+            >
+
+        <TextView
+            android:id="@+id/tvUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:scrollbars="vertical"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            />
+
+        <ImageView
+            android:id="@+id/ivUser"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/default_profilepic"
+            android:layout_gravity="center"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="10dp"/>
+
+    </LinearLayout>
+    </ScrollView>
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button1">
+
+        <LinearLayout
+            android:id="@+id/rlNames"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical"
+            android:layout_below="@+id/rlUser"
+            android:scrollbars="vertical"
+
+            >
+           <LinearLayout
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:scrollbars="vertical"
+               android:orientation="horizontal">
+
+               <TextView
+                   android:id="@+id/tvUserFirstName"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="First Name"
+                   android:scrollbars="vertical"
+                   android:textColor="@color/black"
+                   android:layout_marginTop="10dp"
+                   android:textSize="15dp"/>
+               <TextView
+                   android:id="@+id/etUserFirstName"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginLeft="75dp"
+                   android:text="asd"
+                   android:layout_marginTop="10dp"
+                   android:visibility="invisible"
+                  />
+           </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvUserMiddleName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Middle Name"
+                android:scrollbars="vertical"
+                android:textColor="@color/black"
+                android:layout_marginTop="10dp"
+                android:textSize="15dp"/>
+            <TextView
+                android:id="@+id/etUserMiddletName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="75dp"
+                android:text="asd"
+                android:layout_marginTop="10dp"
+                android:visibility="invisible"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvUserLastName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Last Name"
+                android:scrollbars="vertical"
+                android:textColor="@color/black"
+                android:layout_marginTop="10dp"
+                android:textSize="15dp"/>
+            <TextView
+                android:id="@+id/etUserLastName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="75dp"
+                android:text="asd"
+                android:layout_marginTop="10dp"
+                android:visibility="invisible"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvUserNickName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Middle Name"
+                android:scrollbars="vertical"
+                android:textColor="@color/black"
+                android:layout_marginTop="10dp"
+                android:textSize="15dp"/>
+            <TextView
+                android:id="@+id/etUserNickName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="75dp"
+                android:text="asd"
+                android:layout_marginTop="10dp"
+                android:visibility="invisible"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    </ScrollView>
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button1">
+
+        <LinearLayout
+            android:id="@+id/rlGender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical"
+            android:layout_below="@+id/rlNames"
+            android:scrollbars="vertical"
+
+            >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvUserGender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gender"
+                android:scrollbars="vertical"
+                android:textColor="@color/black"
+                android:layout_marginTop="10dp"
+                android:textSize="15dp"/>
+            <TextView
+                android:id="@+id/etUserGender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="75dp"
+                android:text="asd"
+                android:layout_marginTop="10dp"
+                android:visibility="invisible"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvUserBday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Birthday"
+                android:scrollbars="vertical"
+                android:textColor="@color/black"
+                android:layout_marginTop="10dp"
+                android:textSize="15dp"/>
+            <TextView
+                android:id="@+id/etUserBday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="75dp"
+                android:text="asd"
+                android:layout_marginTop="10dp"
+                android:visibility="invisible"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+    </ScrollView>
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button1">
+
+        <LinearLayout
+            android:id="@+id/rlPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical"
+            android:layout_below="@+id/rlGender"
+            android:scrollbars="vertical"
+
+            >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvUserPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phone No"
+                android:scrollbars="vertical"
+                android:textColor="@color/black"
+                android:layout_marginTop="10dp"
+                android:textSize="15dp"/>
+            <TextView
+                android:id="@+id/etUserPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="75dp"
+                android:text="asd"
+                android:layout_marginTop="10dp"
+                android:visibility="invisible"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvUserEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:scrollbars="vertical"
+                android:textColor="@color/black"
+                android:layout_marginTop="10dp"
+                android:textSize="15dp"/>
+            <TextView
+                android:id="@+id/etUserEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="75dp"
+                android:text="asd"
+                android:layout_marginTop="10dp"
+                android:visibility="invisible"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+    </ScrollView>
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button1">
+
+        <LinearLayout
+            android:id="@+id/rlAddredd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical"
+            android:layout_below="@+id/rlPhone"
+            android:scrollbars="vertical"
+
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvUserAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Address"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="10dp"
+                    android:textSize="20dp"/>
+                <TextView
+                    android:id="@+id/etUserAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="75dp"
+                    android:text="asd"
+                    android:layout_marginTop="10dp"
+                    android:visibility="invisible"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvUserHome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Home"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="10dp"
+                    android:textSize="15dp"/>
+                <TextView
+                    android:id="@+id/etUserHome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="75dp"
+                    android:text="asd"
+                    android:layout_marginTop="10dp"
+                    android:visibility="invisible"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvUserStreet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Street"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="10dp"
+                    android:textSize="15dp"/>
+                <TextView
+                    android:id="@+id/etUserStreet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="75dp"
+                    android:text="asd"
+                    android:layout_marginTop="10dp"
+                    android:visibility="invisible"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvUserLocality"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Locality"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="10dp"
+                    android:textSize="15dp"/>
+                <TextView
+                    android:id="@+id/etUserLocality"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="75dp"
+                    android:text="asd"
+                    android:layout_marginTop="10dp"
+                    android:visibility="invisible"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvUserPinCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PinCode"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="10dp"
+                    android:textSize="15dp"/>
+                <TextView
+                    android:id="@+id/etUserPinCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="75dp"
+                    android:text="asd"
+                    android:layout_marginTop="10dp"
+                    android:visibility="invisible"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvUserCity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="City"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="10dp"
+                    android:textSize="15dp"/>
+                <TextView
+                    android:id="@+id/etUserCity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="75dp"
+                    android:text="asd"
+                    android:layout_marginTop="10dp"
+                    android:visibility="invisible"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvUserState"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="State"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="10dp"
+                    android:textSize="15dp"/>
+                <TextView
+                    android:id="@+id/etUserState"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="75dp"
+                    android:text="asd"
+                    android:layout_marginTop="10dp"
+                    android:visibility="invisible"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvUserCountry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Country"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="10dp"
+                    android:textSize="15dp"/>
+                <TextView
+                    android:id="@+id/etUserCountry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="75dp"
+                    android:text="asd"
+                    android:layout_marginTop="10dp"
+                    android:visibility="invisible"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rlAbout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:scrollbars="vertical"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:id="@+id/tvUserAbout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="About"
+                    android:scrollbars="vertical"
+                    android:textSize="15dp"
+                    android:textColor="@color/black"/>
+                <TextView
+                    android:id="@+id/etUserAbout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:text=""
+                    android:scrollbars="vertical"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

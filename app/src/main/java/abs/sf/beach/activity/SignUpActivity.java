@@ -116,7 +116,8 @@ public class SignUpActivity extends StringflowActivity {
                                 etEmail.getText().clear();
                                 etPwd.getText().clear();
                                 etUsername.getText().clear();
-                                Toast.makeText(SignUpActivity.this, failure, Toast.LENGTH_SHORT).show();
+                                etConfrmPwd.getText().clear();
+                                //Toast.makeText(SignUpActivity.this, failure, Toast.LENGTH_SHORT).show();
                                 closeProgressDialog();
                             }
                         });
