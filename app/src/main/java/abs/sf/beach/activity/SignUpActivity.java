@@ -105,20 +105,31 @@ public class SignUpActivity extends StringflowActivity {
                     try {
                         userManager.registerNewUser(username, email, pwd, new Callback<String, String>() {
                             @Override
-                            public void onSuccess(String success) {
-                                Toast.makeText(SignUpActivity.this, success, Toast.LENGTH_SHORT).show();
-                                closeProgressDialog();
-                                finish();
-                            }
+                            public void onSuccess(final String success) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(SignUpActivity.this, success, Toast.LENGTH_SHORT).show();
+                                        closeProgressDialog();
+                                        finish();
+                                    }
+                                });
+                               }
 
                             @Override
-                            public void onFailure(String failure) {
-                                etEmail.getText().clear();
-                                etPwd.getText().clear();
-                                etUsername.getText().clear();
-                                etConfrmPwd.getText().clear();
-                                //Toast.makeText(SignUpActivity.this, failure, Toast.LENGTH_SHORT).show();
-                                closeProgressDialog();
+                            public void onFailure(final String failure) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(SignUpActivity.this, failure, Toast.LENGTH_SHORT).show();
+                                        etEmail.getText().clear();
+                                        etPwd.getText().clear();
+                                        etUsername.getText().clear();
+                                        etConfrmPwd.getText().clear();
+                                        closeProgressDialog();
+                                    }
+                                });
+
                             }
                         });
                     } catch (NetworkException e) {
