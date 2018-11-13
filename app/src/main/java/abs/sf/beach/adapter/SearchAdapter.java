@@ -86,10 +86,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                     public void onClick(View view) {
                         Intent intent = new Intent(context, ChatActivity.class);
                         intent.putExtra("jid", searchModel.getUserJID());
-                        intent.putExtra("name", searchModel);
-                        intent.putExtra("from", "Search");
                         context.startActivity(intent);
-                        refreshViewListener.refreshView();
                         dialog1.dismiss();
                     }
                 });

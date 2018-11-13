@@ -26,7 +26,6 @@ public class ProfileActivity extends StringflowActivity {
     private ImageView ivProfilePic;
 
     private JID jid;
-    private String Name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,22 +38,21 @@ public class ProfileActivity extends StringflowActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        jid = (JID) getIntent().getSerializableExtra(CommonConstants.JID);
-        CachedData();
-        ShowData();
+        this.jid = (JID) getIntent().getSerializableExtra(CommonConstants.JID);
+        showData();
     }
 
 
     private void initView() {
         ivBack = (ImageView) findViewById(R.id.ivBack);
         tvCreatGrp = (TextView) findViewById(R.id.tvCreateGroup);
-        ivNext = (ImageView)findViewById(R.id.ivNext);
+        ivNext = (ImageView) findViewById(R.id.ivNext);
         ivNext.setVisibility(View.GONE);
         tvHeaders = (TextView) findViewById(R.id.tvHeaders);
         tvHeaders.setText("User Profile");
         tvHeaders.setVisibility(View.VISIBLE);
         tvHeaders.setGravity(Gravity.CENTER);
-       tvCreatGrp.setVisibility(View.GONE);
+        tvCreatGrp.setVisibility(View.GONE);
         ivProfilePic = (ImageView) findViewById(R.id.ivUser);
         tvUSerName = (TextView) findViewById(R.id.tvUsername);
         tvUSerFirstName = (TextView) findViewById(R.id.etUserFirstName);
@@ -66,15 +64,15 @@ public class ProfileActivity extends StringflowActivity {
         tvUSerPhoneNo = (TextView) findViewById(R.id.etUserPhone);
         tvUSerEmail = (TextView) findViewById(R.id.etUserEmail);
         tvUSerHome = (TextView) findViewById(R.id.etUserHome);
-//        tvUSerStreet = (TextView) findViewById(R.id.etUserStreet);
-//        tvUSerLocality = (TextView) findViewById(R.id.etUserLocality);
-//        tvUSerPinCode = (TextView) findViewById(R.id.etUserPinCode);
-//        tvUSerCity = (TextView) findViewById(R.id.etUserCity);
-//        tvUSerState = (TextView) findViewById(R.id.etUserState);
-//        tvUSerCountry = (TextView) findViewById(R.id.etUserCountry);
+        tvUSerStreet = (TextView) findViewById(R.id.etUserStreet);
+        tvUSerLocality = (TextView) findViewById(R.id.etUserLocality);
+        tvUSerPinCode = (TextView) findViewById(R.id.etUserPinCode);
+        tvUSerCity = (TextView) findViewById(R.id.etUserCity);
+        tvUSerState = (TextView) findViewById(R.id.etUserState);
+        tvUSerCountry = (TextView) findViewById(R.id.etUserCountry);
         tvUSerAbout = (TextView) findViewById(R.id.etUserAbout);
-        //scroller=(ScrollView)findViewById(R.id.scroller);
-
+//        scroller=(ScrollView)findViewById(R.id.scroller);
+//
 //        //scroller.post(new Runnable() {
 //            public void run() {
 //                scroller.fullScroll(ScrollView.FOCUS_UP);
@@ -82,6 +80,7 @@ public class ProfileActivity extends StringflowActivity {
 //        });
 
         ActionBar actionBar = getSupportActionBar();
+
         if (actionBar != null) {
             actionBar.hide();
         }
@@ -98,19 +97,14 @@ public class ProfileActivity extends StringflowActivity {
 
     }
 
-    private UserProfileData CachedData() {
-         boolean cached = true;
-        if (cached) {
-            AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-            UserProfileData cachedUserProfileData = userManager.getCachedUserProfileData(jid);
-            return cachedUserProfileData;
-        }
-        return null;
-    }
-
-    private UserProfileData ShowData(){
+    private UserProfileData showData() {
         AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-        UserProfileData userProfileData = userManager.getUserProfileData(jid);
+        UserProfileData userProfileData = userManager.getCachedUserProfileData(jid);
+
+        if (userProfileData == null) {
+            userProfileData = userManager.getUserProfileData(jid);
+        }
+
         tvUSerName.setText(jid.getNode());
         tvUSerFirstName.setText(userProfileData.getFirstName());
         tvUSerMiddleName.setText(userProfileData.getMiddleName());
@@ -120,14 +114,21 @@ public class ProfileActivity extends StringflowActivity {
         tvUSerBday.setText(userProfileData.getBday());
         tvUSerPhoneNo.setText(userProfileData.getPhone());
         tvUSerEmail.setText(userProfileData.getEmail());
-//        tvUSerHome.setText(userProfileData.getAddress().getHome());
-//        tvUSerStreet.setText(userProfileData.getAddress().getStreet());
-//        tvUSerLocality.setText(userProfileData.getAddress().getLocality());
-//        tvUSerPinCode.setText(userProfileData.getAddress().getPcode());
-//        tvUSerCity.setText(userProfileData.getAddress().getCity());
-//        tvUSerState.setText(userProfileData.getAddress().getState());
-//        tvUSerCountry.setText(userProfileData.getAddress().getCountry());
-//        tvUSerAbout.setText(userProfileData.getDescription());
+
+        if(userProfileData.getAddress() != null) {
+            tvUSerHome.setText(userProfileData.getAddress().getHome());
+            tvUSerStreet.setText(userProfileData.getAddress().getStreet());
+            tvUSerLocality.setText(userProfileData.getAddress().getLocality());
+            tvUSerPinCode.setText(userProfileData.getAddress().getPcode());
+            tvUSerCity.setText(userProfileData.getAddress().getCity());
+            tvUSerState.setText(userProfileData.getAddress().getState());
+            tvUSerCountry.setText(userProfileData.getAddress().getCountry());
+        }
+
+        tvUSerAbout.setText(userProfileData.getDescription());
+
+        this.ivProfilePic.setImageBitmap(userManager.getUserAvatar(this.jid));
+
         return userProfileData;
     }
 
