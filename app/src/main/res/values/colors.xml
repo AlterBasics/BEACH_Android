@@ -16,5 +16,6 @@
     <color name="light_gray">#d7d7d7</color>
     <color name="colorGreen">#05680A</color>
     <color name="transparent">#00ffffff</color>
+    <color name="rapport_gray_light_bg">#e0e5e7</color>
 
 </resources>

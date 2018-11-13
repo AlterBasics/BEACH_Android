@@ -38,6 +38,9 @@
     <string name="tap_to_respond">Tap to respond</string>
     <string name="create_group">Create Group</string>
     <string name="add_participant">Add Participants</string>
+    <string name="profile">Profile</string>
+    <string name="settingss">settings</string>
+    <string name="logout">Logout</string>
     <string-array name="group_type">
         <item>Public</item>
         <item>Private</item>

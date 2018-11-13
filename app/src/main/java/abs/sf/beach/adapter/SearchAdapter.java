@@ -116,7 +116,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
                             final UserSearchData.Item  item = searchedUsers.get(position);
                             AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-                            dialog.setMessage("Are yos sure waana remove this member from contacts");
+                            dialog.setMessage("Are yos sure wanna remove this member from contacts");
                             dialog.setCancelable(true);
 
                             dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {
@@ -162,7 +162,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                             final UserSearchData.Item  item = searchedUsers.get(position);
 
                             AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-                            dialog.setMessage("Are yos sure waana add this member in contacts");
+                            dialog.setMessage("Are yos sure wanna add this member in contacts");
                             dialog.setCancelable(true);
 
                             dialog.setPositiveButton(" YES", new DialogInterface.OnClickListener() {

@@ -62,7 +62,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             android:padding="12dp"
-            android:src="@mipmap/add" />
+            android:src="@drawable/menudot"/>
     </RelativeLayout>
 
 </LinearLayout>

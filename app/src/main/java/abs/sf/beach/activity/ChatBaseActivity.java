@@ -1,5 +1,7 @@
 package abs.sf.beach.activity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v4.view.ViewPager;
 
 import android.support.v7.app.ActionBar;
@@ -8,15 +10,21 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import abs.ixi.client.UserManager;
 import abs.sf.beach.android.R;
 import abs.sf.beach.fragment.ContactFragment;
 import abs.sf.beach.fragment.ConversationFragment;
 import abs.sf.beach.fragment.SearchFragment;
+import abs.sf.beach.utils.CommonConstants;
 import abs.sf.beach.utils.NotificationUtils;
 
 public class ChatBaseActivity extends StringflowActivity {
@@ -123,7 +131,41 @@ public class ChatBaseActivity extends StringflowActivity {
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logout();
+                popUp(v);
+//                LayoutInflater myLayout = LayoutInflater.from(context());
+//                View dialogView = myLayout.inflate(R.layout.dialog_menu_dots,null);
+//                final android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(context());
+//                final android.app.AlertDialog dialog1 = dialog.create();
+//                dialog1.setView(dialogView);
+//                dialog1.show();
+//                final TextView tv1 = (TextView) dialogView.findViewById(R.id.tvProfile);
+//                final TextView tv2 = (TextView) dialogView.findViewById(R.id.tvSettings);
+//                TextView tv3 = (TextView) dialogView.findViewById(R.id.tvLogout);
+//
+//                tv1.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        Intent intent = new Intent(context(),ProfileActivity.class);
+//                        intent.putExtra("jid", CommonConstants.JID);
+//                        startActivity(intent);
+//                    }
+//                });
+//
+//                tv2.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//
+//                    }
+//                });
+//
+//                tv3.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        logout();
+//                    }
+//                });
+//
+//                //logout();
             }
         });
     }
@@ -180,5 +222,25 @@ public class ChatBaseActivity extends StringflowActivity {
         public int getCount() {
             return NUM_PAGES;
         }
+    }
+
+    private void popUp(View view){
+        PopupMenu menu = new PopupMenu(ChatBaseActivity.this, view);
+        menu.getMenuInflater().inflate(R.menu.popup_menu, menu.getMenu());
+        menu.show();
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.Profile) {
+                    new ProfileActivity();
+                } else if (item.getItemId() == R.id.settings) {
+
+
+                } else if (item.getItemId() == R.id.logout) {
+                    logout();
+                }
+                return true;
+            }
+        });
     }
 }
