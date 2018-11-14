@@ -22,8 +22,10 @@ import abs.ixi.client.xmpp.JID;
 import abs.ixi.client.xmpp.packet.ChatRoom;
 import abs.sf.beach.activity.ChatActivity;
 import abs.sf.beach.activity.GroupDetailsActivity;
+import abs.sf.beach.activity.ProfileActivity;
 import abs.sf.beach.android.R;
 import abs.sf.beach.utils.AndroidUtils;
+import abs.sf.beach.utils.CommonConstants;
 import abs.sf.beach.utils.OnRefreshViewListener;
 import abs.sf.client.android.managers.AndroidUserManager;
 
@@ -64,11 +66,15 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
                 @Override
                 public void onClick(View v) {
                     if (loggedInMember != null) {
-                        if (loggedInMember.getAffiliation() == ChatRoom.Affiliation.ADMIN || loggedInMember.getAffiliation() == ChatRoom.Affiliation.OWNER) {
-                            ChatRoom.ChatRoomMember selectMember = memberList.get(getAdapterPosition());
+                        ChatRoom.ChatRoomMember selectMember = memberList.get(getAdapterPosition());
 
-                            if (!loggedInMember.equals(selectMember)) {
+                        if (!loggedInMember.equals(selectMember)) {
+
+                            if (loggedInMember.getAffiliation() == ChatRoom.Affiliation.ADMIN || loggedInMember.getAffiliation() == ChatRoom.Affiliation.OWNER) {
                                 showOnClickDialog(selectMember);
+
+                            } else if(loggedInMember.getAffiliation() == ChatRoom.Affiliation.MEMBER) {
+                                showMemberClickDialog(selectMember);
                             }
 
                         }
@@ -119,6 +125,50 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
         return memberList.size();
     }
 
+    private void showMemberClickDialog(final ChatRoom.ChatRoomMember selectedMember) {
+        final String selectMemberName = getMemberName(selectedMember);
+
+        LayoutInflater myLayout = LayoutInflater.from(context);
+        final View dialogView = myLayout.inflate(R.layout.dialog_layout, null);
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        final AlertDialog dialog1 = dialog.create();
+        dialog1.setView(dialogView);
+        dialog1.show();
+        final TextView tv4 = (TextView) dialogView.findViewById(R.id.tvMessage);
+        final TextView tv5 = (TextView) dialogView.findViewById(R.id.tvView);
+        final TextView tv1 = (TextView) dialogView.findViewById(R.id.tvRemove);
+        tv1.setVisibility(View.GONE);
+
+        TextView tv2 = (TextView) dialogView.findViewById(R.id.tvOwner);
+        tv2.setVisibility(View.GONE);
+
+        TextView tv3 = (TextView) dialogView.findViewById(R.id.tvAdmin);
+        tv3.setVisibility(View.GONE);
+
+        tv4.append("Message" + " " + selectMemberName);
+        tv4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra("jid", selectedMember.getUserJID());
+                intent.putExtra("name", selectMemberName);
+                intent.putExtra("from", "Group Detail");
+                context.startActivity(intent);
+            }
+        });
+
+        tv5.append("View" + " " + selectMemberName);
+        tv5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context,ProfileActivity.class);
+                intent.putExtra(CommonConstants.JID, selectedMember.getUserJID());
+                context.startActivity(intent);
+                dialog1.dismiss();
+            }
+        });
+    }
+
     private void showOnClickDialog(final ChatRoom.ChatRoomMember selectedMember) {
         final String selectMemberName = getMemberName(selectedMember);
 
@@ -151,6 +201,10 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
         tv5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(context,ProfileActivity.class);
+                intent.putExtra(CommonConstants.JID, selectedMember.getUserJID());
+                context.startActivity(intent);
+                dialog1.dismiss();
             }
         });
 
