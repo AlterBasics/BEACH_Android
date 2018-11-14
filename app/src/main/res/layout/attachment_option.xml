@@ -1,0 +1,59 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/transparent" >
+
+    <LinearLayout
+        android:id="@+id/custom_alert_attachment_option_attachment_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="@drawable/white_top_blue_line_bg"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:paddingBottom="35dp"
+        android:paddingTop="20dp" >
+
+        <ImageButton
+            android:id="@+id/custom_alert_attachment_option_btn_take_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:background="@drawable/btn_take_photo"
+            android:src="@drawable/button_selector" />
+
+        <ImageButton
+            android:id="@+id/custom_alert_attachment_option_btn_choose_existing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:background="@drawable/btn_choose_existing"
+            android:src="@drawable/button_selector" />
+
+        <TextView
+            android:id="@+id/remove_btn_existing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:background="@drawable/btn_remove_existing"
+            android:src="@drawable/button_selector"
+            android:gravity="center"
+            android:textColor="@color/rapport_white"
+            android:text="Remove Photo"
+            android:visibility="gone"/>
+
+        <ImageButton
+            android:id="@+id/custom_alert_attachment_option_btn_attachment_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:background="@drawable/btn_cancel"
+            android:src="@drawable/button_selector" />
+    </LinearLayout>
+
+</RelativeLayout>

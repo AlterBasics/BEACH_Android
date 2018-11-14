@@ -17,5 +17,8 @@
     <color name="colorGreen">#05680A</color>
     <color name="transparent">#00ffffff</color>
     <color name="rapport_gray_light_bg">#e0e5e7</color>
+    <item name="rapport_chat_blue" type="color">#63aeeb</item>
+    <color name="rapport_gray">#a1a1a1</color>
+    <color name="rapport_white">#ffffff</color>
 
 </resources>

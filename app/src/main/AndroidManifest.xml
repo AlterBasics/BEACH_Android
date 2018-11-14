@@ -33,6 +33,7 @@
         <activity android:name="abs.sf.beach.activity.SignUpActivity" />
         <activity android:name="abs.sf.beach.activity.AddParticipantActivity" />
         <activity android:name="abs.sf.beach.activity.ProfileActivity" />
+        <activity android:name="abs.sf.beach.activity.AttachmentOptionActivity" />
 
         <activity
             android:name="eu.janmuller.android.simplecropimage.CropImage"
