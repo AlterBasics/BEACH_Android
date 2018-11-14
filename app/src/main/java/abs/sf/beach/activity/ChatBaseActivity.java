@@ -20,6 +20,9 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import abs.ixi.client.UserManager;
+import abs.ixi.client.core.Platform;
+import abs.ixi.client.core.Session;
+import abs.ixi.client.xmpp.JID;
 import abs.sf.beach.android.R;
 import abs.sf.beach.fragment.ContactFragment;
 import abs.sf.beach.fragment.ConversationFragment;
@@ -33,6 +36,7 @@ public class ChatBaseActivity extends StringflowActivity {
     private ImageView ivBack, ivNext, ivConversation, ivContact,ivSearch;
     private TextView tvHeader;
     private LinearLayout llConversation, llContact,llSearch;
+    private JID userJID;
 
 
     @Override
@@ -59,6 +63,7 @@ public class ChatBaseActivity extends StringflowActivity {
         mPager = (ViewPager) findViewById(R.id.viewPager);
         ivBack.setVisibility(View.INVISIBLE);
         ivNext.setVisibility(View.VISIBLE);
+        userJID = (JID) Platform.getInstance().getSession().get(Session.KEY_USER_JID);
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar!=null){
@@ -232,7 +237,9 @@ public class ChatBaseActivity extends StringflowActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.Profile) {
-                    new ProfileActivity();
+                    Intent intent = new Intent(ChatBaseActivity.this,ProfileActivity.class);
+                   intent.putExtra("jid",userJID);
+                    startActivity(intent);
                 } else if (item.getItemId() == R.id.settings) {
 
 
