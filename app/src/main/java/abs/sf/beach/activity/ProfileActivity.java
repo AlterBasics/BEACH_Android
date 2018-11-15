@@ -1,26 +1,20 @@
 package abs.sf.beach.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+
 import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,15 +23,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.channels.FileChannel;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.core.Session;
@@ -48,7 +38,6 @@ import abs.sf.beach.utils.CommonConstants;
 import abs.sf.client.android.managers.AndroidUserManager;
 import eu.janmuller.android.simplecropimage.CropImage;
 
-import static abs.sf.beach.activity.AttachmentOptionActivity.CHOOSE_EXISTING;
 
 public class ProfileActivity extends StringflowActivity {
     private ImageView ivBack, ivNext, editPic;
@@ -63,29 +52,17 @@ public class ProfileActivity extends StringflowActivity {
     protected static final int GALLERY_PICTURE = 4;
     protected static final int CROP_PICTURE = 5;
     protected Uri mFileTempUri;
-    protected ImageView mPhotoView;
     public ArrayList<String> galleryList = new ArrayList<String>();
     protected static File mFileTemp = null;
     private String isImagePresent = "0";
     private JID jid, userJID;
 
     final int CAMERA_CAPTURE = 1;
-    private Uri picUri;
     final int PIC_CROP = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (null != savedInstanceState) {
-            if (savedInstanceState.containsKey(CommonConstants.CAMERA_URI)) {
-                mFileTempUri = Uri.parse(savedInstanceState
-                        .getString(CommonConstants.CAMERA_URI));
-            }
-            if (savedInstanceState.containsKey(CommonConstants.IMAGE_FILE_PATH)) {
-                mFileTemp = new File(
-                        savedInstanceState.getString(CommonConstants.IMAGE_FILE_PATH));
-            }
-        }
         setContentView(R.layout.activity_profile);
         initView();
         initOnClicklitener();
@@ -96,10 +73,12 @@ public class ProfileActivity extends StringflowActivity {
         super.onResume();
         this.jid = (JID) getIntent().getSerializableExtra(CommonConstants.JID);
         this.userJID = (JID) Platform.getInstance().getSession().get(Session.KEY_USER_JID);
+        if (jid == userJID) {
+            editPic.setVisibility(View.VISIBLE);
+        }
         showData();
 
     }
-
 
     private void initView() {
         ivBack = (ImageView) findViewById(R.id.ivBack);
@@ -130,21 +109,8 @@ public class ProfileActivity extends StringflowActivity {
         tvUserCountry = (TextView) findViewById(R.id.etUserCountry);
         tvUserAbout = (TextView) findViewById(R.id.etUserAbout);
         scroller = (ScrollView) findViewById(R.id.scroller);
-
-
         editPic = (ImageView) findViewById(R.id.iv_edit_pic);
         editPic.setVisibility(View.GONE);
-        if (jid == userJID) {
-            editPic.setVisibility(View.VISIBLE);
-            editPic.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        showPicImageDialog();
-                    }
-                }
-            });
-        }
 
 
         scroller.post(new Runnable() {
@@ -169,6 +135,14 @@ public class ProfileActivity extends StringflowActivity {
             }
         });
 
+        editPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    showPicImageDialog();
+                }
+            }
+        });
 
     }
 
@@ -225,12 +199,11 @@ public class ProfileActivity extends StringflowActivity {
     }
 
 
-
-    private void performCrop(){
+    private void performCrop() {
         try {
             Intent cropIntent = new Intent("com.android.camera.action.CROP");
             //indicate image type and Uri
-            cropIntent.setDataAndType(picUri, "image/*");
+            cropIntent.setDataAndType(mFileTempUri, "image/*");
             //set crop properties
             cropIntent.putExtra("crop", "true");
             //indicate aspect of desired crop
@@ -244,8 +217,7 @@ public class ProfileActivity extends StringflowActivity {
             //start the activity - we handle returning in onActivityResult
             startActivityForResult(cropIntent, PIC_CROP);
 
-        }
-        catch(ActivityNotFoundException anfe){
+        } catch (ActivityNotFoundException anfe) {
             //display an error message
             String errorMessage = "Whoops - your device doesn't support the crop action!";
             Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
@@ -266,7 +238,7 @@ public class ProfileActivity extends StringflowActivity {
         switch (requestCode) {
             case CAMERA_CAPTURE:
 
-                picUri = data.getData();
+                mFileTempUri = data.getData();
                 startCropImage();
                 //performCrop();
                 break;
@@ -341,7 +313,7 @@ public class ProfileActivity extends StringflowActivity {
 
         Intent intent = new Intent(context(), CropImage.class);
         intent.putExtra(CropImage.IMAGE_PATH, mFileTemp.getPath());
-        intent.setDataAndType(picUri, "image/*");
+        intent.setDataAndType(mFileTempUri  , "image/*");
         //set crop properties
         intent.putExtra("crop", "true");
         //indicate aspect of desired crop
