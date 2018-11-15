@@ -18,5 +18,7 @@ public class CommonConstants {
     public static final String PERMISSION_WRITE = "android.permission.WRITE_EXTERNAL_STORAGE";
     public static final String PERMISSION_READ_PHONE = "android.permission.READ_PHONE_STATE";
     public static final int PERMISSION_REQ_CODE = 200;
+    public static final String CAMERA_URI = "cameraImageUri";
+    public static final String IMAGE_FILE_PATH = "ImageFilePath";
 
 }

@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,6 +48,8 @@ import abs.sf.beach.utils.CommonConstants;
 import abs.sf.client.android.managers.AndroidUserManager;
 import eu.janmuller.android.simplecropimage.CropImage;
 
+import static abs.sf.beach.activity.AttachmentOptionActivity.CHOOSE_EXISTING;
+
 public class ProfileActivity extends StringflowActivity {
     private ImageView ivBack, ivNext, editPic;
     private TextView tvHeaders, tvCreatGrp;
@@ -66,9 +69,23 @@ public class ProfileActivity extends StringflowActivity {
     private String isImagePresent = "0";
     private JID jid, userJID;
 
+    final int CAMERA_CAPTURE = 1;
+    private Uri picUri;
+    final int PIC_CROP = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (null != savedInstanceState) {
+            if (savedInstanceState.containsKey(CommonConstants.CAMERA_URI)) {
+                mFileTempUri = Uri.parse(savedInstanceState
+                        .getString(CommonConstants.CAMERA_URI));
+            }
+            if (savedInstanceState.containsKey(CommonConstants.IMAGE_FILE_PATH)) {
+                mFileTemp = new File(
+                        savedInstanceState.getString(CommonConstants.IMAGE_FILE_PATH));
+            }
+        }
         setContentView(R.layout.activity_profile);
         initView();
         initOnClicklitener();
@@ -208,6 +225,36 @@ public class ProfileActivity extends StringflowActivity {
     }
 
 
+
+    private void performCrop(){
+        try {
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+            //indicate image type and Uri
+            cropIntent.setDataAndType(picUri, "image/*");
+            //set crop properties
+            cropIntent.putExtra("crop", "true");
+            //indicate aspect of desired crop
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            //indicate output X and Y
+            cropIntent.putExtra("outputX", 32);
+            cropIntent.putExtra("outputY", 60);
+            //retrieve data on return
+            cropIntent.putExtra("return-data", true);
+            //start the activity - we handle returning in onActivityResult
+            startActivityForResult(cropIntent, PIC_CROP);
+
+        }
+        catch(ActivityNotFoundException anfe){
+            //display an error message
+            String errorMessage = "Whoops - your device doesn't support the crop action!";
+            Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
+            toast.show();
+        }
+
+    }
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -217,9 +264,11 @@ public class ProfileActivity extends StringflowActivity {
 
 
         switch (requestCode) {
-            case 1:
-                ivProfilePic.setImageBitmap((Bitmap) data.getExtras().get(String.valueOf(mFileTempUri)));  //use this if you trying to set image on Imageview
+            case CAMERA_CAPTURE:
 
+                picUri = data.getData();
+                startCropImage();
+                //performCrop();
                 break;
             case GALLERY_PICTURE:
                 try {
@@ -231,104 +280,22 @@ public class ProfileActivity extends StringflowActivity {
                     fileOutputStream.close();
                     inputStream.close();
                     startCropImage();
+                    //performCrop();
                 } catch (Exception e) {
                     Log.e(CommonConstants.SETTINGS_FRAGMENT_PROFILE_TAG,
                             CommonConstants.ERR_CREATING_TEMP_FILE, e);
                 }
                 break;
-//            case CAMERA_REQUEST:
-//                String[] projection = {MediaStore.Images.ImageColumns.SIZE,
-//                        MediaStore.Images.ImageColumns.DISPLAY_NAME,
-//                        MediaStore.Images.ImageColumns.DATA, BaseColumns._ID,};
-//                //
-//                // intialize the Uri and the Cursor, and the current expected size.
-//                Cursor c = null;
-//                Uri u = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-//                //
-//                if (mFileTemp != null) {
-//                    // Query the Uri to get the data path. Only if the Uri is valid,
-//                    // and we had a valid size to be searching for.
-//                    if ((u != null) && (mFileTemp.length() > 0)) {
-//                        c = getContentResolver().query(u, projection, null, null, ContactsContract.Contacts.DISPLAY_NAME);
-//                    }
-//                    //
-//                    // If we found the cursor and found a record in it (we also have
-//                    // the size).
-//                    if ((c != null) && (c.moveToFirst())) {
-//                        do {
-//                            // Check each area in the gallary we built before.
-//                            boolean bFound = false;
-//                            for (String sGallery : galleryList) {
-//                                if (sGallery.equalsIgnoreCase(c.getString(1))) {
-//                                    bFound = true;
-//                                    break;
-//                                }
-//                            }
-//                            //
-//                            // To here we looped the full gallery.
-//                            if (!bFound) {
-//                                // This is the NEW image. If the size is bigger,
-//                                // copy it.
-//                                // Then delete it!
-//                                File f = new File(c.getString(2));
-//
-//                                // Ensure it's there, check size, and delete!
-//                                if ((f.exists())
-//                                        && (mFileTemp.length() < c.getLong(0))
-//                                        && (mFileTemp.delete())) {
-//                                    // Finally we can stop the copy.
-//                                    try {
-//                                        mFileTemp.createNewFile();
-//                                        FileChannel source = null;
-//                                        FileChannel destination = null;
-//                                        try {
-//                                            source = new FileInputStream(f)
-//                                                    .getChannel();
-//                                            destination = new FileOutputStream(
-//                                                    mFileTemp).getChannel();
-//                                            destination.transferFrom(source, 0,
-//                                                    source.size());
-//                                        } finally {
-//                                            if (source != null) {
-//                                                source.close();
-//                                            }
-//                                            if (destination != null) {
-//                                                destination.close();
-//                                            }
-//                                        }
-//                                    } catch (IOException e) {
-//                                        // Could not copy the file over.
-//                                        e.printStackTrace();
-//                                    }
-//                                }
-//                                //
-//                                ContentResolver cr = context().getContentResolver();
-//                                cr.delete(
-//                                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-//                                        BaseColumns._ID + CommonConstants.EQUAL + c.getString(3),
-//                                        null);
-//                                break;
-//                            }
-//                        } while (c.moveToNext());
-//                    }
-//                }
-//                try {
-//                    //startCropImage();
-//                } catch (Exception e) {
-//                    Log.e(CommonConstants.SETTINGS_FRAGMENT_PROFILE_TAG,
-//                            CommonConstants.ERR_CREATING_TEMP_FILE, e);
-//                }
-//                break;
-            case CROP_PICTURE:
+            case PIC_CROP:
                 String path = data.getStringExtra(CropImage.IMAGE_PATH);
                 if (path == null) {
                     return;
                 }
-                Bitmap bitmap = BitmapFactory.decodeFile(mFileTemp.getPath());
-                // mPhotoView.setImageBitmap(XpCommonUtil.decodeWithSampling(mFileTemp, 200, 200));
-                mFileTemp = null;
+                Bundle extras = data.getExtras();
+                Bitmap thePic = extras.getParcelable("data");
+                ivProfilePic = (ImageView) findViewById(R.id.ivUser);
+                ivProfilePic.setImageBitmap(thePic);
 
-                break;
             case AttachmentOptionActivity.REQUEST_ATTACHMENT_OPTION:
                 if (null != data) {
                     int action = data.getIntExtra(
@@ -374,9 +341,15 @@ public class ProfileActivity extends StringflowActivity {
 
         Intent intent = new Intent(context(), CropImage.class);
         intent.putExtra(CropImage.IMAGE_PATH, mFileTemp.getPath());
+        intent.setDataAndType(picUri, "image/*");
+        //set crop properties
+        intent.putExtra("crop", "true");
+        //indicate aspect of desired crop
         intent.putExtra(CropImage.SCALE, true);
-        intent.putExtra(CropImage.ASPECT_X, 2);
-        intent.putExtra(CropImage.ASPECT_Y, 2);
+        intent.putExtra(CropImage.ASPECT_X, 1);
+        intent.putExtra(CropImage.ASPECT_Y, 1);
+        intent.putExtra("outputX", 32);
+        intent.putExtra("outputY", 60);
         startActivityForResult(intent, CROP_PICTURE);
     }
 
@@ -402,4 +375,18 @@ public class ProfileActivity extends StringflowActivity {
             } while (c.moveToNext());
         }
     }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mFileTempUri != null) {
+            outState.putString(CommonConstants.CAMERA_URI, mFileTempUri.toString());
+        }
+        if (mFileTemp != null) {
+            outState.putString(CommonConstants.IMAGE_FILE_PATH, mFileTemp.getPath());
+        }
+    }
+
+
 }
