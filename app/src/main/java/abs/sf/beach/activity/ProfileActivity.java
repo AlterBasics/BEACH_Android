@@ -13,9 +13,13 @@ import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.CardView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.TextureView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -47,6 +51,8 @@ public class ProfileActivity extends StringflowActivity {
             tvUserPhoneNo, tvUserEmail, tvUserAddress, tvUserHome, tvUserStreet, tvUserLocality, tvUserPinCode, tvUserCity, tvUserState, tvUserCountry, tvUserAbout;
     private ScrollView scroller;
     private ImageView ivProfilePic;
+    private CardView editInfo;
+    private Button updateInfo;
 
     protected static final int CAMERA_REQUEST = 3;
     protected static final int GALLERY_PICTURE = 4;
@@ -75,6 +81,7 @@ public class ProfileActivity extends StringflowActivity {
         this.userJID = (JID) Platform.getInstance().getSession().get(Session.KEY_USER_JID);
         if (jid == userJID) {
             editPic.setVisibility(View.VISIBLE);
+            //editInfo.setVisibility(View.VISIBLE);
         }
         showData();
 
@@ -88,7 +95,6 @@ public class ProfileActivity extends StringflowActivity {
         tvHeaders = (TextView) findViewById(R.id.tvHeaders);
         tvHeaders.setText("User Profile");
         tvHeaders.setVisibility(View.VISIBLE);
-        tvHeaders.setGravity(Gravity.CENTER);
         tvCreatGrp.setVisibility(View.GONE);
         ivProfilePic = (ImageView) findViewById(R.id.ivUser);
         tvUserName = (TextView) findViewById(R.id.tvUsername);
@@ -111,6 +117,11 @@ public class ProfileActivity extends StringflowActivity {
         scroller = (ScrollView) findViewById(R.id.scroller);
         editPic = (ImageView) findViewById(R.id.iv_edit_pic);
         editPic.setVisibility(View.GONE);
+        editInfo =(CardView)findViewById(R.id.edit_card);
+        editInfo.setVisibility(View.VISIBLE);
+        updateInfo = (Button)findViewById(R.id.btnUpdate);
+
+
 
 
         scroller.post(new Runnable() {
@@ -141,6 +152,122 @@ public class ProfileActivity extends StringflowActivity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     showPicImageDialog();
                 }
+            }
+        });
+
+        editInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tvUserFirstName.setCursorVisible(true);
+                tvUserFirstName.setEnabled(true);
+                tvUserFirstName.setClickable(true);
+                tvUserFirstName.setFocusableInTouchMode(true);
+                tvUserFirstName.setInputType(InputType.TYPE_CLASS_TEXT);
+                tvUserFirstName.requestFocus();
+
+                tvUserMiddleName.setEnabled(true);
+                tvUserMiddleName.setClickable(true);
+                tvUserMiddleName.setFocusableInTouchMode(true);
+                tvUserMiddleName.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                tvUserLastName.setEnabled(true);
+                tvUserLastName.setClickable(true);
+                tvUserLastName.setFocusableInTouchMode(true);
+                tvUserLastName.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                tvUserNickName.setEnabled(true);
+                tvUserNickName.setClickable(true);
+                tvUserNickName.setFocusableInTouchMode(true);
+                tvUserNickName.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                tvUserGender.setEnabled(true);
+                tvUserGender.setClickable(true);
+                tvUserGender.setFocusableInTouchMode(true);
+                tvUserGender.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                tvUserBday.setEnabled(true);
+                tvUserBday.setClickable(true);
+                tvUserBday.setFocusableInTouchMode(true);
+                tvUserBday.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                tvUserPhoneNo.setEnabled(true);
+                tvUserPhoneNo.setClickable(true);
+                tvUserPhoneNo.setFocusableInTouchMode(true);
+                tvUserPhoneNo.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                tvUserFirstName.setEnabled(true);
+                tvUserFirstName.setClickable(true);
+                tvUserFirstName.setFocusableInTouchMode(true);
+                tvUserFirstName.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                tvUserEmail.setEnabled(true);
+                tvUserEmail.setClickable(true);
+                tvUserEmail.setFocusableInTouchMode(true);
+                tvUserEmail.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                tvUserHome.setEnabled(true);
+                tvUserHome.setClickable(true);
+                tvUserHome.setFocusableInTouchMode(true);
+                tvUserHome.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                tvUserStreet.setEnabled(true);
+                tvUserStreet.setClickable(true);
+                tvUserStreet.setFocusableInTouchMode(true);
+                tvUserStreet.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                tvUserLocality.setEnabled(true);
+                tvUserLocality.setClickable(true);
+                tvUserLocality.setFocusableInTouchMode(true);
+                tvUserLocality.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                tvUserPinCode.setEnabled(true);
+                tvUserPinCode.setClickable(true);
+                tvUserPinCode.setFocusableInTouchMode(true);
+                tvUserPinCode.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                tvUserCity.setEnabled(true);
+                tvUserCity.setClickable(true);
+                tvUserCity.setFocusableInTouchMode(true);
+                tvUserCity.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                tvUserState.setEnabled(true);
+                tvUserState.setClickable(true);
+                tvUserState.setFocusableInTouchMode(true);
+                tvUserState.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                tvUserCountry.setEnabled(true);
+                tvUserCountry.setClickable(true);
+                tvUserCountry.setFocusableInTouchMode(true);
+                tvUserCountry.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                tvUserAbout.setEnabled(true);
+                tvUserAbout.setClickable(true);
+                tvUserAbout.setFocusableInTouchMode(true);
+                tvUserAbout.setInputType(InputType.TYPE_CLASS_TEXT);
+            }
+        });
+
+        updateInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               String firstName = tvUserFirstName.getText().toString();
+               String middleName = tvUserMiddleName.getText().toString();
+               String lastName = tvUserLastName.getText().toString();
+                String nickName = tvUserNickName.getText().toString();
+                String gender = tvUserGender.getText().toString();
+                String bday = tvUserBday.getText().toString();
+                String phoneNo = tvUserPhoneNo.getText().toString();
+                String email =tvUserEmail.getText().toString();
+                String home =tvUserHome.getText().toString();
+                String street = tvUserStreet.getText().toString();
+                String locality = tvUserLocality.getText().toString();
+                String pinCode =tvUserPinCode.getText().toString();
+                String city =tvUserCity.getText().toString();
+                String state =tvUserState.getText().toString();
+                String country =tvUserCountry.getText().toString();
+                String about = tvUserAbout.getText().toString();
+               AndroidUserManager userManager = (AndroidUserManager)Platform.getInstance().getUserManager();
+              userManager.updateUserProfileData(firstName,middleName,lastName,email,phoneNo,gender,bday,home,street,locality,city,state,country,pinCode);
             }
         });
 

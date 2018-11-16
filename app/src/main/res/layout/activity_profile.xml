@@ -53,10 +53,10 @@
                         android:id="@+id/ivUser"
                         android:layout_width="200dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/default_profilepic"
                         android:layout_gravity="center"
                         android:layout_marginLeft="80dp"
-                        android:layout_marginTop="20dp"/>
+                        android:layout_marginTop="25dp"
+                        android:background="@drawable/default_profilepic" />
 
                     <ImageView
                         android:id="@+id/iv_edit_pic"
@@ -73,16 +73,18 @@
                         android:paddingStart="15dp"
                         android:paddingTop="15dp"
                         android:src="@drawable/edit_pic"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
 
                 </RelativeLayout>
 
             </android.support.v7.widget.CardView>
-            
+
             <android.support.v7.widget.CardView
+                android:id="@+id/edit_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp">
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -90,13 +92,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Edit Info"
                         android:layout_gravity="center"
-                        android:gravity="center"
-                        android:layout_marginTop="15dp"
                         android:layout_marginLeft="10dp"
-                        android:textSize="20dp"
-                        />
+                        android:layout_marginTop="15dp"
+                        android:gravity="center"
+                        android:text="Edit Info"
+                        android:textSize="20dp" />
 
                     <ImageView
                         android:id="@+id/iv_edit_info"
@@ -159,6 +160,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="75dp"
+                            android:hint="Type First Name"
                             android:layout_marginTop="10dp"
                             android:visibility="visible" />
                     </LinearLayout>
@@ -183,8 +185,9 @@
                             android:id="@+id/etUserMiddletName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="75dp"
+                            android:layout_marginLeft="63dp"
                             android:layout_marginTop="10dp"
+                            android:hint="Type Middle Name"
                             android:visibility="visible" />
                     </LinearLayout>
 
@@ -210,6 +213,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="75dp"
                             android:layout_marginTop="10dp"
+                            android:hint="Type Last Name"
                             android:visibility="visible" />
                     </LinearLayout>
 
@@ -225,7 +229,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:scrollbars="vertical"
-                            android:text="Middle Name"
+                            android:text="Nick Name"
                             android:textColor="@color/black"
                             android:textSize="15dp" />
 
@@ -235,6 +239,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="75dp"
                             android:layout_marginTop="10dp"
+                            android:hint="Type Nick Name"
                             android:visibility="visible" />
                     </LinearLayout>
 
@@ -281,8 +286,10 @@
                             android:id="@+id/etUserGender"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="75dp"
+                            android:layout_marginLeft="89dp"
+                            android:layout_marginStart="95dp"
                             android:layout_marginTop="10dp"
+                            android:hint="Type gender"
                             android:visibility="visible" />
                     </LinearLayout>
 
@@ -306,7 +313,9 @@
                             android:id="@+id/etUserBday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="75dp"
+                            android:layout_marginLeft="89dp"
+                            android:hint="Enter your Birthady"
+                            android:inputType="text"
                             android:layout_marginTop="10dp"
                             android:visibility="visible" />
                     </LinearLayout>
@@ -353,15 +362,16 @@
 
                         <TextView
                             android:id="@+id/etUserPhone"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="75dp"
+                            android:layout_marginLeft="80dp"
+                            android:hint="Enter Your Phone No"
                             android:layout_marginTop="10dp"
                             android:visibility="visible" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:scrollbars="vertical">
@@ -376,11 +386,13 @@
                             android:textColor="@color/black"
                             android:textSize="15dp" />
 
+
                         <TextView
                             android:id="@+id/etUserEmail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="75dp"
+                            android:layout_marginLeft="105dp"
+                            android:hint="Enter your Email"
                             android:layout_marginTop="10dp"
                             android:visibility="visible" />
                     </LinearLayout>
@@ -430,11 +442,12 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="75dp"
                             android:layout_marginTop="10dp"
+                            android:hint="Address"
                             android:visibility="visible" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:scrollbars="vertical">
@@ -453,13 +466,14 @@
                             android:id="@+id/etUserHome"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="75dp"
+                            android:layout_marginLeft="105dp"
                             android:layout_marginTop="10dp"
+                            android:hint="Enter your home"
                             android:visibility="visible" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:scrollbars="vertical">
@@ -478,13 +492,14 @@
                             android:id="@+id/etUserStreet"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="75dp"
+                            android:layout_marginLeft="105dp"
                             android:layout_marginTop="10dp"
+                            android:hint="Enter Street"
                             android:visibility="visible" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:scrollbars="vertical">
@@ -503,13 +518,14 @@
                             android:id="@+id/etUserLocality"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="75dp"
+                            android:layout_marginLeft="95dp"
                             android:layout_marginTop="10dp"
+                            android:hint="Enter your locality"
                             android:visibility="visible" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:scrollbars="vertical">
@@ -528,13 +544,15 @@
                             android:id="@+id/etUserPinCode"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="75dp"
+                            android:layout_marginLeft="95dp"
                             android:layout_marginTop="10dp"
+                            android:hint="Enter your Pincode"
+                            android:inputType="number"
                             android:visibility="visible" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:scrollbars="vertical">
@@ -553,13 +571,14 @@
                             android:id="@+id/etUserCity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="75dp"
+                            android:layout_marginLeft="119dp"
                             android:layout_marginTop="10dp"
+                            android:hint="Enter City"
                             android:visibility="visible" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:scrollbars="vertical">
@@ -578,13 +597,14 @@
                             android:id="@+id/etUserState"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="75dp"
+                            android:layout_marginLeft="110dp"
                             android:layout_marginTop="10dp"
+                            android:hint="Enter State"
                             android:visibility="visible" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:scrollbars="vertical">
@@ -603,18 +623,16 @@
                             android:id="@+id/etUserCountry"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="75dp"
+                            android:layout_marginLeft="95dp"
                             android:layout_marginTop="10dp"
+                            android:hint="Enter Your Country"
                             android:visibility="visible" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/rlAbout"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="10dp"
                         android:orientation="horizontal"
                         android:scrollbars="vertical">
 
@@ -631,9 +649,10 @@
                             android:id="@+id/etUserAbout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="40dp"
+                            android:layout_marginLeft="105dp"
+                            android:hint="Enter your Description"
                             android:scrollbars="vertical"
-                            android:text="" />
+                            />
 
                     </LinearLayout>
 
@@ -641,7 +660,34 @@
 
 
             </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:id="@+id/btn_update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rlAddredd"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:scrollbars="vertical"
+                >
+
+                <Button
+                    android:id="@+id/btnUpdate"
+                    android:layout_width="140dp"
+                    android:layout_height="45dp"
+                    android:layout_margin="5dp"
+                    android:text="Update "
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:background="@drawable/corner"/>
+
+            </LinearLayout>
         </LinearLayout>
+
     </ScrollView>
 
 
