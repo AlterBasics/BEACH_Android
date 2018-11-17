@@ -489,6 +489,7 @@ public class ProfileActivity extends StringflowActivity {
         String about = tvUserAbout.getText().toString();
         AndroidUserManager userManager = (AndroidUserManager)Platform.getInstance().getUserManager();
         userManager.updateUserProfileData(firstName,middleName,lastName,email,phoneNo,gender,bday,home,street,locality,city,state,country,pinCode);
+
     }
 
 
