@@ -79,10 +79,6 @@ public class ProfileActivity extends StringflowActivity {
         super.onResume();
         this.jid = (JID) getIntent().getSerializableExtra(CommonConstants.JID);
         this.userJID = (JID) Platform.getInstance().getSession().get(Session.KEY_USER_JID);
-        if (jid == userJID) {
-            editPic.setVisibility(View.VISIBLE);
-            //editInfo.setVisibility(View.VISIBLE);
-        }
         showData();
 
     }
@@ -118,8 +114,12 @@ public class ProfileActivity extends StringflowActivity {
         editPic = (ImageView) findViewById(R.id.iv_edit_pic);
         editPic.setVisibility(View.GONE);
         editInfo =(CardView)findViewById(R.id.edit_card);
-        editInfo.setVisibility(View.VISIBLE);
+        editInfo.setVisibility(View.INVISIBLE);
         updateInfo = (Button)findViewById(R.id.btnUpdate);
+        if (jid == userJID) {
+            editPic.setVisibility(View.VISIBLE);
+            editInfo.setVisibility(View.VISIBLE);
+        }
 
 
 
@@ -250,24 +250,7 @@ public class ProfileActivity extends StringflowActivity {
         updateInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               String firstName = tvUserFirstName.getText().toString();
-               String middleName = tvUserMiddleName.getText().toString();
-               String lastName = tvUserLastName.getText().toString();
-                String nickName = tvUserNickName.getText().toString();
-                String gender = tvUserGender.getText().toString();
-                String bday = tvUserBday.getText().toString();
-                String phoneNo = tvUserPhoneNo.getText().toString();
-                String email =tvUserEmail.getText().toString();
-                String home =tvUserHome.getText().toString();
-                String street = tvUserStreet.getText().toString();
-                String locality = tvUserLocality.getText().toString();
-                String pinCode =tvUserPinCode.getText().toString();
-                String city =tvUserCity.getText().toString();
-                String state =tvUserState.getText().toString();
-                String country =tvUserCountry.getText().toString();
-                String about = tvUserAbout.getText().toString();
-               AndroidUserManager userManager = (AndroidUserManager)Platform.getInstance().getUserManager();
-              userManager.updateUserProfileData(firstName,middleName,lastName,email,phoneNo,gender,bday,home,street,locality,city,state,country,pinCode);
+                updateInfo();
             }
         });
 
@@ -485,6 +468,27 @@ public class ProfileActivity extends StringflowActivity {
         if (mFileTemp != null) {
             outState.putString(CommonConstants.IMAGE_FILE_PATH, mFileTemp.getPath());
         }
+    }
+
+    private void updateInfo(){
+        String firstName = tvUserFirstName.getText().toString();
+        String middleName = tvUserMiddleName.getText().toString();
+        String lastName = tvUserLastName.getText().toString();
+        String nickName = tvUserNickName.getText().toString();
+        String gender = tvUserGender.getText().toString();
+        String bday = tvUserBday.getText().toString();
+        String phoneNo = tvUserPhoneNo.getText().toString();
+        String email =tvUserEmail.getText().toString();
+        String home =tvUserHome.getText().toString();
+        String street = tvUserStreet.getText().toString();
+        String locality = tvUserLocality.getText().toString();
+       String pinCode =tvUserPinCode.getText().toString();
+       String city =tvUserCity.getText().toString();
+        String state =tvUserState.getText().toString();
+        String country =tvUserCountry.getText().toString();
+        String about = tvUserAbout.getText().toString();
+        AndroidUserManager userManager = (AndroidUserManager)Platform.getInstance().getUserManager();
+        userManager.updateUserProfileData(firstName,middleName,lastName,email,phoneNo,gender,bday,home,street,locality,city,state,country,pinCode);
     }
 
 
