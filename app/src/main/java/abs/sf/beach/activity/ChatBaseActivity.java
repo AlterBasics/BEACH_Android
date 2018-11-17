@@ -1,6 +1,5 @@
 package abs.sf.beach.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.view.ViewPager;
 
@@ -10,8 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import abs.ixi.client.UserManager;
 import abs.ixi.client.core.Platform;
 import abs.ixi.client.core.Session;
 import abs.ixi.client.xmpp.JID;
@@ -27,15 +23,14 @@ import abs.sf.beach.android.R;
 import abs.sf.beach.fragment.ContactFragment;
 import abs.sf.beach.fragment.ConversationFragment;
 import abs.sf.beach.fragment.SearchFragment;
-import abs.sf.beach.utils.CommonConstants;
 import abs.sf.beach.utils.NotificationUtils;
 
 public class ChatBaseActivity extends StringflowActivity {
     private static final int NUM_PAGES = 3;
     private ViewPager mPager;
-    private ImageView ivBack, ivNext, ivConversation, ivContact,ivSearch;
+    private ImageView ivBack, ivNext, ivConversation, ivContact, ivSearch;
     private TextView tvHeader;
-    private LinearLayout llConversation, llContact,llSearch;
+    private LinearLayout llConversation, llContact, llSearch;
     private JID userJID;
 
 
@@ -55,7 +50,7 @@ public class ChatBaseActivity extends StringflowActivity {
         ivNext = (ImageView) findViewById(R.id.ivNext);
         ivConversation = (ImageView) findViewById(R.id.ivConversation);
         ivContact = (ImageView) findViewById(R.id.ivContactImage);
-        ivSearch = (ImageView)findViewById(R.id.ivSearch);
+        ivSearch = (ImageView) findViewById(R.id.ivSearch);
         tvHeader = (TextView) findViewById(R.id.tvHeader);
         llConversation = (LinearLayout) findViewById(R.id.llConversation);
         llContact = (LinearLayout) findViewById(R.id.llContact);
@@ -66,7 +61,7 @@ public class ChatBaseActivity extends StringflowActivity {
         userJID = (JID) Platform.getInstance().getSession().get(Session.KEY_USER_JID);
 
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar!=null){
+        if (actionBar != null) {
             actionBar.hide();
         }
     }
@@ -175,21 +170,21 @@ public class ChatBaseActivity extends StringflowActivity {
         });
     }
 
-    private void setConversationTab(){
+    private void setConversationTab() {
         tvHeader.setText("Conversations");
         ivConversation.setImageResource(R.mipmap.chat_invisible);
         ivContact.setImageResource(R.mipmap.contact);
         ivSearch.setVisibility(View.VISIBLE);
     }
 
-    private void setContactTab(){
+    private void setContactTab() {
         tvHeader.setText("Contacts");
         ivConversation.setImageResource(R.mipmap.chat);
         ivContact.setImageResource(R.mipmap.contact_invisible);
         ivSearch.setVisibility(View.VISIBLE);
     }
 
-    private void setSearchTab(){
+    private void setSearchTab() {
         tvHeader.setText("Search");
         ivConversation.setImageResource(R.mipmap.chat);
         ivContact.setImageResource(R.mipmap.contact);
@@ -229,7 +224,7 @@ public class ChatBaseActivity extends StringflowActivity {
         }
     }
 
-    private void popUp(View view){
+    private void popUp(View view) {
         PopupMenu menu = new PopupMenu(ChatBaseActivity.this, view);
         menu.getMenuInflater().inflate(R.menu.popup_menu, menu.getMenu());
         menu.show();
@@ -237,10 +232,12 @@ public class ChatBaseActivity extends StringflowActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.Profile) {
-                    Intent intent = new Intent(ChatBaseActivity.this,ProfileActivity.class);
-                   intent.putExtra("jid",userJID);
+                    Intent intent = new Intent(ChatBaseActivity.this, ProfileActivity.class);
+                    intent.putExtra("jid", userJID);
                     startActivity(intent);
                 } else if (item.getItemId() == R.id.settings) {
+                    Intent i = new Intent(ChatBaseActivity.this, SettingsActivity.class);
+                    startActivity(i);
 
 
                 } else if (item.getItemId() == R.id.logout) {

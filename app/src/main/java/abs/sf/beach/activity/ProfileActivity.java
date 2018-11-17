@@ -63,6 +63,7 @@ public class ProfileActivity extends StringflowActivity {
 
     final int CAMERA_CAPTURE = 1;
     final int PIC_CROP = 2;
+    private boolean update;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +83,8 @@ public class ProfileActivity extends StringflowActivity {
             editPic.setVisibility(View.VISIBLE);
             editInfo.setVisibility(View.VISIBLE);
             updateInfo.setVisibility(View.VISIBLE);
+            tvUserFirstName.setText("Type Your First Name");
+            tvUserLastName.setText("Type Your Last Name");
         }
 
         showData();
@@ -490,5 +493,10 @@ public class ProfileActivity extends StringflowActivity {
         userManager.updateUserProfileData(firstName, middleName, lastName, nickName, email, phoneNo,
                 gender, bday, home, street, locality, city, state, country, pinCode, about);
 
+//        if (update) {
+//            Toast.makeText(context(), "Succefully Updated", Toast.LENGTH_SHORT).show();
+//        } else {
+//            Toast.makeText(context(), "Info Not Updated", Toast.LENGTH_SHORT).show();
+//        }
     }
 }

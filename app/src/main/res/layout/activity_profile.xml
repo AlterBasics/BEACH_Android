@@ -160,7 +160,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="75dp"
-                            android:hint="Type First Name"
+                            android:text="Type First Name"
                             android:layout_marginTop="10dp"
                             android:visibility="visible" />
                     </LinearLayout>
@@ -187,7 +187,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="63dp"
                             android:layout_marginTop="10dp"
-                            android:hint="Type Middle Name"
+                            android:text="Type Middle Name"
                             android:visibility="visible" />
                     </LinearLayout>
 
@@ -367,7 +367,6 @@
                             android:layout_marginLeft="80dp"
                             android:hint="Enter Your Phone No"
                             android:layout_marginTop="10dp"
-                            android:inputType="number"
                             android:visibility="visible" />
                     </LinearLayout>
 
