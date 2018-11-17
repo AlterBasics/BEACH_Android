@@ -16,8 +16,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.CardView;
 import android.text.InputType;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -79,6 +77,13 @@ public class ProfileActivity extends StringflowActivity {
         super.onResume();
         this.jid = (JID) getIntent().getSerializableExtra(CommonConstants.JID);
         this.userJID = (JID) Platform.getInstance().getSession().get(Session.KEY_USER_JID);
+
+        if (jid.equals(userJID)) {
+            editPic.setVisibility(View.VISIBLE);
+            editInfo.setVisibility(View.VISIBLE);
+            updateInfo.setVisibility(View.VISIBLE);
+        }
+
         showData();
 
     }
@@ -113,16 +118,10 @@ public class ProfileActivity extends StringflowActivity {
         scroller = (ScrollView) findViewById(R.id.scroller);
         editPic = (ImageView) findViewById(R.id.iv_edit_pic);
         editPic.setVisibility(View.GONE);
-        editInfo =(CardView)findViewById(R.id.edit_card);
+        editInfo = (CardView) findViewById(R.id.edit_card);
         editInfo.setVisibility(View.INVISIBLE);
-        updateInfo = (Button)findViewById(R.id.btnUpdate);
-        if (jid == userJID) {
-            editPic.setVisibility(View.VISIBLE);
-            editInfo.setVisibility(View.VISIBLE);
-        }
-
-
-
+        updateInfo = (Button) findViewById(R.id.btnUpdate);
+        updateInfo.setVisibility(View.GONE);
 
         scroller.post(new Runnable() {
             public void run() {
@@ -423,7 +422,7 @@ public class ProfileActivity extends StringflowActivity {
 
         Intent intent = new Intent(context(), CropImage.class);
         intent.putExtra(CropImage.IMAGE_PATH, mFileTemp.getPath());
-        intent.setDataAndType(mFileTempUri  , "image/*");
+        intent.setDataAndType(mFileTempUri, "image/*");
         //set crop properties
         intent.putExtra("crop", "true");
         //indicate aspect of desired crop
@@ -470,7 +469,7 @@ public class ProfileActivity extends StringflowActivity {
         }
     }
 
-    private void updateInfo(){
+    private void updateInfo() {
         String firstName = tvUserFirstName.getText().toString();
         String middleName = tvUserMiddleName.getText().toString();
         String lastName = tvUserLastName.getText().toString();
@@ -478,18 +477,17 @@ public class ProfileActivity extends StringflowActivity {
         String gender = tvUserGender.getText().toString();
         String bday = tvUserBday.getText().toString();
         String phoneNo = tvUserPhoneNo.getText().toString();
-        String email =tvUserEmail.getText().toString();
-        String home =tvUserHome.getText().toString();
+        String email = tvUserEmail.getText().toString();
+        String home = tvUserHome.getText().toString();
         String street = tvUserStreet.getText().toString();
         String locality = tvUserLocality.getText().toString();
-       String pinCode =tvUserPinCode.getText().toString();
-       String city =tvUserCity.getText().toString();
-        String state =tvUserState.getText().toString();
-        String country =tvUserCountry.getText().toString();
+        String pinCode = tvUserPinCode.getText().toString();
+        String city = tvUserCity.getText().toString();
+        String state = tvUserState.getText().toString();
+        String country = tvUserCountry.getText().toString();
         String about = tvUserAbout.getText().toString();
-        AndroidUserManager userManager = (AndroidUserManager)Platform.getInstance().getUserManager();
-        userManager.updateUserProfileData(firstName,middleName,lastName,email,phoneNo,gender,bday,home,street,locality,city,state,country,pinCode);
+        AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+        userManager.updateUserProfileData(firstName, middleName, lastName, nickName, email, phoneNo,
+                gender, bday, home, street, locality, city, state, country, pinCode, about);
     }
-
-
 }
