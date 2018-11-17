@@ -63,7 +63,7 @@ public class ProfileActivity extends StringflowActivity {
 
     final int CAMERA_CAPTURE = 1;
     final int PIC_CROP = 2;
-    private boolean update;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -252,7 +252,14 @@ public class ProfileActivity extends StringflowActivity {
         updateInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateInfo();
+                boolean updated = updateInfo();
+
+                if (updated) {
+                    Toast.makeText(context(), "Succefully Updated", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(context(), "Failed to update Info", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -472,7 +479,7 @@ public class ProfileActivity extends StringflowActivity {
         }
     }
 
-    private void updateInfo() {
+    private boolean updateInfo() {
         String firstName = tvUserFirstName.getText().toString();
         String middleName = tvUserMiddleName.getText().toString();
         String lastName = tvUserLastName.getText().toString();
@@ -489,14 +496,9 @@ public class ProfileActivity extends StringflowActivity {
         String state = tvUserState.getText().toString();
         String country = tvUserCountry.getText().toString();
         String about = tvUserAbout.getText().toString();
-        AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-        userManager.updateUserProfileData(firstName, middleName, lastName, nickName, email, phoneNo,
-                gender, bday, home, street, locality, city, state, country, pinCode, about);
 
-//        if (update) {
-//            Toast.makeText(context(), "Succefully Updated", Toast.LENGTH_SHORT).show();
-//        } else {
-//            Toast.makeText(context(), "Info Not Updated", Toast.LENGTH_SHORT).show();
-//        }
+        AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+        return userManager.updateUserProfileData(firstName, middleName, lastName, nickName, email, phoneNo,
+                gender, bday, home, street, locality, city, state, country, pinCode, about);
     }
 }

@@ -31,7 +31,7 @@ public class SettingsActivity extends StringflowActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        chekedCheckBox();
+        loadSeatings();
     }
 
     private void initView() {
@@ -58,37 +58,64 @@ public class SettingsActivity extends StringflowActivity {
     }
 
     private void initOnClickListener() {
+        cb1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked) {
+                    SharedPrefProxy.getInstance().enableChatStateNotification();
+                } else {
+                    SharedPrefProxy.getInstance().disableChatStateNotification();
+                }
+            }
+        });
+
+        cb2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked) {
+                    SharedPrefProxy.getInstance().enableMessageDeliveryReceipt();
+                } else {
+                    SharedPrefProxy.getInstance().disableMessageDeliveryReceipt();
+                }
+            }
+        });
+
+        cb3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked) {
+                    SharedPrefProxy.getInstance().enableChatMarkers();
+                } else {
+                    SharedPrefProxy.getInstance().disableChatMarkers();
+                }
+            }
+        });
+
+        cb4.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked) {
+                    SharedPrefProxy.getInstance().enableMediaTransfer();
+                } else {
+                    SharedPrefProxy.getInstance().disableMediaTransfer();
+                }
+            }
+        });
+
+
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SettingsActivity.this.finish();
             }
         });
-
-
     }
 
-    private void chekedCheckBox() {
-            cb1.setChecked(SharedPrefProxy.getInstance().isChatStateNotificationEnabled());
-            cb2.setChecked(SharedPrefProxy.getInstance().isMessageDeliveryReceiptEnabled());
-            cb3.setChecked(SharedPrefProxy.getInstance().isChatMarkersEnabled());
-            cb4.setChecked(SharedPrefProxy.getInstance().isMediaTransferEnabled());
-            if (!cb1.isChecked()){
-                SharedPrefProxy.getInstance().disableChatStateNotification();
-            } if (!cb2.isChecked()){
-                SharedPrefProxy.getInstance().disableMessageDeliveryReceipt();
-            }
-            if (!cb3.isChecked()){
-                SharedPrefProxy.getInstance().disableChatMarkers();
-            } if (!cb4.isChecked()){
-                SharedPrefProxy.getInstance().disableMediaTransfer();
-            }
-
-
-
-
-
-
+    private void loadSeatings() {
+        cb1.setChecked(SharedPrefProxy.getInstance().isChatStateNotificationEnabled());
+        cb2.setChecked(SharedPrefProxy.getInstance().isMessageDeliveryReceiptEnabled());
+        cb3.setChecked(SharedPrefProxy.getInstance().isChatMarkersEnabled());
+        cb4.setChecked(SharedPrefProxy.getInstance().isMediaTransferEnabled());
     }
 
 }
