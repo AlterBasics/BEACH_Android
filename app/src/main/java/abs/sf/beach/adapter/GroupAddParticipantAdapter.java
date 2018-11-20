@@ -51,11 +51,9 @@ public class GroupAddParticipantAdapter extends RecyclerView.Adapter<GroupAddPar
 
                     if (selectedGroupMembers.contains(item.getJid())) {
                         selectedGroupMembers.remove(item.getJid());
-                        // disable that tick
                         tick.setVisibility(View.INVISIBLE);
                     } else {
                         selectedGroupMembers.add(item.getJid());
-                        // enable that tick
                         tick.setVisibility(View.VISIBLE);
                     }
                 }

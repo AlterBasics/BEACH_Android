@@ -20,5 +20,6 @@
     <item name="rapport_chat_blue" type="color">#63aeeb</item>
     <color name="rapport_gray">#a1a1a1</color>
     <color name="rapport_white">#ffffff</color>
+    <color name="rapport_black">#000000</color>
 
 </resources>

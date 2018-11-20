@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.CardView;
 import android.text.InputType;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,12 +45,13 @@ import eu.janmuller.android.simplecropimage.CropImage;
 
 
 public class ProfileActivity extends StringflowActivity {
-    private ImageView ivBack, ivNext, editPic;
+    private ImageView ivBack, ivNext, editPic,editInfoPencil;
     private TextView tvHeaders, tvCreatGrp;
     private EditText etMessage;
     private TextView tvUserName, tvUserFirstName, tvUserMiddleName, tvUserLastName, tvUserNickName, tvUserGender, tvUserBday,
             tvUserPhoneNo, tvUserEmail, tvUserAddress, tvUserHome, tvUserStreet, tvUserLocality, tvUserPinCode, tvUserCity, tvUserState, tvUserCountry, tvUserAbout;
     private ScrollView scroller;
+    private EditText etfName,etmName;
     private ImageView ivProfilePic;
     private CardView editInfo;
     private Button updateInfo;
@@ -103,6 +107,7 @@ public class ProfileActivity extends StringflowActivity {
         ivProfilePic = (ImageView) findViewById(R.id.ivUser);
         tvUserName = (TextView) findViewById(R.id.tvUsername);
         tvUserFirstName = (TextView) findViewById(R.id.etUserFirstName);
+        tvUserFirstName.setOnKeyListener(keyListener);
         tvUserMiddleName = (TextView) findViewById(R.id.etUserMiddletName);
         tvUserLastName = (TextView) findViewById(R.id.etUserLastName);
         tvUserNickName = (TextView) findViewById(R.id.etUserNickName);
@@ -125,6 +130,11 @@ public class ProfileActivity extends StringflowActivity {
         editInfo.setVisibility(View.INVISIBLE);
         updateInfo = (Button) findViewById(R.id.btnUpdate);
         updateInfo.setVisibility(View.GONE);
+        editInfoPencil = (ImageView)findViewById(R.id.iv_edit_info);
+        etfName = (EditText)findViewById(R.id.etfname);
+        etfName.setVisibility(View.INVISIBLE);
+        etmName = (EditText)findViewById(R.id.etmname);
+        etmName.setVisibility(View.INVISIBLE);
 
         scroller.post(new Runnable() {
             public void run() {
@@ -160,92 +170,9 @@ public class ProfileActivity extends StringflowActivity {
         editInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tvUserFirstName.setCursorVisible(true);
-                tvUserFirstName.setEnabled(true);
-                tvUserFirstName.setClickable(true);
-                tvUserFirstName.setFocusableInTouchMode(true);
-                tvUserFirstName.setInputType(InputType.TYPE_CLASS_TEXT);
-                tvUserFirstName.requestFocus();
+                editInformation();
+                onClickText();
 
-                tvUserMiddleName.setEnabled(true);
-                tvUserMiddleName.setClickable(true);
-                tvUserMiddleName.setFocusableInTouchMode(true);
-                tvUserMiddleName.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                tvUserLastName.setEnabled(true);
-                tvUserLastName.setClickable(true);
-                tvUserLastName.setFocusableInTouchMode(true);
-                tvUserLastName.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                tvUserNickName.setEnabled(true);
-                tvUserNickName.setClickable(true);
-                tvUserNickName.setFocusableInTouchMode(true);
-                tvUserNickName.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                tvUserGender.setEnabled(true);
-                tvUserGender.setClickable(true);
-                tvUserGender.setFocusableInTouchMode(true);
-                tvUserGender.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                tvUserBday.setEnabled(true);
-                tvUserBday.setClickable(true);
-                tvUserBday.setFocusableInTouchMode(true);
-                tvUserBday.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                tvUserPhoneNo.setEnabled(true);
-                tvUserPhoneNo.setClickable(true);
-                tvUserPhoneNo.setFocusableInTouchMode(true);
-                tvUserPhoneNo.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                tvUserFirstName.setEnabled(true);
-                tvUserFirstName.setClickable(true);
-                tvUserFirstName.setFocusableInTouchMode(true);
-                tvUserFirstName.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                tvUserEmail.setEnabled(true);
-                tvUserEmail.setClickable(true);
-                tvUserEmail.setFocusableInTouchMode(true);
-                tvUserEmail.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                tvUserHome.setEnabled(true);
-                tvUserHome.setClickable(true);
-                tvUserHome.setFocusableInTouchMode(true);
-                tvUserHome.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                tvUserStreet.setEnabled(true);
-                tvUserStreet.setClickable(true);
-                tvUserStreet.setFocusableInTouchMode(true);
-                tvUserStreet.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                tvUserLocality.setEnabled(true);
-                tvUserLocality.setClickable(true);
-                tvUserLocality.setFocusableInTouchMode(true);
-                tvUserLocality.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                tvUserPinCode.setEnabled(true);
-                tvUserPinCode.setClickable(true);
-                tvUserPinCode.setFocusableInTouchMode(true);
-                tvUserPinCode.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                tvUserCity.setEnabled(true);
-                tvUserCity.setClickable(true);
-                tvUserCity.setFocusableInTouchMode(true);
-                tvUserCity.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                tvUserState.setEnabled(true);
-                tvUserState.setClickable(true);
-                tvUserState.setFocusableInTouchMode(true);
-                tvUserState.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                tvUserCountry.setEnabled(true);
-                tvUserCountry.setClickable(true);
-                tvUserCountry.setFocusableInTouchMode(true);
-                tvUserCountry.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                tvUserAbout.setEnabled(true);
-                tvUserAbout.setClickable(true);
-                tvUserAbout.setFocusableInTouchMode(true);
-                tvUserAbout.setInputType(InputType.TYPE_CLASS_TEXT);
             }
         });
 
@@ -255,7 +182,7 @@ public class ProfileActivity extends StringflowActivity {
                 boolean updated = updateInfo();
 
                 if (updated) {
-                    Toast.makeText(context(), "Succefully Updated", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context(), "Succesfully Updated", Toast.LENGTH_SHORT).show();
 
                 } else {
                     Toast.makeText(context(), "Failed to update Info", Toast.LENGTH_SHORT).show();
@@ -273,8 +200,10 @@ public class ProfileActivity extends StringflowActivity {
             userProfileData = userManager.getUserProfileData(jid);
 
         }
+
         tvUserName.setText(jid.getNode());
-        tvUserFirstName.setText(userProfileData.getFirstName());
+        tvUserFirstName.setText(userProfileData.getFirstName().trim());
+        etmName.setText(userProfileData.getFirstName().trim());
         tvUserMiddleName.setText(userProfileData.getMiddleName());
         tvUserNickName.setText(userProfileData.getNickName());
         tvUserLastName.setText(userProfileData.getLastName());
@@ -480,6 +409,7 @@ public class ProfileActivity extends StringflowActivity {
     }
 
     private boolean updateInfo() {
+
         String firstName = tvUserFirstName.getText().toString();
         String middleName = tvUserMiddleName.getText().toString();
         String lastName = tvUserLastName.getText().toString();
@@ -497,8 +427,148 @@ public class ProfileActivity extends StringflowActivity {
         String country = tvUserCountry.getText().toString();
         String about = tvUserAbout.getText().toString();
 
+
         AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-        return userManager.updateUserProfileData(firstName, middleName, lastName, nickName, email, phoneNo,
-                gender, bday, home, street, locality, city, state, country, pinCode, about);
+        return userManager.updateUserProfileData(firstName, middleName, lastName,nickName,
+                email, phoneNo,
+                gender, bday, home, street, locality, city, state, country, pinCode,about);
     }
+
+    private void editInformation() {
+        editInfoPencil.setImageResource(R.drawable.tick_mark_green);
+        //tvUserFirstName.setSelection(tvUserFirstName.getText().length());
+        tvUserFirstName.setTextColor(getResources().getColor(R.color.light_gray));
+        tvUserFirstName.setCursorVisible(true);
+        tvUserFirstName.setEnabled(true);
+        //tvUserFirstName.setClickable(true);
+        //tvUserFirstName.setFocusableInTouchMode(true);
+       // tvUserFirstName.setInputType(InputType.TYPE_CLASS_TEXT);
+        tvUserFirstName.requestFocus();
+
+        //tvUserMiddleName.setSelection(tvUserMiddleName.getText().length());
+        tvUserMiddleName.setTextColor(getResources().getColor(R.color.light_gray));
+        tvUserMiddleName.setEnabled(true);
+        tvUserMiddleName.setClickable(true);
+        tvUserMiddleName.setFocusableInTouchMode(true);
+        tvUserMiddleName.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        tvUserLastName.setTextColor(getResources().getColor(R.color.light_gray));
+        tvUserLastName.setEnabled(true);
+        tvUserLastName.setClickable(true);
+        tvUserLastName.setFocusableInTouchMode(true);
+        tvUserLastName.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        tvUserNickName.setTextColor(getResources().getColor(R.color.light_gray));
+        tvUserNickName.setEnabled(true);
+        tvUserNickName.setClickable(true);
+        tvUserNickName.setFocusableInTouchMode(true);
+        tvUserNickName.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        tvUserGender.setTextColor(getResources().getColor(R.color.light_gray));
+        tvUserGender.setEnabled(true);
+        tvUserGender.setClickable(true);
+        tvUserGender.setFocusableInTouchMode(true);
+        tvUserGender.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        tvUserBday.setTextColor(getResources().getColor(R.color.light_gray));
+        tvUserBday.setEnabled(true);
+        tvUserBday.setClickable(true);
+        tvUserBday.setFocusableInTouchMode(true);
+        tvUserBday.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        tvUserPhoneNo.setTextColor(getResources().getColor(R.color.light_gray));
+        tvUserPhoneNo.setEnabled(true);
+        tvUserPhoneNo.setClickable(true);
+        tvUserPhoneNo.setFocusableInTouchMode(true);
+        tvUserPhoneNo.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        tvUserEmail.setTextColor(getResources().getColor(R.color.light_gray));
+        tvUserEmail.setEnabled(true);
+        tvUserEmail.setClickable(true);
+        tvUserEmail.setFocusableInTouchMode(true);
+        tvUserEmail.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        tvUserHome.setTextColor(getResources().getColor(R.color.light_gray));
+        tvUserHome.setEnabled(true);
+        tvUserHome.setClickable(true);
+        tvUserHome.setFocusableInTouchMode(true);
+        tvUserHome.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        tvUserStreet.setTextColor(getResources().getColor(R.color.light_gray));
+        tvUserStreet.setEnabled(true);
+        tvUserStreet.setClickable(true);
+        tvUserStreet.setFocusableInTouchMode(true);
+        tvUserStreet.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        tvUserLocality.setTextColor(getResources().getColor(R.color.light_gray));
+        tvUserLocality.setEnabled(true);
+        tvUserLocality.setClickable(true);
+        tvUserLocality.setFocusableInTouchMode(true);
+        tvUserLocality.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        tvUserPinCode.setTextColor(getResources().getColor(R.color.light_gray));
+        tvUserPinCode.setEnabled(true);
+        tvUserPinCode.setClickable(true);
+        tvUserPinCode.setFocusableInTouchMode(true);
+        tvUserPinCode.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        tvUserCity.setTextColor(getResources().getColor(R.color.light_gray));
+        tvUserCity.setEnabled(true);
+        tvUserCity.setClickable(true);
+        tvUserCity.setFocusableInTouchMode(true);
+        tvUserCity.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        tvUserState.setTextColor(getResources().getColor(R.color.light_gray));
+        tvUserState.setEnabled(true);
+        tvUserState.setClickable(true);
+        tvUserState.setFocusableInTouchMode(true);
+        tvUserState.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        tvUserCountry.setTextColor(getResources().getColor(R.color.light_gray));
+        tvUserCountry.setEnabled(true);
+        tvUserCountry.setClickable(true);
+        tvUserCountry.setFocusableInTouchMode(true);
+        tvUserCountry.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        tvUserAbout.setTextColor(getResources().getColor(R.color.light_gray));
+        tvUserAbout.setEnabled(true);
+        tvUserAbout.setClickable(true);
+        tvUserAbout.setFocusableInTouchMode(true);
+        tvUserAbout.setInputType(InputType.TYPE_CLASS_TEXT);
+
+
+    }
+
+    View.OnKeyListener keyListener = new View.OnKeyListener() {
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    v.clearFocus();
+                    return true;
+                }
+            }
+            return false;
+        }
+    };
+    private void onClickText(){
+        tvUserFirstName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                etfName.setVisibility(View.VISIBLE);
+                tvUserFirstName.setVisibility(View.INVISIBLE);
+                etmName.setVisibility(View.INVISIBLE);
+            }
+        });
+        tvUserMiddleName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                etmName.setVisibility(View.VISIBLE);
+                etfName.setVisibility(View.INVISIBLE);
+                tvUserFirstName.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+
 }
