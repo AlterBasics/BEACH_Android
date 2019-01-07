@@ -10,8 +10,8 @@ import abs.ixi.client.util.TaskExecutor;
 import abs.sf.beach.utils.ApplicationProps;
 import abs.sf.beach.utils.SharedPrefs;
 import abs.sf.client.android.managers.AndroidUserManager;
+import abs.sf.client.android.utils.AndroidSDKLoader;
 import abs.sf.client.android.utils.ContextProvider;
-import abs.sf.client.android.utils.SDKLoader;
 
 /**
  * Root activity for all the activities defined in Beach application.
@@ -52,8 +52,8 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
     }
 
     protected void loadSDK() {
-        SDKLoader.loadSDK(ApplicationProps.XMPP_SERVER, ApplicationProps.XMPP_SERVER_PORT,
-                ApplicationProps.MEDIA_SERVER, ApplicationProps.MEDIA_SERVER_PORT, this);
+        Platform.getInstance().load(new AndroidSDKLoader(ApplicationProps.XMPP_SERVER, ApplicationProps.XMPP_SERVER_PORT,
+                ApplicationProps.MEDIA_SERVER, ApplicationProps.MEDIA_SERVER_PORT, this));
     }
 
     protected void loginBackground() {
