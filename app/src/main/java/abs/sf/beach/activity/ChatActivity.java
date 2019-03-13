@@ -32,10 +32,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.jar.Attributes;
 
-import abs.ixi.client.core.Platform;
-import abs.ixi.client.core.Session;
+import abs.ixi.client.Platform;
 import abs.ixi.client.util.DateUtils;
 import abs.ixi.client.util.StringUtils;
 import abs.ixi.client.util.UUIDGenerator;
@@ -205,7 +203,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
     private void setChatAdapter() {
         isGroup = this.userManager.checkIsChatRoom(contactJID);
-        userJID = (JID) Platform.getInstance().getSession().get(Session.KEY_USER_JID);
+        userJID = Platform.getInstance().getUserJID();
 
         if (isGroup) {
             boolean isGroupMember = this.userManager.checkIsChatRoomMember(userJID, contactJID);

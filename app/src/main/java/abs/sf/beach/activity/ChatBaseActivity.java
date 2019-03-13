@@ -16,8 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import abs.ixi.client.core.Platform;
-import abs.ixi.client.core.Session;
 import abs.ixi.client.xmpp.JID;
 import abs.sf.beach.android.R;
 import abs.sf.beach.fragment.ContactFragment;

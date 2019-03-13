@@ -12,8 +12,8 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import abs.ixi.client.Platform;
 import abs.ixi.client.core.Callback;
-import abs.ixi.client.core.Platform;
 import abs.ixi.client.io.StreamNegotiator;
 import abs.ixi.client.util.StringUtils;
 import abs.sf.beach.android.R;
@@ -85,7 +85,7 @@ public class LoginActivity extends StringflowActivity {
             ProgressDialog progressDialog = getProgressDialog("Authenticating...");
             progressDialog.show();
 
-            ((AndroidUserManager) Platform.getInstance().getUserManager()).loginUser(userName, pwd, ApplicationProps.DOMAIN, new Callback<StreamNegotiator.NegotiationResult, Exception>() {
+            Platform.getInstance().login(userName, pwd, ApplicationProps.DOMAIN, new Callback<StreamNegotiator.NegotiationResult, Exception>() {
                 @Override
                 public void onSuccess(StreamNegotiator.NegotiationResult result) {
                     Log.d(LoginActivity.this.getClass().getName(), "" + result.isSuccess());
