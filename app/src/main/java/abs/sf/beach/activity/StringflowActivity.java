@@ -76,7 +76,7 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
                 TaskExecutor.submit(new Runnable() {
                     @Override
                     public void run() {
-                        while (!Platform.getInstance().isLoggedIn() && Thread.interrupted()) {
+                        while (!Platform.getInstance().isLoggedIn()) {
                             try {
                                 StreamNegotiator.NegotiationResult result = Platform.getInstance().login(SharedPrefs.getInstance().getUsername(), ApplicationProps.DOMAIN,
                                         SharedPrefs.getInstance().getPassword());
