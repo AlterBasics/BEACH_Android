@@ -19,11 +19,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import abs.ixi.client.core.Platform;
-import abs.ixi.client.util.StringUtils;
+import abs.ixi.client.Platform;
 import abs.ixi.client.xmpp.JID;
 import abs.ixi.client.xmpp.packet.ChatRoom;
-import abs.ixi.client.xmpp.packet.Roster;
 import abs.sf.beach.adapter.GroupDetailsAdapter;
 import abs.sf.beach.android.R;
 import abs.sf.beach.utils.AndroidUtils;

@@ -82,7 +82,7 @@ public class LoginActivity extends StringflowActivity {
             ProgressDialog progressDialog = getProgressDialog("Authenticating...");
             progressDialog.show();
 
-            Platform.getInstance().login(userName, pwd, ApplicationProps.DOMAIN, new Callback<StreamNegotiator.NegotiationResult, Exception>() {
+            Platform.getInstance().login(userName, ApplicationProps.DOMAIN, pwd, new Callback<StreamNegotiator.NegotiationResult, Exception>() {
                 @Override
                 public void onSuccess(StreamNegotiator.NegotiationResult result) {
                     Log.d(LoginActivity.this.getClass().getName(), "" + result.isSuccess());

@@ -14,8 +14,8 @@ import android.widget.Toast;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import abs.ixi.client.Platform;
 import abs.ixi.client.core.Callback;
-import abs.ixi.client.core.Platform;
 import abs.ixi.client.net.NetworkException;
 import abs.ixi.client.util.StringUtils;
 import abs.sf.beach.android.R;

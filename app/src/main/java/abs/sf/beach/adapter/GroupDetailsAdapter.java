@@ -15,16 +15,13 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import abs.ixi.client.core.Platform;
-import abs.ixi.client.core.Session;
+import abs.ixi.client.Platform;
 import abs.ixi.client.util.StringUtils;
 import abs.ixi.client.xmpp.JID;
 import abs.ixi.client.xmpp.packet.ChatRoom;
 import abs.sf.beach.activity.ChatActivity;
-import abs.sf.beach.activity.GroupDetailsActivity;
 import abs.sf.beach.activity.ProfileActivity;
 import abs.sf.beach.android.R;
-import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.beach.utils.CommonConstants;
 import abs.sf.beach.utils.OnRefreshViewListener;
 import abs.sf.client.android.managers.AndroidUserManager;
@@ -44,7 +41,7 @@ public class GroupDetailsAdapter extends RecyclerView.Adapter<GroupDetailsAdapte
         this.roomJID = roomJID;
         this.groupName = groupName;
         this.loggedInMember = loggedInMember;
-        this.myJid = (JID) Platform.getInstance().getSession().get(Session.KEY_USER_JID);
+        this.myJid = Platform.getInstance().getUserJID();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

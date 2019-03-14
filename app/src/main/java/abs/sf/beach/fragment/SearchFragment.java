@@ -16,18 +16,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
-import java.util.ArrayList;
 import java.util.List;
-
-import abs.ixi.client.core.Platform;
+;
+import abs.ixi.client.Platform;
 import abs.ixi.client.util.CollectionUtils;
 import abs.ixi.client.util.StringUtils;
-import abs.ixi.client.xmpp.JID;
-import abs.ixi.client.xmpp.packet.Roster;
 import abs.ixi.client.xmpp.packet.UserSearchData;
 import abs.sf.beach.adapter.SearchAdapter;
 import abs.sf.beach.android.R;
-import abs.sf.beach.utils.CommonConstants;
 import abs.sf.beach.utils.OnRefreshViewListener;
 import abs.sf.client.android.managers.AndroidUserManager;
 

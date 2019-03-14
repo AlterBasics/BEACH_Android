@@ -15,13 +15,12 @@ import android.widget.EditText;
 
 import java.util.List;
 
-import abs.ixi.client.core.Platform;
+import abs.ixi.client.Platform;
 import abs.ixi.client.util.CollectionUtils;
 import abs.ixi.client.xmpp.packet.Roster.RosterItem;
 import abs.sf.beach.activity.CreateGroupActivity;
 import abs.sf.beach.adapter.ContactAdapter;
 import abs.sf.beach.android.R;
-import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidUserManager;
 
 public class ContactFragment extends Fragment {

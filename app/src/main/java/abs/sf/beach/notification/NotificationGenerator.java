@@ -5,14 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 
-import abs.ixi.client.core.Platform;
+import abs.ixi.client.Platform;
 import abs.ixi.client.util.StringUtils;
-import abs.ixi.client.xmpp.InvalidJabberId;
-import abs.ixi.client.xmpp.JID;
 import abs.sf.beach.activity.ChatActivity;
 import abs.sf.beach.core.BasicApplication;
 import abs.sf.beach.utils.NotificationUtils;
-import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidChatManager;
 import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.utils.SFConstants;

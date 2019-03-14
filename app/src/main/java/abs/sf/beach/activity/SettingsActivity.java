@@ -19,10 +19,11 @@ public class SettingsActivity extends StringflowActivity {
     private ImageView ivBack, ivNext;
     private TextView tvHeader;
     private boolean check;
-
+    private SharedPrefProxy sharedPrefProxy;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.sharedPrefProxy = SharedPrefProxy.newInstance(context());
         setContentView(R.layout.activity_setting);
         initView();
         initOnClickListener();
@@ -62,9 +63,9 @@ public class SettingsActivity extends StringflowActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if(isChecked) {
-                    SharedPrefProxy.getInstance().enableChatStateNotification();
+                    sharedPrefProxy.enableChatStateNotification();
                 } else {
-                    SharedPrefProxy.getInstance().disableChatStateNotification();
+                    sharedPrefProxy.disableChatStateNotification();
                 }
             }
         });
@@ -73,9 +74,9 @@ public class SettingsActivity extends StringflowActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if(isChecked) {
-                    SharedPrefProxy.getInstance().enableMessageDeliveryReceipt();
+                    sharedPrefProxy.enableMessageDeliveryReceipt();
                 } else {
-                    SharedPrefProxy.getInstance().disableMessageDeliveryReceipt();
+                    sharedPrefProxy.disableMessageDeliveryReceipt();
                 }
             }
         });
@@ -84,9 +85,9 @@ public class SettingsActivity extends StringflowActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if(isChecked) {
-                    SharedPrefProxy.getInstance().enableChatMarkers();
+                    sharedPrefProxy.enableChatMarkers();
                 } else {
-                    SharedPrefProxy.getInstance().disableChatMarkers();
+                    sharedPrefProxy.disableChatMarkers();
                 }
             }
         });
@@ -95,9 +96,9 @@ public class SettingsActivity extends StringflowActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if(isChecked) {
-                    SharedPrefProxy.getInstance().enableMediaTransfer();
+                    sharedPrefProxy.enableMediaTransfer();
                 } else {
-                    SharedPrefProxy.getInstance().disableMediaTransfer();
+                    sharedPrefProxy.disableMediaTransfer();
                 }
             }
         });
@@ -112,10 +113,10 @@ public class SettingsActivity extends StringflowActivity {
     }
 
     private void loadSeatings() {
-        cb1.setChecked(SharedPrefProxy.getInstance().isChatStateNotificationEnabled());
-        cb2.setChecked(SharedPrefProxy.getInstance().isMessageDeliveryReceiptEnabled());
-        cb3.setChecked(SharedPrefProxy.getInstance().isChatMarkersEnabled());
-        cb4.setChecked(SharedPrefProxy.getInstance().isMediaTransferEnabled());
+        cb1.setChecked(sharedPrefProxy.isChatStateNotificationEnabled());
+        cb2.setChecked(sharedPrefProxy.isMessageDeliveryReceiptEnabled());
+        cb3.setChecked(sharedPrefProxy.isChatMarkersEnabled());
+        cb4.setChecked(sharedPrefProxy.isMediaTransferEnabled());
     }
 
 }

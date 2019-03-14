@@ -17,7 +17,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import abs.ixi.client.core.Platform;
+import abs.ixi.client.Platform;
 import abs.ixi.client.util.CollectionUtils;
 import abs.ixi.client.util.StringUtils;
 import abs.ixi.client.xmpp.JID;

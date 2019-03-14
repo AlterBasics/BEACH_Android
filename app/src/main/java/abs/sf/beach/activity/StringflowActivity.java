@@ -22,7 +22,7 @@ import abs.sf.client.android.utils.ContextProvider;
 /**
  * Root activity for all the activities defined in Beach application.
  */
-public abstract class StringflowActivity extends AppCompatActivity implements ContextProvider{
+public abstract class StringflowActivity extends AppCompatActivity implements ContextProvider {
     private ProgressDialog pDialog;
 
     /**
@@ -72,16 +72,16 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
 
     protected void loginBackground() {
         if (SharedPrefs.getInstance().getLoginStatus()) {
-            if(!Platform.getInstance().isLoggedIn()) {
+            if (!Platform.getInstance().isLoggedIn()) {
                 TaskExecutor.submit(new Runnable() {
                     @Override
                     public void run() {
                         while (!Platform.getInstance().isLoggedIn() && Thread.interrupted()) {
                             try {
-                                StreamNegotiator.NegotiationResult result = Platform.getInstance().login(SharedPrefs.getInstance().getUsername(),
-                                        SharedPrefs.getInstance().getPassword(), ApplicationProps.DOMAIN);
+                                StreamNegotiator.NegotiationResult result = Platform.getInstance().login(SharedPrefs.getInstance().getUsername(), ApplicationProps.DOMAIN,
+                                        SharedPrefs.getInstance().getPassword());
 
-                                if(result.isError()) {
+                                if (result.isError()) {
                                     System.out.println("Waiting for a second during background login");
                                     waitForASec();
                                 }
@@ -106,7 +106,7 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
     }
 
     private void waitForASec() {
-        try{
+        try {
             System.out.println("Waiting for a second during background login");
             Thread.sleep(1000);
 
@@ -114,6 +114,7 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
             //swellow exception
         }
     }
+
     protected void logout() {
         final AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
 

@@ -12,13 +12,10 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import abs.ixi.client.core.Platform;
 import abs.ixi.client.util.StringUtils;
-import abs.ixi.client.xmpp.packet.ChatRoom;
 import abs.sf.beach.android.R;
 import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.beach.utils.CommonConstants;
-import abs.sf.client.android.managers.AndroidUserManager;
 
 public class CreateGroupActivity extends StringflowActivity{
     private static final String TAG = "CreateGroupActivity";

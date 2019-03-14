@@ -14,15 +14,13 @@ import java.util.Comparator;
 import java.util.List;
 
 
-import abs.ixi.client.core.Platform;
+import abs.ixi.client.Platform;
 import abs.ixi.client.util.CollectionUtils;
 import abs.ixi.client.util.StringUtils;
 import abs.ixi.client.xmpp.JID;
 import abs.sf.beach.adapter.ConversationAdapter;
 import abs.sf.beach.android.R;
-import abs.sf.client.android.db.DbManager;
 import abs.sf.client.android.managers.AndroidChatManager;
-import abs.sf.client.android.managers.AndroidUserManager;
 import abs.sf.client.android.messaging.ChatLine;
 import abs.sf.client.android.messaging.ChatListener;
 import abs.sf.client.android.messaging.Conversation;
