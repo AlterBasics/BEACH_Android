@@ -20,15 +20,13 @@ import abs.sf.beach.android.R;
 import abs.sf.beach.utils.AndroidUtils;
 import abs.sf.beach.utils.ApplicationProps;
 import abs.sf.beach.utils.SharedPrefs;
-import abs.sf.client.android.managers.AndroidUserManager;
-
 
 public class LoginActivity extends StringflowActivity {
     private static final Logger ROOT_LOGGER = Logger.getLogger("");
 
     private EditText password;
     private EditText userName;
-    private Button login,Signup;
+    private Button login, signup;
 
     static {
         //TODO We may not configure loggers in production
@@ -42,8 +40,8 @@ public class LoginActivity extends StringflowActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.i(LoginActivity.class.getName(), "Loading Stringflow SDK");
-        loadSDK();
+        Log.i(LoginActivity.class.getName(), "Initilizing Stringflow SDK Plateform");
+        this.initilizeSDK();
 
         if (!SharedPrefs.getInstance().getLoginStatus()) {
             setContentView(R.layout.activity_login);
@@ -63,14 +61,13 @@ public class LoginActivity extends StringflowActivity {
                 }
             });
 
-            Signup.setOnClickListener(new View.OnClickListener() {
+            signup.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent =new Intent(LoginActivity.this,SignUpActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
                     startActivity(intent);
                 }
             });
-
 
 
         } else {
@@ -143,7 +140,7 @@ public class LoginActivity extends StringflowActivity {
         userName = (EditText) findViewById(R.id.edt_email);
         password = (EditText) findViewById(R.id.edt_password);
         login = (Button) findViewById(R.id.btn_login);
-        Signup = (Button) findViewById(R.id.btn_SignUp);
+        signup = (Button) findViewById(R.id.btn_SignUp);
     }
 
     /**

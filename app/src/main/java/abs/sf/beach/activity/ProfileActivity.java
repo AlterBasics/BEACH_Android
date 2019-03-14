@@ -6,7 +6,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.support.v7.widget.CardView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,8 +32,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-import abs.ixi.client.core.Platform;
-import abs.ixi.client.core.Session;
+import abs.ixi.client.Platform;
 import abs.ixi.client.xmpp.JID;
 import abs.ixi.client.xmpp.packet.UserProfileData;
 import abs.sf.beach.android.R;
@@ -81,7 +78,7 @@ public class ProfileActivity extends StringflowActivity {
     protected void onResume() {
         super.onResume();
         this.jid = (JID) getIntent().getSerializableExtra(CommonConstants.JID);
-        this.userJID = (JID) Platform.getInstance().getSession().get(Session.KEY_USER_JID);
+        this.userJID = Platform.getInstance().getUserJID();
 
         if (jid.equals(userJID)) {
             editPic.setVisibility(View.VISIBLE);

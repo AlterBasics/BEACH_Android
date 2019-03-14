@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
+import java.nio.charset.IllegalCharsetNameException;
+
 import abs.ixi.client.Platform;
 import abs.ixi.client.core.InitializationErrorException;
 import abs.ixi.client.io.StreamNegotiator;
@@ -15,6 +17,7 @@ import abs.sf.beach.utils.ApplicationProps;
 import abs.sf.beach.utils.SharedPrefs;
 import abs.sf.client.android.managers.AndroidUserManager;
 import abs.sf.client.android.utils.AndroidSdkInitializer;
+import abs.sf.client.android.utils.ContextProvider;
 
 /**
  * Root activity for all the activities defined in Beach application.
@@ -54,9 +57,17 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
         }
     }
 
-    protected boolean initilizeSDK() throws InitializationErrorException {
-        return Platform.initialize(new AndroidSdkInitializer(ApplicationProps.XMPP_SERVER, ApplicationProps.XMPP_SERVER_PORT,
-                ApplicationProps.MEDIA_SERVER, ApplicationProps.MEDIA_SERVER_PORT, this));
+    protected boolean initilizeSDK() {
+        try {
+            return Platform.initialize(new AndroidSdkInitializer(ApplicationProps.XMPP_SERVER, ApplicationProps.XMPP_SERVER_PORT,
+                    ApplicationProps.MEDIA_SERVER, ApplicationProps.MEDIA_SERVER_PORT, this));
+
+        } catch (InitializationErrorException e) {
+            AndroidUtils.showToast(this, "Stringflow SDK initiliziation failed, Please restart App");
+            finish();
+        }
+
+        return false;
     }
 
     protected void loginBackground() {
@@ -71,6 +82,7 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
                                         SharedPrefs.getInstance().getPassword(), ApplicationProps.DOMAIN);
 
                                 if(result.isError()) {
+                                    System.out.println("Waiting for a second during background login");
                                     waitForASec();
                                 }
 
@@ -95,7 +107,7 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
 
     private void waitForASec() {
         try{
-
+            System.out.println("Waiting for a second during background login");
             Thread.sleep(1000);
 
         } catch (InterruptedException e) {

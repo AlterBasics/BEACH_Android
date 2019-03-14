@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import abs.ixi.client.Platform;
 import abs.ixi.client.xmpp.JID;
 import abs.sf.beach.android.R;
 import abs.sf.beach.fragment.ContactFragment;
@@ -56,7 +57,7 @@ public class ChatBaseActivity extends StringflowActivity {
         mPager = (ViewPager) findViewById(R.id.viewPager);
         ivBack.setVisibility(View.INVISIBLE);
         ivNext.setVisibility(View.VISIBLE);
-        userJID = (JID) Platform.getInstance().getSession().get(Session.KEY_USER_JID);
+        userJID = Platform.getInstance().getUserJID();
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

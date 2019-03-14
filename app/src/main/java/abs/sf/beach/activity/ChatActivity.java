@@ -137,8 +137,6 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
         System.out.println("Chat activity on resume");
         String from = getIntent().getStringExtra(FROM);
 
-        loadSDK();
-
         if (!StringUtils.isNullOrEmpty(from) &&
                 StringUtils.safeEquals(from, NOTIFICATION_UTILS, false)) {
 
@@ -148,6 +146,7 @@ public class ChatActivity extends StringflowActivity implements ChatListener, Fr
 
             tvHeader.setText(contactJID.getNode());
 
+            initilizeSDK();
             loginBackground();
         }
 
