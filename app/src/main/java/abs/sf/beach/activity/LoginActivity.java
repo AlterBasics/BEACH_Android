@@ -77,60 +77,57 @@ public class LoginActivity extends StringflowActivity {
     }
 
     private boolean login(final String userName, final String pwd) {
-        try {
-            ProgressDialog progressDialog = getProgressDialog("Authenticating...");
-            progressDialog.show();
+        final ProgressDialog progressDialog = getProgressDialog("Authenticating...");
+        progressDialog.show();
 
-            Platform.getInstance().login(userName, ApplicationProps.DOMAIN, pwd, new Callback<StreamNegotiator.NegotiationResult, Exception>() {
-                @Override
-                public void onSuccess(StreamNegotiator.NegotiationResult result) {
+        Platform.getInstance().login(userName, ApplicationProps.DOMAIN, pwd, new Callback<StreamNegotiator.NegotiationResult, Exception>() {
+            @Override
+            public void onSuccess(StreamNegotiator.NegotiationResult result) {
+                Log.d(LoginActivity.this.getClass().getName(), "" + result.isSuccess());
+                if (result.isSuccess()) {
+                    SharedPrefs.getInstance().setUsername(userName);
+                    SharedPrefs.getInstance().setPassword(pwd);
+                    SharedPrefs.getInstance().setLoginStatus(true);
                     Log.d(LoginActivity.this.getClass().getName(), "" + result.isSuccess());
-                    if (result.isSuccess()) {
-                        SharedPrefs.getInstance().setUsername(userName);
-                        SharedPrefs.getInstance().setPassword(pwd);
-                        SharedPrefs.getInstance().setLoginStatus(true);
-                        Log.d(LoginActivity.this.getClass().getName(), "" + result.isSuccess());
-                        closeProgressDialog();
-                        startActivity(new Intent(LoginActivity.this, ChatBaseActivity.class));
-                        finish();
+                    closeProgressDialog(progressDialog);
+                    startActivity(new Intent(LoginActivity.this, ChatBaseActivity.class));
+                    finish();
+
+                } else {
+                    Log.d(LoginActivity.this.getClass().getName(), "Else:" + result.isSuccess());
+                    final String msg;
+                    if (result.getError() == StreamNegotiator.NegotiationError.AUTHENTICATION_FAILED) {
+                        msg = "Entered userId Password are incorrect";
+
+                    } else if (result.getError() == StreamNegotiator.NegotiationError.TIME_OUT) {
+                        msg = "Server response timed out. try again...";
 
                     } else {
-                        Log.d(LoginActivity.this.getClass().getName(), "Else:" + result.isSuccess());
-                        final String msg;
-                        if (result.getError() == StreamNegotiator.NegotiationError.AUTHENTICATION_FAILED) {
-                            msg = "Entered userId Password are incorrect";
-
-                        } else if (result.getError() == StreamNegotiator.NegotiationError.TIME_OUT) {
-                            msg = "Server response timed out. try again...";
-
-                        } else {
-                            msg = "Something went wrong. Please try after sometime";
-                        }
-
-                        LoginActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                AndroidUtils.showToast(context(), msg);
-                            }
-                        });
+                        msg = "Something went wrong. Please try after sometime";
                     }
-                }
 
-                @Override
-                public void onFailure(Exception e) {
+                    closeProgressDialog(progressDialog);
+
                     LoginActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            AndroidUtils.showToast(context(), "Something went wrong. Please try after sometime");
+                            AndroidUtils.showToast(context(), msg);
                         }
                     });
                 }
-            });
+            }
 
-        } finally {
-            Log.d(LoginActivity.this.getClass().getName(), "Finally");
-            closeProgressDialog();
-        }
+            @Override
+            public void onFailure(Exception e) {
+                closeProgressDialog(progressDialog);
+                LoginActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        AndroidUtils.showToast(context(), "Something went wrong. Please try after sometime");
+                    }
+                });
+            }
+        });
 
         return false;
     }

@@ -25,7 +25,6 @@ import abs.sf.client.android.utils.ContextProvider;
  * Root activity for all the activities defined in Beach application.
  */
 public abstract class StringflowActivity extends AppCompatActivity implements ContextProvider {
-    private ProgressDialog pDialog;
 
     /**
      * A common progress dialog for all the activities defined in Beach application
@@ -42,20 +41,17 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
      * @return
      */
     protected ProgressDialog getProgressDialog(String msg, boolean cancelable) {
-        if (pDialog == null) {
-            this.pDialog = new ProgressDialog(StringflowActivity.this);
-            pDialog.setMessage(msg);
-            pDialog.setCancelable(cancelable);
-        } else {
-            this.pDialog.cancel();
-        }
+        ProgressDialog pDialog = new ProgressDialog(this);
+        pDialog.setMessage(msg);
+        pDialog.setIndeterminate(true);
+        pDialog.setCancelable(cancelable);
 
         return pDialog;
     }
 
-    protected void closeProgressDialog() {
-        if (this.pDialog != null) {
-            this.pDialog.cancel();
+    protected void closeProgressDialog(ProgressDialog pDialog) {
+        if (pDialog != null) {
+            pDialog.dismiss();
         }
     }
 
@@ -119,37 +115,40 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
 
     protected void logout() {
 
-        ProgressDialog progressDialog = getProgressDialog("Logout...");
+        final ProgressDialog progressDialog = getProgressDialog("Logout in progress...");
         progressDialog.show();
-        try {
-            TaskExecutor.getInstance().submit(new Runnable() {
-                @Override
-                public void run() {
-                    final AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
-                    userManager.logoutUserAsync(new Callback<String, Exception>() {
-                        @Override
-                        public void onSuccess(String s) {
-                            SharedPrefs.getInstance().clear();
-                            startActivity(new Intent(context(), LoginActivity.class));
-                            finish();
-                        }
 
-                        @Override
-                        public void onFailure(Exception e) {
-                            AndroidUtils.showToast(context(), "Something went wrong, Please restart your app");
-                            SharedPrefs.getInstance().clear();
-                            startActivity(new Intent(context(), LoginActivity.class));
-                            finish();
-                        }
-                    });
-                }
-            });
+        TaskExecutor.getInstance().submit(new Runnable() {
+            @Override
+            public void run() {
+                final AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                userManager.logoutUserAsync(new Callback<String, Exception>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        SharedPrefs.getInstance().clear();
+                        closeProgressDialog(progressDialog);
+                        startActivity(new Intent(context(), LoginActivity.class));
+                        finish();
+                    }
 
+                    @Override
+                    public void onFailure(Exception e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                AndroidUtils.showToast(context(), "Something went wrong, Please restart your app");
+                            }
+                        });
 
-        } finally {
-            Log.d(this.getClass().getName(), "Finally");
-            closeProgressDialog();
-        }
+                        closeProgressDialog(progressDialog);
+                        SharedPrefs.getInstance().clear();
+                        startActivity(new Intent(context(), LoginActivity.class));
+                        finish();
+                    }
+                });
+            }
+        });
+
     }
 
     @Override

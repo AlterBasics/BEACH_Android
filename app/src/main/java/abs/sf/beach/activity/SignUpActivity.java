@@ -98,7 +98,7 @@ public class SignUpActivity extends StringflowActivity {
                     Toast.makeText(SignUpActivity.this, "Password doesn't match", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    final ProgressDialog progressDialog = getProgressDialog("...");
+                    final ProgressDialog progressDialog = getProgressDialog("Sign Up...");
                     progressDialog.show();
 
                     AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
@@ -110,7 +110,7 @@ public class SignUpActivity extends StringflowActivity {
                                     @Override
                                     public void run() {
                                         Toast.makeText(SignUpActivity.this, success, Toast.LENGTH_SHORT).show();
-                                        closeProgressDialog();
+                                        closeProgressDialog(progressDialog);
                                         finish();
                                     }
                                 });
@@ -126,7 +126,7 @@ public class SignUpActivity extends StringflowActivity {
                                         etPwd.getText().clear();
                                         etUsername.getText().clear();
                                         etConfrmPwd.getText().clear();
-                                        closeProgressDialog();
+                                        closeProgressDialog(progressDialog);
                                     }
                                 });
 
