@@ -72,11 +72,11 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
 
     protected void loginBackground() {
         if (SharedPrefs.getInstance().getLoginStatus()) {
-            if (!Platform.getInstance().isLoggedIn()) {
+            if (!Platform.getInstance().isUserAuthenticated()) {
                 TaskExecutor.submit(new Runnable() {
                     @Override
                     public void run() {
-                        while (!Platform.getInstance().isLoggedIn()) {
+                        while (!Platform.getInstance().isUserAuthenticated()) {
                             try {
                                 StreamNegotiator.NegotiationResult result = Platform.getInstance().login(SharedPrefs.getInstance().getUsername(), ApplicationProps.DOMAIN,
                                         SharedPrefs.getInstance().getPassword());
