@@ -39,7 +39,6 @@ public class LoginActivity extends StringflowActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Log.i(LoginActivity.class.getName(), "Initilizing Stringflow SDK Plateform");
         this.initilizeSDK();
 

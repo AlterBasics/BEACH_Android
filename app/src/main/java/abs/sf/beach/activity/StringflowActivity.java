@@ -4,10 +4,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import java.nio.charset.IllegalCharsetNameException;
 
 import abs.ixi.client.Platform;
+import abs.ixi.client.core.Callback;
 import abs.ixi.client.core.InitializationErrorException;
 import abs.ixi.client.io.StreamNegotiator;
 import abs.ixi.client.net.NetworkException;
@@ -116,18 +118,38 @@ public abstract class StringflowActivity extends AppCompatActivity implements Co
     }
 
     protected void logout() {
-        final AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
 
-        TaskExecutor.getInstance().submit(new Runnable() {
-            @Override
-            public void run() {
-                userManager.logoutUser();
-            }
-        });
+        ProgressDialog progressDialog = getProgressDialog("Logout...");
+        progressDialog.show();
+        try {
+            TaskExecutor.getInstance().submit(new Runnable() {
+                @Override
+                public void run() {
+                    final AndroidUserManager userManager = (AndroidUserManager) Platform.getInstance().getUserManager();
+                    userManager.logoutUserAsync(new Callback<String, Exception>() {
+                        @Override
+                        public void onSuccess(String s) {
+                            SharedPrefs.getInstance().clear();
+                            startActivity(new Intent(context(), LoginActivity.class));
+                            finish();
+                        }
 
-        SharedPrefs.getInstance().clear();
-        startActivity(new Intent(this, LoginActivity.class));
-        this.finish();
+                        @Override
+                        public void onFailure(Exception e) {
+                            AndroidUtils.showToast(context(), "Something went wrong, Please restart your app");
+                            SharedPrefs.getInstance().clear();
+                            startActivity(new Intent(context(), LoginActivity.class));
+                            finish();
+                        }
+                    });
+                }
+            });
+
+
+        } finally {
+            Log.d(this.getClass().getName(), "Finally");
+            closeProgressDialog();
+        }
     }
 
     @Override
